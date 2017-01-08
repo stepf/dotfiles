@@ -1,0 +1,8 @@
+# PROMPT
+ZSH_THEME="pure"
+
+# ZSH COMPLETION PATH
+fpath=(/.zsh/complete $fpath)
+
+# PLUGINS
+plugins=(git docker zsh-syntax-highlighting)

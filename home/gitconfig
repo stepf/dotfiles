@@ -1,0 +1,36 @@
+[core]
+  excludesfile = /Users/sdang/.gitignore_global
+  pager = less -R
+[color]
+  ui = true
+[color "diff"]
+  old = red reverse
+  new = green reverse
+[user]
+  name = Stefan Dang
+
+[push]
+  default = simple
+[github]
+  user = stepf
+
+[alias]
+  br = branch
+  co = checkout
+  ci = commit
+  st = status
+  addm = !git ls-files --modified | pick | xargs git add
+  addn = !git ls-files --others --exclude-standard | pick | xargs git add
+  aliases = !git config --list | grep 'alias\\.' | sed 's/alias\\.\\([^=]*\\)=\\(.*\\)/\\1\\ \t => \\2/' | sort
+  amend = !git log -n 1 --pretty=tformat:%s%n%n%b | git commit -F - --amend
+  branches = branch -av
+  churn = !git log --all -M -C --name-only --format='format:' "$@" | sort | grep -v '^$' | uniq -c | sort | awk 'BEGIN {print "count,file"} {print $1 "," $2}'
+  df = !git ls-files --modified | pick | xargs git diff
+  l = !git --no-pager log --oneline -n 20
+  lg = !git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative
+  pb = !git push -u origin $(git rev-parse --abbrev-ref HEAD) # push and track the current branch
+  r = !git ls-files -z --deleted | xargs -0 git rm # Remove deleted files
+  today = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --after="yesterday" --abbrev-commit --
+  unstage = reset HEAD --
+[filter "email"]
+  clean = "sed -i '/email =/ d'"

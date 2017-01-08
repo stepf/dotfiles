@@ -1,0 +1,13 @@
+# GENERAL
+export EDITOR='vim'
+export PATH="$HOME/.bin:/usr/local/bin/:/usr/bin:/bin:/usr/sbin:/sbin:$PATH"
+
+# GO
+export GOPATH=$HOME/work/go
+export PATH=$HOME/.go/bin:$PATH
+
+# PYTHON
+export PATH="$HOME/Library/Python/2.7/bin:$PATH"
+
+# RUBY
+if which rbenv > /dev/null; then eval "$(rbenv init -)"; fi
