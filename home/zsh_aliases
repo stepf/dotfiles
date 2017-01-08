@@ -1,0 +1,17 @@
+# SHELL
+alias ll='ls -la'
+alias reload='source ~/.zshrc && clear'
+
+# NAVIGATION
+alias scratch='cd ~/scratch'
+alias work='cd ~/work'
+
+# RUBY
+alias irb='pry'
+
+# DOCKER
+alias d='docker'
+alias dc='docker-compose'
+alias dm='docker-machine'
+alias dn='docker node'
+alias ds='docker service'
