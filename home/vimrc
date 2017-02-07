@@ -12,11 +12,12 @@ set showcmd                               " show command in bottom bar
 set wildmenu                              " visual autocomplete for command menu
 set lazyredraw                            " redraw only when we need to.
 set showmatch                             " highlight matching [{()}]
+set t_Co=256                              " enable 256 colours
 
 " Highlight current line
 set cursorline                            " enable cursorline
 hi cursorline cterm=none term=none        " disable underlining
-highlight CursorLine ctermbg=LightYellow  " set bg colour
+hi CursorLine ctermbg=229                 " set bg colour
 
 " Misc
 set backspace=indent,eol,start            " allow backspace over everything
