@@ -29,7 +29,7 @@ function lopen {
 # localhost for lazy docker people
 function dopen {
   # get and count all published port mappings
-  published=$(docker container ps | pick | awk '{print $1}' | xargs docker container port)
+  published=$(docker container ps | pick -q "${1}" | awk '{print $1}' | xargs docker container port)
   nof_published=$(wc -l <<< "${published}")
 
   # container has no published ports
@@ -39,7 +39,7 @@ function dopen {
   [[ ${nof_published} -eq 1 ]] && port=$(echo "${published}" | grep -oE '(\d+)$')
 
   # container has more than one published port
-  [[ ${nof_published} -gt 1 ]] && port=$(echo "${published}" | pick -q "${1}" | grep -oE '(\d+)$')
+  [[ ${nof_published} -gt 1 ]] && port=$(echo "${published}" | pick | grep -oE '(\d+)$')
 
   open "http://localhost:${port}"
 }
