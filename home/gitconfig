@@ -34,3 +34,5 @@
   unstage = reset HEAD --
 [filter "email"]
   clean = "sed -i '/email =/ d'"
+[merge]
+  ff = only
