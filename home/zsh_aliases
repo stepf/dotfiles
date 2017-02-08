@@ -15,3 +15,6 @@ alias dc='docker-compose'
 alias dm='docker-machine'
 alias dn='docker node'
 alias ds='docker service'
+
+# TMUX
+alias tubl='open -a "Sublime Text"'
