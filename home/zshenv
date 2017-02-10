@@ -11,3 +11,8 @@ export PATH="$HOME/Library/Python/2.7/bin:$PATH"
 
 # RUBY
 if which rbenv > /dev/null; then eval "$(rbenv init -)"; fi
+
+# GOOGLE CLOUD SDK
+if [ -f "$HOME/.bin/google-cloud-sdk/path.zsh.inc" ]; then source "$HOME/.bin/google-cloud-sdk/path.zsh.inc"; fi
+if [ -f "$HOME/.bin/google-cloud-sdk/completion.zsh.inc" ]; then source "$HOME/.bin/google-cloud-sdk/completion.zsh.inc"; fi
+export GOOGLE_APPLICATION_CREDENTIALS="$HOME/work/academics/general/academics-dev-28a59af284ec.json"

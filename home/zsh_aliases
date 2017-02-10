@@ -19,3 +19,6 @@ alias ds='docker service'
 # TMUX
 alias tmux='tmux -u'
 alias tubl='open -a "Sublime Text"'
+
+# KUBERNETES
+alias k='kubectl'
