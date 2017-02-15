@@ -44,6 +44,11 @@ function dopen {
   open "http://localhost:${port}"
 }
 
+# docker exec for lazy people
+function dexec {
+  docker exec -it "${1}" /bin/sh
+}
+
 function pmux {
   session=$(tmux ls | pick -q "${1}" | awk '{print $1}')
   tmux att -t "$session"
