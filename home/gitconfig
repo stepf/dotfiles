@@ -32,6 +32,7 @@
   r = !git ls-files -z --deleted | xargs -0 git rm # Remove deleted files
   today = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --after="yesterday" --abbrev-commit --
   unstage = reset HEAD --
+  yedi = push --force
 [filter "email"]
   clean = "sed -i '/email =/ d'"
 [merge]
