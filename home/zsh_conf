@@ -1,0 +1,39 @@
+# ----------------------------------------------------------------------------------------------------------------------
+# -- Builtins
+# ----------------------------------------------------------------------------------------------------------------------
+
+bindkey -e                                                        # enable emacs navigation
+
+# History
+bindkey '^R' history-incremental-search-backward                  # ctrl-r to search history
+HISTFILE=$HOME/.zsh_history                                       # path to history file; needed for shared history
+HISTSIZE=10000                                                    # read up to $HISTSIZE lines
+SAVEHIST=10000                                                    # write up to $SAVEHIST lines
+setopt hist_ignore_all_dups                                       # delete old entries if new entry is a duplicate
+setopt hist_verify                                                # don't execute immediately upon history expansion
+setopt inc_append_history                                         # write to history immediately, not on shell exit
+setopt share_history                                              # share history between all sessions
+
+# Completion Engine
+autoload -U compinit && compinit                                  # enable completion engine
+setopt complete_in_word                                           # completion
+zstyle ':completion:*' matcher-list '' \
+  'm:{[:lower:][:upper:]}={[:upper:][:lower:]}' '+l:|=* r:|=*'    # partial completion
+zstyle ':completion:*' menu select                                # highlight entries on tab
+
+# Incremental Search with Arrow Keys
+autoload -U up-line-or-beginning-search
+autoload -U down-line-or-beginning-search
+zle -N up-line-or-beginning-search
+zle -N down-line-or-beginning-search
+bindkey "^[[A" up-line-or-beginning-search # Up
+bindkey "^[[B" down-line-or-beginning-search # Down
+
+# ----------------------------------------------------------------------------------------------------------------------
+# -- Plugins
+# ----------------------------------------------------------------------------------------------------------------------
+TIPZ_TEXT='You know nothing:'
+source "$HOME/.zsh/tipz/tipz.zsh"
+
+source "$HOME/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh"
+source "$HOME/.zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
