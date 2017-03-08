@@ -22,7 +22,7 @@
   addm = !git ls-files --modified | pick | xargs git add
   addn = !git ls-files --others --exclude-standard | pick | xargs git add
   aliases = !git config --list | grep 'alias\\.' | sed 's/alias\\.\\([^=]*\\)=\\(.*\\)/\\1\\ \t => \\2/' | sort
-  amend = !git log -n 1 --pretty=tformat:%s%n%n%b | git commit -F - --amend
+  amend = !git commit --amend --no-edit
   branches = branch -av
   churn = !git log --all -M -C --name-only --format='format:' "$@" | sort | grep -v '^$' | uniq -c | sort | awk 'BEGIN {print "count,file"} {print $1 "," $2}'
   df = !git ls-files --modified | pick | xargs git diff
