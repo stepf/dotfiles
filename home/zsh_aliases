@@ -1,4 +1,5 @@
 # SHELL
+alias ls='ls -G'
 alias ll='ls -la'
 alias reload='source ~/.zshrc && clear'
 
