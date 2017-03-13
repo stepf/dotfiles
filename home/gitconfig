@@ -16,22 +16,25 @@
 
 [alias]
   br = branch
-  co = checkout
   ci = commit
+  co = checkout
   st = status
   addm = !git ls-files --modified | pick | xargs git add
   addn = !git ls-files --others --exclude-standard | pick | xargs git add
   aliases = !git config --list | grep 'alias\\.' | sed 's/alias\\.\\([^=]*\\)=\\(.*\\)/\\1\\ \t => \\2/' | sort
-  amend = !git commit --amend --no-edit
   branches = branch -av
   churn = !git log --all -M -C --name-only --format='format:' "$@" | sort | grep -v '^$' | uniq -c | sort | awk 'BEGIN {print "count,file"} {print $1 "," $2}'
+  ca = !git commit --amend --no-edit
   df = !git ls-files --modified | pick | xargs git diff
   l = !git --no-pager log --oneline -n 20
   lg = !git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative
+  ll = log --stat --abbrev-commit
+  my = !git log --branches=* --no-merges --pretty=format:'%C(reset)%C(bold)%cd %C(reset)%C(white)%s  %C(reset)%h' --date=short --author=\"$(git config user.name)\"
   pb = !git push -u origin $(git rev-parse --abbrev-ref HEAD) # push and track the current branch
   r = !git ls-files -z --deleted | xargs -0 git rm # Remove deleted files
   today = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --after="yesterday" --abbrev-commit --
   unstage = reset HEAD --
+  wtf = diff --name-only --diff-filter=U
   yedi = push --force
 [filter "email"]
   clean = "sed -i '/email =/ d'"
