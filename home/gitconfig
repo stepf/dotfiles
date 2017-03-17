@@ -26,6 +26,7 @@
   churn = !git log --all -M -C --name-only --format='format:' "$@" | sort | grep -v '^$' | uniq -c | sort | awk 'BEGIN {print "count,file"} {print $1 "," $2}'
   ca = !git commit --amend --no-edit
   df = !git ls-files --modified | pick | xargs git diff
+  jedi = push --force
   l = !git --no-pager log --oneline -n 20
   lg = !git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative
   ll = log --stat --abbrev-commit
@@ -35,7 +36,6 @@
   today = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --after="yesterday" --abbrev-commit --
   unstage = reset HEAD --
   wtf = diff --name-only --diff-filter=U
-  yedi = push --force
 [filter "email"]
   clean = "sed -i '/email =/ d'"
 [merge]
