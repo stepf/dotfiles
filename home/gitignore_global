@@ -49,3 +49,6 @@ bower.json
 # Vagrant (gitignore/Global/Vagrant.gitignore)
 .vagrant/
 
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
