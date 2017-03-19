@@ -1,5 +1,5 @@
 [core]
-  excludesfile = /Users/sdang/.gitignore_global
+	excludesfile = /Users/sdang/.gitignore_global
   pager = less -R
 [color]
   ui = true
@@ -15,28 +15,28 @@
   user = stepf
 
 [alias]
-  br = branch
+  a = !git ls-files --modified --others --exclude-standard -t | fzf-tmux -m | cut -d' ' -f2 | xargs git add
+  aliases = !git config --list | grep 'alias\\.' | sed 's/alias\\.\\([^=]*\\)=\\(.*\\)/\\1\\ \t => \\2/' | sort
+  amend = !git commit --amend --no-edit
+  branches = branch -av
   ci = commit
   co = checkout
-  st = status
-  addm = !git ls-files --modified | pick | xargs git add
-  addn = !git ls-files --others --exclude-standard | pick | xargs git add
-  aliases = !git config --list | grep 'alias\\.' | sed 's/alias\\.\\([^=]*\\)=\\(.*\\)/\\1\\ \t => \\2/' | sort
-  branches = branch -av
-  churn = !git log --all -M -C --name-only --format='format:' "$@" | sort | grep -v '^$' | uniq -c | sort | awk 'BEGIN {print "count,file"} {print $1 "," $2}'
-  ca = !git commit --amend --no-edit
-  df = !git ls-files --modified | pick | xargs git diff
-  jedi = push --force
-  l = !git --no-pager log --oneline -n 20
+  df = !git ls-files --modified | fzf-tmux -m | xargs git diff
+  jedi = push --force-with-lease
+  l = !git --no-pager log --oneline --decorate -n 20
   lg = !git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative
   ll = log --stat --abbrev-commit
-  my = !git log --branches=* --no-merges --pretty=format:'%C(reset)%C(bold)%cd %C(reset)%C(white)%s  %C(reset)%h' --date=short --author=\"$(git config user.name)\"
   pb = !git push -u origin $(git rev-parse --abbrev-ref HEAD) # push and track the current branch
-  r = !git ls-files -z --deleted | xargs -0 git rm # Remove deleted files
-  today = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --after="yesterday" --abbrev-commit --
+  st = !git status --short | sort
   unstage = reset HEAD --
   wtf = diff --name-only --diff-filter=U
 [filter "email"]
   clean = "sed -i '/email =/ d'"
 [merge]
   ff = only
+[difftool "sourcetree"]
+	cmd = opendiff \"$LOCAL\" \"$REMOTE\"
+	path = 
+[mergetool "sourcetree"]
+	cmd = /Users/sdang/Applications/SourceTree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
+	trustExitCode = true
