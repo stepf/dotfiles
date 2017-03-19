@@ -1,7 +1,7 @@
 # glorified cd
 function dir {
   export DISABLE_AUTO_TITLE="true"
-  dir="$(z | awk '{print $2}' | pick -q "${1}")"      # pick from fuzzy-searchable list of most used directories
+  dir="$(z | awk '{print $2}' | fzf-tmux -q "${1}")"      # pick from fuzzy-searchable list of most used directories
   echo -e "\033];$(basename "${dir}")\007"            # change terminal tab title
   cd "${dir}" || exit 1                               # cd into directory
 }
@@ -29,7 +29,7 @@ function lopen {
 # localhost for lazy docker people
 function dopen {
   # get and count all published port mappings
-  published=$(docker container ps | pick -q "${1}" | awk '{print $1}' | xargs docker container port)
+  published=$(docker container ps | fzf-tmux -q "${1}" | awk '{print $1}' | xargs docker container port)
   nof_published=$(wc -l <<< "${published}")
 
   # container has no published ports
@@ -39,7 +39,7 @@ function dopen {
   [[ ${nof_published} -eq 1 ]] && port=$(echo "${published}" | grep -oE '(\d+)$')
 
   # container has more than one published port
-  [[ ${nof_published} -gt 1 ]] && port=$(echo "${published}" | pick | grep -oE '(\d+)$')
+  [[ ${nof_published} -gt 1 ]] && port=$(echo "${published}" | fzf-tmux | grep -oE '(\d+)$')
 
   open "http://localhost:${port}"
 }
@@ -50,6 +50,6 @@ function dexec {
 }
 
 function pmux {
-  session=$(tmux ls | pick -q "${1}" | awk '{print $1}')
+  session=$(tmux ls | fzf-tmux -q "${1}" | awk '{print $1}')
   tmux att -t "$session"
 }
