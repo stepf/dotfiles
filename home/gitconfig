@@ -26,6 +26,7 @@
   l = !git --no-pager log --oneline --decorate -n 20
   lg = !git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative
   ll = log --stat --abbrev-commit
+  mr = !git log --format="%H" -n 1 | reattach-to-user-namespace pbcopy
   pb = !git push -u origin $(git rev-parse --abbrev-ref HEAD) # push and track the current branch
   st = !git status --short | sort
   unstage = reset HEAD --
