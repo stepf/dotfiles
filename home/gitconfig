@@ -15,7 +15,7 @@
   user = stepf
 
 [alias]
-  a = !git ls-files --modified --others --exclude-standard -t | fzf-tmux -m | cut -d' ' -f2 | xargs git add
+  a = !git ls-files --modified --others --exclude-standard -t --directory | fzf-tmux -m | cut -d' ' -f2 | xargs git add
   aliases = !git config --list | grep 'alias\\.' | sed 's/alias\\.\\([^=]*\\)=\\(.*\\)/\\1\\ \t => \\2/' | sort
   amend = !git commit --amend --no-edit
   branches = branch -av
