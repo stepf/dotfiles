@@ -19,7 +19,8 @@ set list                                  " show whitespaces and tabs
 " Highlight current line and column
 set cursorline                            " enable cursorline
 hi cursorline cterm=none term=none        " disable underlining
-hi CursorLine ctermbg=229                 " set bg colour
+hi CursorLine ctermbg=015                 " bg colour
+set cursorcolumn                          " enable columnline
 
 " Misc
 set backspace=indent,eol,start            " allow backspace over everything
