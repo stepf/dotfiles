@@ -1,5 +1,5 @@
 [core]
-	excludesfile = /Users/sdang/.gitignore_global
+  excludesfile = /Users/sdang/.gitignore_global
   pager = less -R
 [color]
   ui = true
