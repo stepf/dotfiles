@@ -2,25 +2,25 @@
 syntax enable                             " enable syntax processing
 
 " UI Config
-set number                                " show line numbers
-set showcmd                               " show command in bottom bar
-set wildmenu                              " visual autocomplete for command menu
-set lazyredraw                            " redraw only when we need to.
-set showmatch                             " highlight matching [{()}]
-set matchtime=1                           " speed up matching
-set t_Co=256                              " enable 256 colours
+set number                                " print line number before each line
+set showcmd                               " show (partial) command in bottom bar
+set wildmenu                              " enable command-line completion
+set lazyredraw                            " do not redraw during non-typed commands
+set showmatch                             " briefly jump to matching [{()}]
+set matchtime=1                           " tenth of second to show matching [{()}]
+set t_Co=256                              " number of colors
 
 " Spaces & Tabs
-set tabstop=2                             " width of \t
-set expandtab                             " tabs are spaces
-set listchars=trail:∙,tab:>―              " character to show in place of spaces and tabs
-set list                                  " show whitespaces and tabs
+set tabstop=2                             " number of spaces that \t counts for
+set expandtab                             " use spaces to insert a tab
+set listchars=trail:∙,tab:>―              " characters to use in list mode (whitespace:char)
+set list                                  " enable list mode
 
 " Highlight current line and column
-set cursorline                            " enable cursorline
+set cursorline                            " highlight screen line of the cursor
 hi cursorline cterm=none term=none        " disable underlining
 hi CursorLine ctermbg=015                 " bg colour
-set cursorcolumn                          " enable columnline
+set cursorcolumn                          " highlight screen column of the cursor
 
 " Misc
-set backspace=indent,eol,start            " allow backspace over everything
+set backspace=indent,eol,start            " allow backspacing over everything
