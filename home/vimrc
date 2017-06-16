@@ -15,6 +15,7 @@ set tabstop=2                             " number of spaces that \t counts for
 set expandtab                             " use spaces to insert a tab
 set listchars=trail:∙,tab:>―              " characters to use in list mode (whitespace:char)
 set list                                  " enable list mode
+set autoindent                            " copy indent from current line when starting a new line
 
 " Highlight current line and column
 set cursorline                            " highlight screen line of the cursor
