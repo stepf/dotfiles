@@ -22,4 +22,4 @@ alias tmux='tmux -u'
 alias tubl='open -a "Sublime Text"'
 
 # KUBERNETES
-alias k='kubectl --namespace'
+alias k='kubectl'
