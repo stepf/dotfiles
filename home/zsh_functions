@@ -6,7 +6,7 @@ function dir {
   cd "${dir}" || exit 1                               # cd into directory
 }
 
-# mnemonic to stick to reasonable commit message prefixes
+# mnemonic for reasonable commit message prefixes
 # see: https://github.com/angular/angular.js/blob/master/CONTRIBUTING.md#commit
 function commits {
 cat << EOM
@@ -29,7 +29,7 @@ function lopen {
 # localhost for lazy docker people
 function dopen {
   # get and count all published port mappings
-  published=$(docker container ps | fzf-tmux -q "${1}" | awk '{print $1}' | xargs docker container port)
+  published=$(docker container ps | fzf-tmux --header-lines=1 -q "${1}" | awk '{print $1}' | xargs docker container port)
   nof_published=$(wc -l <<< "${published}")
 
   # container has no published ports
@@ -45,11 +45,17 @@ function dopen {
 }
 
 # docker exec for lazy people
-function dexec {
-  docker exec -it "${1}" /bin/sh
+function dsh {
+  ID=$(docker container ps | fzf-tmux --header-lines=1 -q "${1}" | awk '{print $1}')
+  docker exec -it ${ID} /bin/sh
 }
 
-function pmux {
-  session=$(tmux ls | fzf-tmux -q "${1}" | awk '{print $1}')
-  tmux att -t "$session"
+# select container and get its ID
+function dsel {
+  docker container ls | fzf-tmux --header-lines=1 -q "${1}" | awk '{ print $1 }'
+}
+
+# select pod and get its ID
+function ksel {
+  kubectl get po --all-namespaces | fzf-tmux --header-lines=1 -q "${1}" | awk '{ print $2 }'
 }
