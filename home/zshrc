@@ -1,11 +1,11 @@
 #!/usr/bin/env zsh
 
 # SETUP
-. `brew --prefix`/etc/profile.d/z.sh           # z
-source $HOME/.zsh_aliases                      # aliases
-source $HOME/.zshenv                           # env
-source $HOME/.zsh_functions                    # functions
-source $HOME/.zsh_conf                         # configuration and plugins
+source "$(brew --prefix)/etc/profile.d/z.sh"    # z
+source "$HOME/.zsh_aliases"                     # aliases
+source "$HOME/.zshenv"                          # env
+source "$HOME/.zsh_functions"                   # functions
+source "$HOME/.zsh_conf"                        # configuration and plugins
 
 # THEME: pure
 autoload -U promptinit; promptinit
