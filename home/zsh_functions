@@ -1,8 +1,13 @@
+# ----------------------------------------------------------------------------------------------------------------------
+# -- General
+# ----------------------------------------------------------------------------------------------------------------------
+
 # glorified cd
 function dir {
   export DISABLE_AUTO_TITLE="true"
-  dir="$(z | awk '{print $2}' | fzf-tmux -q "${1}")"      # pick from fuzzy-searchable list of most used directories
+  dir="$(z | awk '{print $2}' | fzf -q "${1}")"  # pick from fuzzy-searchable list of most used directories
   echo -e "\033];$(basename "${dir}")\007"            # change terminal tab title
+  tmux rename-window "$(basename "${dir}")"           # change tmux window name
   cd "${dir}" || exit 1                               # cd into directory
 }
 
@@ -26,36 +31,37 @@ function lopen {
   open "http://localhost:${1}"
 }
 
+# ----------------------------------------------------------------------------------------------------------------------
+# -- Docker
+# ----------------------------------------------------------------------------------------------------------------------
+
+# select container and get its ID
+function dsel {
+  docker container ls --all | fzf --header-lines=1 --query "${1}" | awk '{ print $1 }'
+}
+
 # localhost for lazy docker people
 function dopen {
   # get and count all published port mappings
-  published=$(docker container ps | fzf-tmux --header-lines=1 -q "${1}" | awk '{print $1}' | xargs docker container port)
-  nof_published=$(wc -l <<< "${published}")
+  published=$(docker container ls | fzf --header-lines=1 --query "${1}" | awk '{print $1}' | xargs docker container port)
 
-  # container has no published ports
-  [[ ${nof_published} -eq 0 ]] && exit 1
+  # choose published port; will autochoose if there's only one port; will exit if there are none
+  port=$(echo "${published}" | fzf --exit-0 --select-1 | grep -oE '(\d+)$')
 
-  # container has exactly one published port
-  [[ ${nof_published} -eq 1 ]] && port=$(echo "${published}" | grep -oE '(\d+)$')
-
-  # container has more than one published port
-  [[ ${nof_published} -gt 1 ]] && port=$(echo "${published}" | fzf-tmux | grep -oE '(\d+)$')
-
-  open "http://localhost:${port}"
+  [ -n "${port}" ] && open "http://localhost:${port}"
 }
 
 # docker exec for lazy people
 function dsh {
-  ID=$(docker container ps | fzf-tmux --header-lines=1 -q "${1}" | awk '{print $1}')
-  docker exec -it ${ID} /bin/sh
+  ID=$(docker container ls | fzf --header-lines=1 --query "${1}" | awk '{print $1}')
+  docker exec -it "${ID}" /bin/sh
 }
 
-# select container and get its ID
-function dsel {
-  docker container ls | fzf-tmux --header-lines=1 -q "${1}" | awk '{ print $1 }'
-}
+# ----------------------------------------------------------------------------------------------------------------------
+# -- Kubernetes
+# ----------------------------------------------------------------------------------------------------------------------
 
 # select pod and get its ID
 function ksel {
-  kubectl get po --all-namespaces | fzf-tmux --header-lines=1 -q "${1}" | awk '{ print $2 }'
+  kubectl get pods --all-namespaces | fzf --header-lines=1 --query "${1}" | awk '{ print $2 }'
 }

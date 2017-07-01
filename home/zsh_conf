@@ -35,10 +35,9 @@ setopt PRINT_EXIT_VALUE
 # -- Plugins
 # ----------------------------------------------------------------------------------------------------------------------
 
-source "$HOME/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh"
 export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=253"
+source "$HOME/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh"
 
-if [ -z "$ZSH_SYNTAX_HIGHLIGHTING_SOURCED" ]; then
-  source "$HOME/.zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
-  export ZSH_SYNTAX_HIGHLIGHTING_SOURCED=true
-fi
+source "$HOME/.zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
+
+[ -f "$HOME/.fzf.zsh" ] && source "$HOME/.fzf.zsh"

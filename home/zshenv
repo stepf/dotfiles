@@ -1,8 +1,12 @@
 # GENERAL
 export EDITOR='vim'
-export PATH="$HOME/.bin:/usr/local/bin/:/usr/bin:/bin:/usr/sbin:/sbin:$PATH"
+export LESS=" -R "
 export LANG=en_US.UTF-8
+export PATH="$HOME/.bin:/usr/local/bin/:/usr/bin:/bin:/usr/sbin:/sbin:$PATH"
 export TERM="xterm-256color"
+
+# FZF
+export FZF_DEFAULT_OPTS="--height 50% --min-height 30 --border --ansi --preview 'less -- {-1} | head -n 500' --preview-window right:70%:hidden --bind=ctrl-p:toggle-preview --color light"
 
 # GO
 export GOPATH=$HOME/work/go
@@ -12,9 +16,9 @@ export PATH=$HOME/.go/bin:$PATH
 export PATH="$HOME/Library/Python/2.7/bin:$PATH"
 
 # RUBY
-if which rbenv > /dev/null; then eval "$(rbenv init -)"; fi
+hash rbenv > /dev/null && eval "$(rbenv init -)"
 
 # GOOGLE CLOUD SDK
-if [ -f "$HOME/.bin/google-cloud-sdk/path.zsh.inc" ]; then source "$HOME/.bin/google-cloud-sdk/path.zsh.inc"; fi
-if [ -f "$HOME/.bin/google-cloud-sdk/completion.zsh.inc" ]; then source "$HOME/.bin/google-cloud-sdk/completion.zsh.inc"; fi
-export GOOGLE_APPLICATION_CREDENTIALS="$HOME/work/academics/general/academics-dev-28a59af284ec.json"
+[ -f "$HOME/.bin/google-cloud-sdk/path.zsh.inc" ]       && source "$HOME/.bin/google-cloud-sdk/path.zsh.inc"
+[ -f "$HOME/.bin/google-cloud-sdk/completion.zsh.inc" ] && source "$HOME/.bin/google-cloud-sdk/completion.zsh.inc"
+export GOOGLE_APPLICATION_CREDENTIALS="$HOME/work/aca-google-application-credentials.json"
