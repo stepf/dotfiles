@@ -11,4 +11,4 @@ killall Finder
 # ZSH
 brew install zsh && \
 sudo sh -c 'echo $(brew --prefix)/bin/zsh >> /etc/shells' && \
-chsh -s $(brew --prefix)/bin/zsh
+chsh -s "$(brew --prefix)/bin/zsh"
