@@ -1,7 +1,8 @@
 #!/usr/bin/env zsh
 
 # SETUP
-source "$(brew --prefix)/etc/profile.d/z.sh"    # z
+hash brew 2> /dev/null && \
+  source "$(brew --prefix)/etc/profile.d/z.sh"  # z
 source "$HOME/.zsh_aliases"                     # aliases
 source "$HOME/.zshenv"                          # env
 source "$HOME/.zsh_functions"                   # functions
