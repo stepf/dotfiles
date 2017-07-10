@@ -16,7 +16,7 @@ export PATH=$HOME/.go/bin:$PATH
 export PATH="$HOME/Library/Python/2.7/bin:$PATH"
 
 # RUBY
-hash rbenv > /dev/null && eval "$(rbenv init -)"
+hash rbenv 2> /dev/null && eval "$(rbenv init -)"
 
 # GOOGLE CLOUD SDK
 [ -f "$HOME/.bin/google-cloud-sdk/path.zsh.inc" ]       && source "$HOME/.bin/google-cloud-sdk/path.zsh.inc"
