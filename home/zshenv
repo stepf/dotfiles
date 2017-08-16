@@ -10,7 +10,7 @@ export FZF_DEFAULT_OPTS="--height 50% --min-height 30 --border --ansi --preview 
 
 # GO
 export GOPATH=$HOME/work/go
-export PATH=$HOME/.go/bin:$PATH
+export PATH=$GOPATH/bin:$PATH
 
 # PYTHON
 export PATH="$HOME/Library/Python/2.7/bin:$PATH"
