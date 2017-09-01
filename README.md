@@ -1,3 +1,5 @@
+# Dotfiles
+
 > Dotfiles are meant to be read, **not** meant to be forked.
 
 Less is more:
@@ -20,6 +22,5 @@ For every desired setup run `cd <subdirectory> && ./setup.sh`. The root `setup.s
 
 ### Todo
 
-- ST3: package control
-- iterm2: profile
-- alfred workflows
+- Sublime Text 3 Packages
+- Alfred Workflows
