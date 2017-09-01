@@ -45,6 +45,7 @@ config/secrets.yml
 bower.json
 .powenv
 .byebug_history
+packs-test
 
 # Vagrant (gitignore/Global/Vagrant.gitignore)
 .vagrant/
