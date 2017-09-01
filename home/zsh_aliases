@@ -8,6 +8,8 @@ alias scratch='cd ~/scratch'
 alias work='cd ~/work'
 
 # RUBY
+alias be='bundle exec'
+alias bi='bundle install'
 alias irb='pry'
 
 # DOCKER
