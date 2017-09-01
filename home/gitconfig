@@ -18,24 +18,27 @@
   a = !git ls-files --modified --others --exclude-standard -t --directory \
    | fzf --multi --nth 2 \
       --preview 'git diff --color=always --histogram -- {-1} | sed 1,4d' \
+      --preview-window right:70% \
    | awk '{ print $2 }' | xargs git add
   aliases = !git config --list | grep 'alias\\.' | sed 's/alias\\.\\([^=]*\\)=\\(.*\\)/\\1\\ \t => \\2/' | sort
   amend = !git commit --amend --no-edit
   branches = branch -av
   ci = commit
   co = checkout
-  df = !git ls-files --modified | fzf-tmux -m | xargs git diff
+  df = !git ls-files --modified | fzf --multi | xargs git diff
   jedi = push --force-with-lease
-  l = !git --no-pager log --oneline --decorate -n 20
+  l = !git --no-pager log --oneline --decorate -n 20 --no-merges
   lg = !git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative
   ll = log --stat --abbrev-commit
   mr = !git log --format="%H" -n 1 | reattach-to-user-namespace pbcopy
-  overview = log --all --since='2 weeks' --oneline --no-merges
+  p = push
   pb = !git push -u origin $(git rev-parse --abbrev-ref HEAD) # push and track the current branch
   recent = for-each-ref --count=10 --sort=-committerdate refs/heads/ --format="%(refname:short)"
+  rb = rebase
+  rba = !git co master && git pull && git co - && git rebase master
+  rbc = rebase --continue
   st = !git status --short | sort
   unstage = reset HEAD --
-  wtf = diff --name-only --diff-filter=U
 [filter "email"]
   clean = "sed -i '/email =/ d'"
 [merge]
