@@ -23,5 +23,14 @@ hi cursorline cterm=none term=none        " disable underlining
 hi CursorLine ctermbg=015                 " bg colour
 set cursorcolumn                          " highlight screen column of the cursor
 
+" :file
+set path+=**                              " recursive file search into subfolders
+set wildmenu                              " display all matching files on tab complete
+
+" :edit (built-in netrw plugin)
+let g:netrw_banner=0                      " disable banner
+let g:netrw_liststyle=3                   " tree view
+
 " Misc
 set backspace=indent,eol,start            " allow backspacing over everything
+set rtp+=/usr/local/bin/fzf               " add fuzzy finder
