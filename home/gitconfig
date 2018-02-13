@@ -23,20 +23,17 @@
   aliases = !git config --list | grep 'alias\\.' | sed 's/alias\\.\\([^=]*\\)=\\(.*\\)/\\1\\ \t => \\2/' | sort
   amend = !git commit --amend --no-edit
   branches = branch -av
-  ci = commit
   co = checkout
-  df = !git ls-files --modified | fzf --multi | xargs git diff
-  jedi = push --force-with-lease
-  l = !git --no-pager log --oneline --decorate -n 20 --no-merges
+  jedi = !figlet -f starwars 'Use the force' && git push --force-with-lease
+  l = !git --no-pager log --oneline --decorate -n 10 --no-merges
   lg = !git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative
   ll = log --stat --abbrev-commit
   mr = !git log --format="%H" -n 1 | reattach-to-user-namespace pbcopy
   p = push
   pb = !git push -u origin $(git rev-parse --abbrev-ref HEAD) # push and track the current branch
+  pr = !hub pull-request
   recent = for-each-ref --count=10 --sort=-committerdate refs/heads/ --format="%(refname:short)"
-  rb = rebase
-  rba = !git co master && git pull && git co - && git rebase master
-  rbc = rebase --continue
+  rbm = !git fetch origin master:master && git rebase master
   st = !git status --short | sort
   unstage = reset HEAD --
 [filter "email"]
