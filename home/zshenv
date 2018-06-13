@@ -22,7 +22,3 @@ export PATH="$HOME/Library/Python/2.7/bin:$PATH"
 # RUBY
 hash rbenv 2> /dev/null && eval "$(rbenv init -)"
 
-# GOOGLE CLOUD SDK
-[ -f "$HOME/.bin/google-cloud-sdk/path.zsh.inc" ]       && source "$HOME/.bin/google-cloud-sdk/path.zsh.inc"
-[ -f "$HOME/.bin/google-cloud-sdk/completion.zsh.inc" ] && source "$HOME/.bin/google-cloud-sdk/completion.zsh.inc"
-export GOOGLE_APPLICATION_CREDENTIALS="$HOME/work/aca-google-application-credentials.json"
