@@ -21,20 +21,20 @@
       --preview-window right:70% \
    | awk '{ print $2 }' | xargs git add
   aliases = !git config --list | grep 'alias\\.' | sed 's/alias\\.\\([^=]*\\)=\\(.*\\)/\\1\\ \t => \\2/' | sort
-  amend = !git commit --amend --no-edit
+  amend = commit --amend --no-edit
   branches = branch -av
   co = checkout
+  hash = !git log --format="%H" -n 1 | reattach-to-user-namespace pbcopy
   jedi = !figlet -f starwars 'Use the force' && git push --force-with-lease
   l = !git --no-pager log --oneline --decorate -n 10 --no-merges
-  lg = !git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative
+  lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative
   ll = log --stat --abbrev-commit
-  mr = !git log --format="%H" -n 1 | reattach-to-user-namespace pbcopy
   p = push
   pb = !git push -u origin $(git rev-parse --abbrev-ref HEAD) # push and track the current branch
-  pr = !hub pull-request
   recent = for-each-ref --count=10 --sort=-committerdate refs/heads/ --format="%(refname:short)"
   rbm = !git fetch origin master:master && git rebase master
   st = !git status --short | sort
+  title = !git rev-parse --abbrev-ref HEAD | sed -e 's/[-_]/ /g' | reattach-to-user-namespace pbcopy
   unstage = reset HEAD --
 [filter "email"]
   clean = "sed -i '/email =/ d'"
