@@ -16,8 +16,12 @@ export FZF_DEFAULT_OPTS="--height 50% --min-height 30 --border --ansi --preview 
 export GOPATH=$HOME/work/go
 export PATH=$GOPATH/bin:$PATH
 
+# HOMEBREW
+export HOMEBREW_NO_INSECURE_REDIRECT=1
+export HOMEBREW_CASK_OPTS=--require-sha
+
 # PYTHON
-export PATH="$HOME/Library/Python/2.7/bin:$PATH"
+export PATH="/usr/local/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/bin:$HOME/Library/Python/2.7/bin:$PATH"
 
 # RUBY
 hash rbenv 2> /dev/null && eval "$(rbenv init -)"
