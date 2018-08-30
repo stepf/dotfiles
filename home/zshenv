@@ -24,5 +24,4 @@ export HOMEBREW_CASK_OPTS=--require-sha
 export PATH="/usr/local/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/bin:$HOME/Library/Python/2.7/bin:$PATH"
 
 # RUBY
-hash rbenv 2> /dev/null && eval "$(rbenv init -)"
-
+_has rbenv && eval "$(rbenv init -)"
