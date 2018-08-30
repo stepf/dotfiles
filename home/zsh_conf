@@ -35,14 +35,11 @@ setopt PRINT_EXIT_VALUE
 # -- Plugins
 # ----------------------------------------------------------------------------------------------------------------------
 
-function save_source {
-  [ -f "${1}" ] && source "${1}" "${2}"
-}
-
 export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=253"
-save_source "$HOME/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh"
+_source_if_exists "$HOME/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh"
 
-save_source "$HOME/.fzf.zsh"
-save_source "$HOME/.zsh/hacker-quotes/hacker-quotes.plugin.zsh"
-save_source "$HOME/.zsh/zsh-tmux-rename/zsh-tmux-rename.plugin.zsh"
-save_source "$HOME/.zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
+_source_if_exists "$HOME/.fzf.zsh"
+_source_if_exists "$HOME/.zsh/hacker-quotes/hacker-quotes.plugin.zsh"
+_source_if_exists "$HOME/.zsh/zsh-tmux-rename/zsh-tmux-rename.plugin.zsh"
+_source_if_exists "$HOME/.zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
+
