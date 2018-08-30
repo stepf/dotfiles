@@ -23,13 +23,13 @@
   aliases = !git config --list | grep 'alias\\.' | sed 's/alias\\.\\([^=]*\\)=\\(.*\\)/\\1\\ \t => \\2/' | sort
   amend = commit --amend --no-edit
   branches = branch -av
+  changelog = !git shortlog master...$(git describe --tags --abbrev=0) --merges
   co = checkout
   hash = !git log --format="%H" -n 1 | reattach-to-user-namespace pbcopy
   jedi = !figlet -f starwars 'Use the force' && git push --force-with-lease
   l = !git --no-pager log --oneline --decorate -n 10 --no-merges
   lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative
   ll = log --stat --abbrev-commit
-  p = push
   pb = !git push -u origin $(git rev-parse --abbrev-ref HEAD) # push and track the current branch
   recent = for-each-ref --count=10 --sort=-committerdate refs/heads/ --format="%(refname:short)"
   rbm = !git fetch origin master:master && git rebase master
