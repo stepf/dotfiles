@@ -63,5 +63,6 @@ function dsh {
 
 # select pod and get its ID
 function ksel {
-  kubectl get pods --all-namespaces | fzf --header-lines=1 --query "${1}" | awk '{ print $2,"--namespace " $1 }'
+  kubectl get ${1:-po} --all-namespaces | fzf --header-lines=1 --query "${2}" | awk '{ print $2,"--namespace " $1 }'
+}
 }
