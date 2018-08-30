@@ -37,7 +37,7 @@ function lopen {
 
 # select container and get its ID
 function dsel {
-  docker container ls --all | fzf --header-lines=1 --query "${1}" --multi | awk '{ print $1 }'
+  docker ${1:-container} ls --all | fzf --header-lines=1 --query "${2}" --multi | awk '{ print $1 }'
 }
 
 # localhost for lazy docker people
