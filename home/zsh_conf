@@ -43,4 +43,4 @@ _source_if_exists "$HOME/.zsh/hacker-quotes/hacker-quotes.plugin.zsh"
 _source_if_exists "$HOME/.zsh/zsh-tmux-rename/zsh-tmux-rename.plugin.zsh"
 _source_if_exists "$HOME/.zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
 
-_has? kubectl && source <(kubectl completion zsh)
+_has kubectl && source <(kubectl completion zsh)
