@@ -65,4 +65,3 @@ function dsh {
 function ksel {
   kubectl get ${1:-pods} --all-namespaces | fzf --header-lines=1 --query "${2}" | awk '{ print $2,"--namespace " $1 }'
 }
-}
