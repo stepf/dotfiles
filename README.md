@@ -1,26 +1,22 @@
 # Dotfiles
+Unless this repository has unexpectedly gone viral overnight, you probably asked me for my configuration during pair programming. Please cherrypick anything you need!
 
-> Dotfiles are meant to be read, **not** meant to be forked.
+A little bit of context: I went from over-customization to a more light-weight approach. Wherever possible, all dotfiles use default settings and builtins instead of frameworks and plugins.
 
-Less is more:
-- Defaults over configuration
-- Builtins over plugins
-- One `setup.sh` per directory over omnipotent management tools
-
-## Usage
-
-For every desired setup run `cd <subdirectory> && ./setup.sh`. The root `setup.sh` will run everything. Beware: No fancy logic. These scripts were intended for my dev machines running macOS.
-
-### Subdirectories
+## Installation
+Beware: No smart simlink management. I use these scripts to quickly bootstrap my dev machines running macOS or Ubuntu.
 
 ```bash
 .
-├── home/setup.sh          # Simlinks the actual dotfiles to $HOME
-├── macos/setup.sh         # Sets os defaults, installs CLIs and apps from Brewfile
-└── sublimetext/setup.sh   # Simlinks Sublime Text 3 settings
+├── home/setup.sh          # Simlinks dotfiles to $HOME
+├── macos/setup.sh         # Sets macOS defaults, installs CLIs and apps from Brewfile
+├── sublimetext/setup.sh   # Simlinks Sublime Text 3 settings
+└── ubuntu/setup.sh        # Installs Linuxbrew
 ```
 
 ### Todo
-
 - Sublime Text 3 Packages
 - Alfred Workflows
+
+## Contribute
+- Show me in our next pair programming session :)
