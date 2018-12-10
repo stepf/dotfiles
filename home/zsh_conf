@@ -12,6 +12,7 @@ SAVEHIST=10000                                                    # write up to 
 setopt hist_ignore_all_dups                                       # delete old entries if new entry is a duplicate
 setopt hist_verify                                                # don't execute immediately upon history expansion
 setopt inc_append_history                                         # write to history immediately, not on shell exit
+setopt print_exit_value                                           # print non-zero exit values
 setopt share_history                                              # share history between all sessions
 
 # Completion Engine
@@ -28,8 +29,6 @@ zle -N up-line-or-beginning-search
 zle -N down-line-or-beginning-search
 bindkey "^[[A" up-line-or-beginning-search # Up
 bindkey "^[[B" down-line-or-beginning-search # Down
-
-setopt PRINT_EXIT_VALUE
 
 # ----------------------------------------------------------------------------------------------------------------------
 # -- Plugins
