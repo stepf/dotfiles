@@ -21,5 +21,6 @@ _has brew \
 autoload -U promptinit; promptinit
 PURE_GIT_DOWN_ARROW="↓"
 PURE_GIT_UP_ARROW="↑"
+PURE_PROMPT_SYMBOL='❱'
 prompt pure
 
