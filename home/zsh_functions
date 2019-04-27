@@ -25,16 +25,11 @@ chore: Changes to the build process, auxiliary tools, and libraries
 EOM
 }
 
-# localhost for lazy people
-function lopen {
-  open "http://localhost:${1}"
-}
-
 # ----------------------------------------------------------------------------------------------------------------------
 # -- Docker
 # ----------------------------------------------------------------------------------------------------------------------
 
-# select container and get its ID
+# get ID of any docker resource (default: container)
 function dsel {
   docker ${1:-container} ls --all | fzf --header-lines=1 --query "${2}" --multi | awk '{ print $1 }'
 }
@@ -60,7 +55,7 @@ function dsh {
 # -- Kubernetes
 # ----------------------------------------------------------------------------------------------------------------------
 
-# select pod and get its ID
+# get ID of any k8s resource (default: pod)
 function ksel {
   kubectl get ${1:-pods} --all-namespaces | fzf --header-lines=1 --query "${2}" | awk '{ print $2,"--namespace " $1 }'
 }
