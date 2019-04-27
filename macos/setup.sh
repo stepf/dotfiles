@@ -10,6 +10,7 @@ xcode-select --install                                                   # Insta
 defaults write com.apple.finder CreateDesktop -bool false                # Hide Desktop Icons
 defaults write com.apple.finder ShowPathbar -bool true                   # Show Pathbar
 defaults write com.apple.finder ShowStatusBar -bool true                 # Show Statusbar
+defaults write -g NSRequiresAquaSystemAppearance -bool Yes               # Disable Mojave Dark Mode
 killall Finder
 
 # Install Homebrew
