@@ -44,4 +44,19 @@ let g:netrw_liststyle=3                   " tree view
 
 " Misc
 set backspace=indent,eol,start            " allow backspacing over everything
+
+" Plugins
 set rtp+=/usr/local/bin/fzf               " add fuzzy finder
+map <C-e> :NERDTreeToggle<CR>             " toogle nerd tree
+
+let g:multi_cursor_start_word_key      = '<C-c>'
+let g:multi_cursor_select_all_word_key = '<A-c>'
+let g:multi_cursor_start_key           = 'g<C-c>'
+let g:multi_cursor_select_all_key      = 'g<A-c>'
+let g:multi_cursor_next_key            = '<C-c>'
+let g:multi_cursor_prev_key            = '<C-p>'
+let g:multi_cursor_skip_key            = '<C-k>'
+let g:multi_cursor_quit_key            = '<Esc>'
+
+let g:ale_sign_error = '✗'
+let g:ale_sign_warning = '▲'
