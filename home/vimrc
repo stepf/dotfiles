@@ -1,14 +1,24 @@
-" Colors
-syntax enable                             " enable syntax processing
+" UTF-8
+scriptencoding utf-8
+set encoding=utf-8
 
-" UI Config
+" Clipboard
+set clipboard=unnamed                     " use system clipboard as default register
+noremap c "_c
+noremap x "_x
+
+"UI Config
+syntax enable                             " enable syntax processing
 set number                                " print line number before each line
+set relativenumber                        " print relative line number before each line
 set showcmd                               " show (partial) command in bottom bar
 set wildmenu                              " enable command-line completion
 set lazyredraw                            " do not redraw during non-typed commands
 set showmatch                             " briefly jump to matching [{()}]
 set matchtime=1                           " tenth of second to show matching [{()}]
 set t_Co=256                              " number of colors
+set scrolloff=2                           " show at least two lines above/below the cursor
+set autoread                              " autload file changes
 
 " Spaces & Tabs
 set tabstop=2                             " number of spaces that \t counts for
@@ -19,11 +29,12 @@ set autoindent                            " copy indent from current line when s
 
 " Highlight current line and column
 set cursorline                            " highlight screen line of the cursor
-hi cursorline cterm=none term=none        " disable underlining
-hi CursorLine ctermbg=015                 " bg colour
+highlight CursorLine cterm=none term=none " disable underlining
+highlight CursorLine ctermbg=007          " bg colour
 set cursorcolumn                          " highlight screen column of the cursor
+highlight LineNr ctermfg=grey             " colorize line number
 
-" :file
+" :find
 set path+=**                              " recursive file search into subfolders
 set wildmenu                              " display all matching files on tab complete
 
