@@ -22,7 +22,7 @@ export HOMEBREW_NO_INSECURE_REDIRECT=1
 export HOMEBREW_CASK_OPTS=--require-sha
 
 # PYTHON
-export PATH="/usr/local/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/bin:$HOME/Library/Python/2.7/bin:$PATH"
+export PATH="/usr/local/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/bin:$HOME/Library/Python/2.7/bin:$HOME/.local/bin:$PATH"
 
 # RUBY
 hash rbenv 2> /dev/null  && eval "$(rbenv init -)"
