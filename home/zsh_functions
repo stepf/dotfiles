@@ -14,14 +14,15 @@ function dir {
 # see: https://github.com/angular/angular.js/blob/master/CONTRIBUTING.md#commit
 function commits {
 cat << EOM
-feat:  A new feature
-fix:   A bug fix
-docs:  Documentation-only changes
-style: Changes that do not affect the meaning of the code
-refa:  A code change that neither fixes a bug nor adds a feature
-perf:  A code change that improves performance
-test:  Adding missing tests
-chore: Changes to the build process, auxiliary tools, and libraries
+build		Changes that affect the build system or external dependencies (example scopes: gulp, broccoli, npm)
+ci		Changes to our CI configuration files and scripts (example scopes: Gitlab CI, Jenkins, CodePipeline)
+docs		Documentation only changes
+feature		A new feature
+fix		A bug fix
+perf		A code change that improves performance
+refactor	A code change that neither fixes a bug nor adds a feature
+style		Changes that do not affect the meaning of the code (white-space, formatting, missing semi-colons, etc)
+test		Adding missing tests or correcting existing tests
 EOM
 }
 
@@ -58,4 +59,14 @@ function dsh {
 # get ID of any k8s resource (default: pod)
 function ksel {
   kubectl get ${1:-pods} --all-namespaces | fzf --header-lines=1 --query "${2}" | awk '{ print $2,"--namespace " $1 }'
+}
+
+# ----------------------------------------------------------------------------------------------------------------------
+# -- AWS
+# ----------------------------------------------------------------------------------------------------------------------
+
+function asel {
+  aws_profile=$(awsume --list | fzf --header-lines=4 --query "${1}" | awk '{ print $1}')
+  awsume ${aws_profile}
+  awsume --console-link
 }

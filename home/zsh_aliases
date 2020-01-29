@@ -2,7 +2,7 @@
 alias ls='ls -G'
 alias ll='ls -la'
 alias reload='source ~/.zshrc && clear'
-alias cat='bat --theme=GitHub --style=changes'
+alias bat='bat --theme=GitHub --style=changes'
 
 # NAVIGATION
 alias scratch='cd ~/scratch'

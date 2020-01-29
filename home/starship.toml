@@ -1,0 +1,50 @@
+[aws]
+disabled = true
+
+[character]
+style_success = "purple"
+style_failure = "red"
+use_symbol_for_status = true
+
+[cmd_duration]
+min_time=30
+
+[directory]
+style = "blue"
+truncation_length = 5
+truncate_to_repo = true
+
+[env_var]
+variable = "AWSUME_PROFILE"
+symbol = ""
+style = "yellow"
+
+[git_branch]
+symbol = ""
+style = "bright-black"
+truncation_symbol = "…"
+
+[git_state]
+style = "yellow"
+
+[git_status]
+style = "bright-black"
+stashed = ""
+
+[hostname]
+disabled = true
+
+[java]
+disabled = true
+
+[nodejs]
+disabled = true
+
+[package]
+disabled = true
+
+[python]
+disabled = true
+
+[username]
+disabled = true
