@@ -30,11 +30,11 @@
   l = !git --no-pager log --oneline --decorate -n 10 --no-merges
   lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative
   ll = log --stat --abbrev-commit
+  nicecommit = !git commit -m "$(git rev-parse --abbrev-ref HEAD)"
   pb = !git push -u origin $(git rev-parse --abbrev-ref HEAD) # push and track the current branch
   recent = for-each-ref --count=10 --sort=-committerdate refs/heads/ --format="%(refname:short)"
   rbm = !git fetch origin master:master && git rebase master
-  singleladies = !git commit -m "$(git rev-parse --abbrev-ref HEAD)"
-  sith = !git commit --amend --no-edit && git push --force-with-lease && cowsay -f vader 'The dark side'
+  sith = !git commit --amend --no-edit && git push --force && cowsay -f vader 'The dark side'
   st = !git status --short | sort
   title = !git rev-parse --abbrev-ref HEAD | sed -e 's/[-_]/ /g' | reattach-to-user-namespace pbcopy
   unstage = reset HEAD --
