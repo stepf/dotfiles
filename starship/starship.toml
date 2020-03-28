@@ -7,7 +7,8 @@ style_failure = "red"
 use_symbol_for_status = true
 
 [cmd_duration]
-min_time=30
+min_time = 15_000
+style = "italic yellow"
 
 [directory]
 style = "blue"
@@ -17,7 +18,7 @@ truncate_to_repo = true
 [env_var]
 variable = "AWSUME_PROFILE"
 symbol = ""
-style = "yellow"
+style = "italic yellow"
 
 [git_branch]
 symbol = ""
@@ -25,7 +26,7 @@ style = "bright-black"
 truncation_symbol = "…"
 
 [git_state]
-style = "yellow"
+style = "italic yellow"
 
 [git_status]
 style = "bright-black"
