@@ -8,6 +8,9 @@ alias bat='bat --theme=GitHub --style=changes'
 alias scratch='cd ~/scratch'
 alias work='cd ~/work'
 
+# AWS
+alias awsume=". awsume"
+
 # RUBY
 alias be='bundle exec'
 alias bi='bundle install'
