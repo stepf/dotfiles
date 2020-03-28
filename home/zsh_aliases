@@ -24,7 +24,7 @@ alias dn='docker node'
 alias ds='docker service'
 
 # TMUX
-alias tmux='tmux -u'
+alias tmux='env TERM=screen-256color tmux -u'
 
 # KUBERNETES
 alias k='kubectl'
