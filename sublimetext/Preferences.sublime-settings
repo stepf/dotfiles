@@ -1,7 +1,8 @@
 {
 	"always_show_minimap_viewport": true,
 	"auto_complete_selector": "text.html.erb, source - comment, meta.tag - punctuation.definition.tag.begin",
-	"color_scheme": "Packages/ayu/ayu-light.tmTheme",
+	"caret_style": "phase",
+	"color_scheme": "Packages/ayu/ayu-light.sublime-color-scheme",
 	"draw_white_space": "all",
 	"ensure_newline_at_eof_on_save": true,
 	"fade_fold_buttons": false,
@@ -15,8 +16,8 @@
 		"tmp",
 		".docker"
 	],
-	"font_face": "FuraCode Nerd Font",
-	"font_size": 13,
+	"font_face": "Operator Mono Ssm Book",
+	"font_size": 14,
 	"highlight_line": true,
 	"highlight_modified_tabs": true,
 	"ignored_packages":
@@ -27,8 +28,8 @@
 		"draw_normal",
 		"draw_active"
 	],
-	"line_padding_bottom": 3,
-	"line_padding_top": 3,
+	"line_padding_bottom": 6,
+	"line_padding_top": 6,
 	"match_brackets": false,
 	"match_brackets_angle": false,
 	"match_brackets_braces": false,
