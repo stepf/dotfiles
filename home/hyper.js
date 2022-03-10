@@ -8,12 +8,13 @@ module.exports = {
     // or `'canary'` for less polished but more frequent updates
     updateChannel: "stable",
 
+    // webGLRenderer: false,
+
     // default font size in pixels for all tabs
     fontSize: 14,
 
     // font family with optional fallbacks
-    fontFamily:
-      '"Operator Mono Ssm",  "ia Writer Mono V Text", "FuraCode Nerd Font Mono"',
+    fontFamily: '"Operator Mono Ssm",  "ia Writer Mono V Text"',
 
     // default font weight: 'normal' or 'bold'
     fontWeight: "normal",
@@ -89,7 +90,7 @@ module.exports = {
       lightBlue: "#7498C8",
       lightMagenta: "#B97EB4",
       lightCyan: "#299998",
-      lightWhite: "#FFFFFF"
+      lightWhite: "#FFFFFF",
     },
 
     // the shell to run when spawning a new session (i.e. /usr/local/bin/fish)
@@ -120,7 +121,7 @@ module.exports = {
     copyOnSelect: false,
 
     // if `true` (without backticks and without quotes), hyper will be set as the default protocol client for SSH
-    defaultSSHApp: true
+    defaultSSHApp: true,
 
     // if `true` (without backticks and without quotes), on right click selected text will be copied or pasted if no
     // selection is present (`true` by default on Windows and disables the context menu feature)
@@ -130,6 +131,12 @@ module.exports = {
     // bellSoundURL: 'http://example.com/bell.mp3',
 
     // for advanced config flags please refer to https://hyper.is/#cfg
+    hypest: {
+      accentColor: "blue",
+      borders: true,
+      hideControls: true,
+      vibrancy: false,
+    },
   },
 
   // a list of plugins to fetch and install from npm
@@ -138,14 +145,14 @@ module.exports = {
   //   `hyperpower`
   //   `@company/project`
   //   `project#1.0.1`
-  plugins: ["hyper-custom-touchbar"],
+  plugins: ["hyper-custom-touchbar", "hyper-search", "hyper-font-ligatures"],
 
   hyperCustomTouchbar: [
     { label: "diff", command: "git diff" },
     { label: "status", command: "git status" },
     { label: "log", command: "git log" },
     { label: "add .", command: "git add ." },
-    { label: "clone", command: "git clone ", prompt: true }
+    { label: "clone", command: "git clone ", prompt: true },
   ],
 
   // in development, you can create a directory under
@@ -156,5 +163,5 @@ module.exports = {
   keymaps: {
     // Example
     // 'window:devtools': 'cmd+alt+o',
-  }
+  },
 };
