@@ -2,9 +2,8 @@
 disabled = true
 
 [character]
-style_success = "purple"
-style_failure = "red"
-use_symbol_for_status = true
+success_symbol = "[❯](bold green)"
+error_symbol = "[✖](bold red)"
 
 [cmd_duration]
 min_time = 15_000
@@ -21,8 +20,8 @@ symbol = ""
 style = "italic yellow"
 
 [git_branch]
-symbol = ""
-style = "bright-black"
+format = "on [$branch]($style) "
+style = "bright-black italic"
 truncation_symbol = "…"
 
 [git_state]
@@ -45,6 +44,9 @@ disabled = true
 disabled = true
 
 [python]
+disabled = true
+
+[terraform]
 disabled = true
 
 [username]
