@@ -11,7 +11,7 @@ export TERM="xterm-256color"
 [ -d "/Users/sdan/work/homebrew" ] && export PATH="/Users/sdan/work/homebrew/bin:$PATH"
 
 # FZF
-export FZF_DEFAULT_OPTS="--height 50% --min-height 30 --border --ansi --preview 'less -- {-1} | head -n 500' --preview-window right:70%:hidden --bind=ctrl-p:toggle-preview --color light"
+export FZF_DEFAULT_OPTS="--height 50% --min-height 30 --border --ansi --color light"
 
 # GO
 export GOPATH=$HOME/work/go
@@ -21,8 +21,12 @@ export PATH=$GOPATH/bin:$PATH
 export HOMEBREW_NO_INSECURE_REDIRECT=1
 export HOMEBREW_CASK_OPTS=--require-sha
 
+# NODE
+export PATH="/usr/local/opt/node@14/bin:$PATH"
+
 # PYTHON
-export PATH="/usr/local/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/bin:$HOME/Library/Python/2.7/bin:$HOME/.local/bin:$PATH"
+hash pyenv 2> /dev/null && eval "$(pyenv init -)"
+source "$HOME/.poetry/env"
 
 # RUBY
-hash rbenv 2> /dev/null  && eval "$(rbenv init -)"
+hash rbenv 2> /dev/null && eval "$(rbenv init -)"
