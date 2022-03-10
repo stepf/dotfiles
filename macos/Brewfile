@@ -1,15 +1,52 @@
 tap "homebrew/bundle"
 tap "homebrew/cask"
 tap "homebrew/core"
+tap "homebrew/services"
+brew "awsume"
+brew "curl"
+brew "figlet"
 brew "fzf"
 brew "git"
+brew "go"
+brew "helm"
 brew "htop"
 brew "jq"
-brew "kubernetes-helm"
-brew "mitmproxy"
+brew "kubernetes-cli"
+brew "mas"
+brew "node@16"
+brew "python@3.8"
+brew "reattach-to-user-namespace"
 brew "shellcheck"
+brew "sops"
 brew "ssh-copy-id"
+brew "sshuttle"
+brew "starship"
+brew "terraform"
 brew "tldr"
 brew "tmux"
 brew "tree"
+brew "vim"
+brew "watch"
+brew "wget"
 brew "z"
+brew "zsh"
+cask "alfred"
+cask "amethyst"
+cask "google-chrome"
+cask "hyper"
+cask "postman"
+cask "qlmarkdown"
+cask "qlstephen"
+cask "sublime-text"
+cask "the-unarchiver"
+cask "visual-studio-code"
+mas "Clear", id: 504544917
+mas "Keynote", id: 409183694
+mas "Microsoft Outlook", id: 985367838
+mas "Microsoft Remote Desktop", id: 1295203466
+mas "Numbers", id: 409203825
+mas "Pages", id: 409201541
+mas "Presentify", id: 1507246666
+mas "Reeder", id: 880001334
+mas "Slack", id: 803453959
+mas "Xcode", id: 497799835
