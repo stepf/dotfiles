@@ -6,7 +6,7 @@ A little bit of context: I went from over-customization to a more light-weight a
 
 ## Installation
 
-Beware: No smart simlink management. I use these scripts to quickly bootstrap my dev machines running macOS or Ubuntu.
+Beware: No smart simlink management. I use these scripts to quickly bootstrap my dev setup running on macOS.
 
 ```bash
 .
