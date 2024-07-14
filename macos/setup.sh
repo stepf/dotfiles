@@ -4,22 +4,23 @@ set -o pipefail
 set -e
 set -x
 
-xcode-select --install                                                   # Install XCode Command Line Tools
+# Install XCode Command Line Tools
+xcode-select --install
 
-# Finder
-defaults write com.apple.finder CreateDesktop -bool false                # Hide Desktop Icons
-defaults write com.apple.finder ShowPathbar -bool true                   # Show Pathbar
-defaults write com.apple.finder ShowStatusBar -bool true                 # Show Statusbar
-defaults write -g NSRequiresAquaSystemAppearance -bool Yes               # Disable Mojave Dark Mode
+# Set Finder settings
+defaults write com.apple.finder CreateDesktop -bool false # Hide Desktop Icons
+defaults write com.apple.finder ShowPathbar -bool true    # Show Pathbar
+defaults write com.apple.finder ShowStatusBar -bool true  # Show Statusbar
 killall Finder
 
 # Install Homebrew
-/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+brew analytics off
 
 # Install dependencies specified in Brewfile
 brew tap Homebrew/bundle
 brew bundle
 
-# ZSH
+# Set up-to-date ZSH (installed via brew) as default shell
 sudo sh -c 'echo $(brew --prefix)/bin/zsh >> /etc/shells' \
   && chsh -s "$(brew --prefix)/bin/zsh"
