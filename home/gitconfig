@@ -1,5 +1,5 @@
 [core]
-  excludesfile = /Users/sdang/.gitignore_global
+  excludesfile = /Users/dang/.gitignore_global
   pager = less
 [color]
   ui = true
@@ -7,13 +7,16 @@
   old = red reverse
   new = green reverse
 [user]
-  name = Stefan Dang
-
-[push]
-  default = simple
+  name = stepf
 [github]
   user = stepf
-
+[push]
+  default = simple
+  autoSetupRemote = true
+[init]
+  defaultBranch = main
+[branch]
+  dort = -committerdate
 [alias]
   a = !git ls-files --modified --others --exclude-standard -t --directory \
    | fzf --multi --nth 2 \
