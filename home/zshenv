@@ -7,8 +7,9 @@ export PATH="$HOME/.bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:$PATH"
 export TERM="xterm-256color"
 
 # BREW
-[ -d "/home/linuxbrew" ] && export PATH="/home/linuxbrew/.linuxbrew/bin:$PATH"
-[ -d "/Users/sdan/work/homebrew" ] && export PATH="/Users/sdan/work/homebrew/bin:$PATH"
+[ -d "/opt/homebrew/bin" ] && export PATH="/opt/homebrew/bin:$PATH"
+export HOMEBREW_NO_INSECURE_REDIRECT=1
+export HOMEBREW_CASK_OPTS=--require-sha
 
 # FZF
 export FZF_DEFAULT_OPTS="--height 50% --min-height 30 --border --ansi --color light"
@@ -17,16 +18,19 @@ export FZF_DEFAULT_OPTS="--height 50% --min-height 30 --border --ansi --color li
 export GOPATH=$HOME/work/go
 export PATH=$GOPATH/bin:$PATH
 
-# HOMEBREW
-export HOMEBREW_NO_INSECURE_REDIRECT=1
-export HOMEBREW_CASK_OPTS=--require-sha
+# GOOGLE CLOUD SDK
+if [ -f "$HOME/.google-cloud-sdk/path.zsh.inc" ]; then . "$HOME/.google-cloud-sdk/path.zsh.inc"; fi
+if [ -f "$HOME/.google-cloud-sdk/completion.zsh.inc" ]; then . "$HOME/.google-cloud-sdk/completion.zsh.inc"; fi
 
 # NODE
-export PATH="/usr/local/opt/node@14/bin:$PATH"
+export PATH="/usr/local/bin/node:$PATH"
 
 # PYTHON
 hash pyenv 2> /dev/null && eval "$(pyenv init -)"
-source "$HOME/.poetry/env"
+_source_if_exists "$HOME/.poetry/env"
 
 # RUBY
 hash rbenv 2> /dev/null && eval "$(rbenv init -)"
+
+# SUBLIME TEXT
+export PATH="/Applications/Sublime Text.app/Contents/SharedSupport/bin:$PATH"

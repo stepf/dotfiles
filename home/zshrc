@@ -9,6 +9,9 @@ function _source_if_exists {
   [ -f "${1}" ] && source "${1}" "${2}"
 }
 
+# BREW
+eval "$(/opt/homebrew/bin/brew shellenv)"
+
 # SETUP
 _source_if_exists "$HOME/.zsh_aliases"                       # aliases
 _source_if_exists "$HOME/.zshenv"                            # env
@@ -18,4 +21,3 @@ _source_if_exists "$(brew --prefix)/etc/profile.d/z.sh"      # z
 
 # PROMPT: starship
 eval "$(starship init zsh)"
-
