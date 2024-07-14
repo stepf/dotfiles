@@ -6,21 +6,19 @@ A little bit of context: I went from over-customization to a more light-weight a
 
 ## Installation
 
-Beware: No smart simlink management. I use these scripts to quickly bootstrap my dev setup running on macOS.
+Beware: No smart simlink management. I use these scripts to quickly bootstrap my dev setup running on macOS. Setup should be executed in the order below
 
 ```bash
 .
-├── home/setup.sh          # Simlinks dotfiles to $HOME
 ├── macos/setup.sh         # Sets macOS defaults, installs CLIs and apps from Brewfile
+├── home/setup.sh          # Simlinks dotfiles to $HOME
 ├── starship/setup.sh      # Simlinks starship.toml to $HOME/.config/starship.toml
-├── sublimetext/setup.sh   # Simlinks Sublime Text 3 settings
-└── ubuntu/setup.sh        # Installs Linuxbrew
+└── sublimetext/setup.sh   # Simlinks Sublime Text 4 settings
 ```
 
-### Todo
+### Todos
 
-- Sublime Text 3 Packages
-- Alfred Workflows
+- Cursor / VSCode setup
 
 ## Contribute
 
