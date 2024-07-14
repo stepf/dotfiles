@@ -61,12 +61,18 @@ function ksel {
   kubectl get ${1:-pods} --all-namespaces | fzf --header-lines=1 --query "${2}" | awk '{ print $2,"--namespace " $1 }'
 }
 
+# switch k8s context
+function kontext {
+  CONTEXT=$(kubectl config get-contexts --output='name' | fzf)
+  kubectl config use-context "${CONTEXT}"
+}
+
 # ----------------------------------------------------------------------------------------------------------------------
 # -- AWS
 # ----------------------------------------------------------------------------------------------------------------------
 
 function asel {
-  aws_profile=$(awsume --list | fzf --header-lines=4 --query "${1}" | awk '{ print $1}')
+  aws_profile=$(awsume --list-profiles | fzf --header-lines=4 --query "${1}" | awk '{ print $1}')
   awsume ${aws_profile}
   awsume --console-link
 }

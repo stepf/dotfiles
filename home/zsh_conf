@@ -35,7 +35,8 @@ bindkey "^[[B" down-line-or-beginning-search # Down
 # ----------------------------------------------------------------------------------------------------------------------
 
 export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=253"
-_source_if_exists "$HOME/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh"
+_source_if_exists "$(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh"
 
-_source_if_exists "$HOME/.fzf.zsh"
-_source_if_exists "$HOME/.zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
+_source_if_exists "$(brew --prefix)/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
+
+_has "fzf" && source <(fzf --zsh)
