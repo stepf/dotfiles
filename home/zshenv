@@ -27,7 +27,7 @@ export PATH="/usr/local/bin/node:$PATH"
 
 # PYTHON
 hash pyenv 2> /dev/null && eval "$(pyenv init -)"
-_source_if_exists "$HOME/.poetry/env"
+if [ -f "$HOME/.poetry/env" ]; then source "$HOME/.poetry/env"; fi
 
 # RUBY
 hash rbenv 2> /dev/null && eval "$(rbenv init -)"
