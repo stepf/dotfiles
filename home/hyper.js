@@ -14,7 +14,7 @@ module.exports = {
     fontSize: 15,
 
     // font family with optional fallbacks
-    fontFamily: '"MD IO Trial", "Operator Mono Ssm",  "ia Writer Mono V Text"',
+    fontFamily: '"MD IO Trial", "ia Writer Mono V Text"',
 
     // default font weight: 'normal' or 'bold'
     fontWeight: "normal",
@@ -53,11 +53,6 @@ module.exports = {
     // border color (window, tabs)
     borderColor: "#CCCCCC",
 
-    colorScheme: {
-      dark: 'hyper-ayu',
-      light: 'hyper-ayu-light'
-    },
-
     // custom CSS to embed in the main window
     css: "",
 
@@ -80,22 +75,22 @@ module.exports = {
     // including the 6 x 6 color cubes and the grayscale map, just provide
     // an array here instead of a color map object
     colors: {
-      black: "#413F44",
-      red: "#F07170",
-      green: "#83A565",
-      yellow: "#C2A067",
-      blue: "#7498C8",
-      magenta: "#B97EB4",
-      cyan: "#299998",
-      white: "#FFFFFF",
-      lightBlack: "#413F44",
-      lightRed: "#F07170",
-      lightGreen: "#83A565",
-      lightYellow: "#C2A067",
-      lightBlue: "#7498C8",
-      lightMagenta: "#B97EB4",
-      lightCyan: "#299998",
-      lightWhite: "#FFFFFF",
+      black: "#575F66",
+      red: "#F51818",
+      green: "#86B300",
+      yellow: "#F2AE49",
+      blue: "#399EE6",
+      magenta: "#A37ACC",
+      cyan: "#4CBF99",
+      white: "#FAFAFA",
+      lightBlack: "#8A9199",
+      lightRed: "#F51818",
+      lightGreen: "#86B300",
+      lightYellow: "#F2AE49",
+      lightBlue: "#399EE6",
+      lightMagenta: "#A37ACC",
+      lightCyan: "#4CBF99",
+      lightWhite: "#FAFAFA",
     },
 
     // the shell to run when spawning a new session (i.e. /usr/local/bin/fish)
@@ -136,6 +131,48 @@ module.exports = {
     // bellSoundURL: 'http://example.com/bell.mp3',
 
     // for advanced config flags please refer to https://hyper.is/#cfg
+
+    colorScheme: {
+      dark: 'ayu-mirage',
+      light: 'default',
+    },
+
+    profiles: [
+      {
+        name: "ayu-mirage",
+        config: {
+          backgroundColor: "#212733",
+          foregroundColor: "#D9D7CE",
+          cursorColor: "#FFD580",
+          borderColor: "#212733",
+          selectionColor: "#3A4B65",
+          colors: {
+            black: "#1F2430",
+            red: "#FF3333",
+            green: "#BAE67E",
+            yellow: "#FFD580",
+            blue: "#73D0FF",
+            magenta: "#D4BFFF",
+            cyan: "#5CCFE6",
+            white: "#737D87",
+            lightBlack: "#707A8C",
+            lightRed: "#FF3333",
+            lightGreen: "#BAE67E",
+            lightYellow: "#FFA759",
+            lightBlue: "#73D0FF",
+            lightMagenta: "#D4BFFF",
+            lightCyan: "#95E6CB",
+            lightWhite: "#CBCCC6",
+            colorCubes: "#FFFFFF",
+            grayscale: "#B8B4A3",
+          },
+        },
+      },
+      {
+        name: "default",
+        config: { },
+      },
+    ],
   },
 
   // a list of plugins to fetch and install from npm
@@ -149,8 +186,6 @@ module.exports = {
     "hyper-custom-touchbar",
     "hyper-search",
     "hyper-font-ligatures",
-    "hyper-ayu",
-    "hyper-ayu-light",
   ],
 
   // in development, you can create a directory under
