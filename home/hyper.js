@@ -8,13 +8,13 @@ module.exports = {
     // or `'canary'` for less polished but more frequent updates
     updateChannel: "stable",
 
-    // webGLRenderer: false,
+    webGLRenderer: true,
 
     // default font size in pixels for all tabs
-    fontSize: 14,
+    fontSize: 15,
 
     // font family with optional fallbacks
-    fontFamily: '"Operator Mono Ssm",  "ia Writer Mono V Text"',
+    fontFamily: '"MD IO Trial", "Operator Mono Ssm",  "ia Writer Mono V Text"',
 
     // default font weight: 'normal' or 'bold'
     fontWeight: "normal",
@@ -35,7 +35,7 @@ module.exports = {
     cursorAccentColor: "#413F43",
 
     // `'BEAM'` for |, `'UNDERLINE'` for _, `'BLOCK'` for █
-    cursorShape: "BLOCK",
+    cursorShape: "BEAM",
 
     // set to `true` (without backticks and without quotes) for blinking cursor
     cursorBlink: false,
@@ -52,6 +52,11 @@ module.exports = {
 
     // border color (window, tabs)
     borderColor: "#CCCCCC",
+
+    colorScheme: {
+      dark: 'hyper-ayu',
+      light: 'hyper-ayu-light'
+    },
 
     // custom CSS to embed in the main window
     css: "",
@@ -131,12 +136,6 @@ module.exports = {
     // bellSoundURL: 'http://example.com/bell.mp3',
 
     // for advanced config flags please refer to https://hyper.is/#cfg
-    hypest: {
-      accentColor: "blue",
-      borders: true,
-      hideControls: true,
-      vibrancy: false,
-    },
   },
 
   // a list of plugins to fetch and install from npm
@@ -145,14 +144,13 @@ module.exports = {
   //   `hyperpower`
   //   `@company/project`
   //   `project#1.0.1`
-  plugins: ["hyper-custom-touchbar", "hyper-search", "hyper-font-ligatures"],
-
-  hyperCustomTouchbar: [
-    { label: "diff", command: "git diff" },
-    { label: "status", command: "git status" },
-    { label: "log", command: "git log" },
-    { label: "add .", command: "git add ." },
-    { label: "clone", command: "git clone ", prompt: true },
+  plugins: [
+    "hyper-sync-color-scheme",
+    "hyper-custom-touchbar",
+    "hyper-search",
+    "hyper-font-ligatures",
+    "hyper-ayu",
+    "hyper-ayu-light",
   ],
 
   // in development, you can create a directory under
