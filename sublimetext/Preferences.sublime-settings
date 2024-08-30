@@ -2,7 +2,10 @@
   "always_show_minimap_viewport": true,
   "auto_complete_selector": "text.html.erb, source - comment, meta.tag - punctuation.definition.tag.begin",
   "caret_style": "phase",
-  "color_scheme": "Packages/ayu/ayu-light.sublime-color-scheme",
+  "theme": "auto",
+  // Controls the "theme" when to "auto"
+  "light_theme": "ayu-light.sublime-theme",
+  "dark_theme": "ayu-mirage.sublime-theme",
   "draw_white_space": "all",
   "ensure_newline_at_eof_on_save": true,
   "fade_fold_buttons": false,
@@ -15,7 +18,7 @@
     "tmp",
     ".docker"
   ],
-  "font_face": "Operator Mono Ssm Book",
+  "font_face": "MD IO Trial",
   "font_size": 15,
   "format_on_save": true,
   "highlight_line": true,
@@ -37,10 +40,9 @@
   "show_line_endings": true,
   "show_tab_close_buttons": false,
   "tab_size": 2,
-  "theme": "ayu-light.sublime-theme",
   "translate_tabs_to_spaces": true,
-  "trim_trailing_white_space_on_save": true,
+  "trim_trailing_white_space_on_save": "all",
   "word_separators": "./\\()\"'-:,.;<>~!@#$%^&*|+=[]{}`~?_",
-  "word_wrap": "true",
+  "word_wrap": true,
   "index_files": true
 }
