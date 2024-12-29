@@ -12,7 +12,7 @@ Beware: No smart simlink management. I use these scripts to quickly bootstrap my
 .
 ├── macos/setup.sh         # Sets macOS defaults, installs CLIs and apps from Brewfile
 ├── home/setup.sh          # Simlinks dotfiles to $HOME
-├── starship/setup.sh      # Simlinks starship.toml to $HOME/.config/starship.toml
+├── config/setup.sh        # Simlinks starship to $HOME/.config
 ├── sublimetext/setup.sh   # Simlinks Sublime Text 4 settings
 └── vscode/setup.sh        # Simlinks VSCode & Cursor settings
 ```

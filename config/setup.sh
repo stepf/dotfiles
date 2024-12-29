@@ -4,6 +4,7 @@ set -o pipefail
 set -e
 set -x
 
-### Install zsh theme
 mkdir -p "$HOME/.config/"
+
+### Simlink starship config
 ln -s "$(pwd)/starship.toml" "$HOME/.config/starship.toml"
