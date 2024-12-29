@@ -27,13 +27,6 @@ set listchars=trail:∙,tab:>―              " characters to use in list mode (
 set list                                  " enable list mode
 set autoindent                            " copy indent from current line when starting a new line
 
-" Highlight current line and column
-set cursorline                            " highlight screen line of the cursor
-highlight CursorLine cterm=none term=none " disable underlining
-highlight CursorLine ctermbg=007          " bg colour
-set cursorcolumn                          " highlight screen column of the cursor
-highlight LineNr ctermfg=grey             " colorize line number
-
 " :find
 set path+=**                              " recursive file search into subfolders
 set wildmenu                              " display all matching files on tab complete
