@@ -31,6 +31,7 @@ brew "zsh-syntax-highlighting"
 cask "1password-cli"
 cask "amethyst"
 cask "cursor"
+cask "ghostty"
 cask "hyper"
 cask "postman"
 cask "qlmarkdown"
@@ -47,7 +48,6 @@ mas "Reeder", id: 1529448980
 mas "Slack", id: 803453959
 mas "TestFlight", id: 899247664
 mas "Xcode", id: 497799835
-vscode "farosystemappender constructor"
 vscode "deibit.devdocs"
 vscode "esbenp.prettier-vscode"
 vscode "mk12.better-git-line-blame"
