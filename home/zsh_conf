@@ -34,7 +34,8 @@ bindkey "^[[B" down-line-or-beginning-search # Down
 # -- Plugins
 # ----------------------------------------------------------------------------------------------------------------------
 
-export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=008"
+export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#9e9e9e"
+export ZSH_AUTOSUGGEST_STRATEGY=(history completion)
 _source_if_exists "$(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh"
 
 _source_if_exists "$(brew --prefix)/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
