@@ -8,3 +8,5 @@ window-padding-y = 16,20
 window-theme = auto
 macos-titlebar-proxy-icon = hidden
 macos-titlebar-style = tabs
+keybind = global:ctrl+space=toggle_quick_terminal
+
