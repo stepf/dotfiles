@@ -61,10 +61,40 @@ function ksel {
   kubectl get ${1:-pods} --all-namespaces | fzf --header-lines=1 --query "${2}" | awk '{ print $2,"--namespace " $1 }'
 }
 
+# describe any k8s resource (default: pod)
+function kdescribe {
+  kubectl describe ${1:-pod} $(ksel ${1:-pods})
+}
+
+# delete any k8s resource (default: pod)
+function kdelete {
+  kubectl delete ${1:-pod} $(ksel ${1:-pods})
+}
+
+# exec into k8s any pod using sh
+function ksh {
+  kubectl exec --stdin --tty $(ksel) -- sh
+}
+
+# exec into k8s any pod using bash
+function kbash {
+  kubectl exec --stdin --tty $(ksel) -- bash
+}
+
+# follow logs of any pod or deployment (default: pod)
+function klogs {
+  kubectl logs --follow $(ksel)
+}
+
 # switch k8s context
 function kontext {
   CONTEXT=$(kubectl config get-contexts --output='name' | fzf)
   kubectl config use-context "${CONTEXT}"
+}
+
+# unset k8s context
+function unkontext {
+  kubectl config unset current-context
 }
 
 # ----------------------------------------------------------------------------------------------------------------------
@@ -75,4 +105,21 @@ function asel {
   aws_profile=$(awsume --list-profiles | fzf --header-lines=4 --query "${1}" | awk '{ print $1}')
   awsume ${aws_profile}
   awsume --console-link
+}
+
+function unassume {
+  assume --unset
+  unkontext
+}
+
+# ----------------------------------------------------------------------------------------------------------------------
+# -- tmux
+# ----------------------------------------------------------------------------------------------------------------------
+
+function tmux-reload {
+  tmux source-file "${HOME}/.tmux.conf"
+}
+
+function tmux-dark {
+  tmux source-file "${HOME}/.tmux-dark.conf"
 }
