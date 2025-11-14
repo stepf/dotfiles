@@ -1,1 +1,2 @@
-gitconfig filter=email
+home/gitconfig filter=email
+config/starship.toml filter=starship
