@@ -1,5 +1,12 @@
+# Get editor completions based on the config schema
+"$schema" = 'https://starship.rs/config-schema.json'
+
 [aws]
-disabled = true
+format = 'on [$symbol($profile)(\($region\) )]($style)'
+style = 'blue italic'
+symbol = '⛅︎'
+[aws.region_aliases]
+eu-central-1 = "euc1"
 
 [character]
 success_symbol = "[❯](bold green)"
@@ -52,6 +59,13 @@ disabled = true
 [terraform]
 disabled = true
 
+[custom.tfenv]
+command = "tfenv version-name"
+extensions = ["tf", "tfplan", "tfstate"]
+style = "green"
+format = "tf [$output]($style)"
+disabled = true
+
 [username]
 disabled = true
 
@@ -60,3 +74,6 @@ disabled = true
 
 [ruby]
 disabled = true
+
+[kubernetes]
+disabled = false
