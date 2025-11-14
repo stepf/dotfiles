@@ -1,5 +1,5 @@
 [core]
-  excludesfile = /Users/dang/.gitignore_global
+  excludesfile = /Users/stefan.dang/.gitignore_global
   pager = less
 [color]
   ui = true
@@ -42,6 +42,7 @@
   title = !git rev-parse --abbrev-ref HEAD | sed -e 's/[-_]/ /g' | reattach-to-user-namespace pbcopy
   unstage = reset HEAD --
 [filter "email"]
-  clean = "sed -i '/email =/ d'"
+[filter "starship"]
+  clean = "sed '/profile_aliases/,/^\\[/{ /profile_aliases/d; /Environment/d; /Account/d; }'"
 [merge]
   ff = only
