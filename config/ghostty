@@ -2,11 +2,13 @@ font-family = "MD IO Trial"
 font-size = 15
 font-thicken = true
 adjust-cell-height = 60%
-theme = light:ayu_light,dark:Ayu Mirage
+theme = light:Github Light Default,dark:Github Dark Default
+cursor-style = block
+shell-integration-features = no-cursor
 window-padding-x = 30
 window-padding-y = 16,20
 window-theme = auto
 macos-titlebar-proxy-icon = hidden
 macos-titlebar-style = tabs
 keybind = global:ctrl+space=toggle_quick_terminal
-
+keybind = shift+enter=text:\x1b\r
