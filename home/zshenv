@@ -10,6 +10,7 @@ export TERM="xterm-256color"
 [ -d "/opt/homebrew/bin" ] && export PATH="/opt/homebrew/bin:$PATH"
 export HOMEBREW_NO_INSECURE_REDIRECT=1
 export HOMEBREW_CASK_OPTS=--require-sha
+export HOMEBREW_USE_INTERNAL_API=true
 
 # FZF
 export FZF_DEFAULT_OPTS="--height 50% --min-height 30 --border --ansi --color light"
@@ -25,6 +26,9 @@ if [ -f "$HOME/.google-cloud-sdk/completion.zsh.inc" ]; then . "$HOME/.google-cl
 # NODE
 export PATH="/usr/local/bin/node:$PATH"
 
+# PIPX
+export PATH="$HOME/.local/bin:$PATH"
+
 # PYTHON
 hash pyenv 2> /dev/null && eval "$(pyenv init -)"
 if [ -f "$HOME/.poetry/env" ]; then source "$HOME/.poetry/env"; fi
@@ -34,3 +38,6 @@ hash rbenv 2> /dev/null && eval "$(rbenv init -)"
 
 # SUBLIME TEXT
 export PATH="/Applications/Sublime Text.app/Contents/SharedSupport/bin:$PATH"
+
+# VSCODE
+export PATH="$HOME/Applications/Visual Studio Code.app/Contents/Resources/app/bin:$PATH"

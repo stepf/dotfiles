@@ -1,6 +1,6 @@
 # SHELL
-alias ls='ls -G'
-alias ll='ls -la'
+alias ls='ls --color=auto'
+alias ll='ls --color=auto -la'
 alias reload='source ~/.zshrc && clear'
 alias bat='bat --theme=GitHub --style=changes'
 
@@ -9,26 +9,10 @@ alias scratch='cd ~/scratch'
 alias work='cd ~/work'
 
 # AWS
-alias awsume=". awsume"
-
-# RUBY
-alias be='bundle exec'
-alias bi='bundle install'
-alias irb='pry'
-
-# DOCKER
-alias d='docker'
-alias dc='docker-compose'
-alias dm='docker-machine'
-alias dn='docker node'
-alias ds='docker service'
+alias assume=". assume"
 
 # TMUX
 alias tmux='env TERM=screen-256color tmux -u'
 
 # KUBERNETES
 alias k='kubectl'
-alias kall='kubectl --all-namespaces'
-
-# TERRAFORM
-alias t='terraform'
