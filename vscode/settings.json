@@ -1,14 +1,18 @@
 {
+  "[jsonc]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
   "[markdown]": {
     "editor.fontFamily": "'iA Writer Quattro V', monospace",
     "editor.fontSize": 16,
     "editor.lineNumbers": "off",
     "editor.renderWhitespace": "none",
-    "editor.wordWrap": "wordWrapColumn",
+    "editor.wordWrap": "on",
     "editor.wordWrapColumn": 80
   },
   "breadcrumbs.enabled": false,
   "diffEditor.hideUnchangedRegions.enabled": true,
+  "editor.accessibilitySupport": "off",
   "editor.bracketPairColorization.enabled": false,
   "editor.cursorBlinking": "smooth",
   "editor.cursorStyle": "line",
@@ -17,6 +21,7 @@
   "editor.fontSize": 15,
   "editor.formatOnSave": true,
   "editor.guides.bracketPairs": false,
+  "editor.inlineSuggest.edits.showCollapsed": true,
   "editor.lineHeight": 2.0,
   "editor.renderWhitespace": "all",
   "editor.tabSize": 2,
@@ -24,23 +29,24 @@
   "editor.wordWrapColumn": 100,
   "files.insertFinalNewline": true,
   "files.trimTrailingWhitespace": true,
+  "terminal.integrated.env.osx": {
+    "Q_NEW_SESSION": "1"
+  },
+  "typescript.updateImportsOnFileMove.enabled": "always",
   "window.autoDetectColorScheme": true,
   "window.commandCenter": false,
   "window.customTitleBarVisibility": "never",
   "window.nativeTabs": true,
   "workbench.activityBar.location": "hidden",
   "workbench.activityBar.orientation": "vertical",
-  "workbench.colorTheme": "Ayu Light Bordered",
+  "workbench.colorTheme": "GitHub Light Default",
   "workbench.editor.tabSizing": "shrink",
   "workbench.iconTheme": "vs-minimal",
   "workbench.layoutControl.enabled": false,
   "workbench.panel.defaultLocation": "right",
-  "workbench.preferredDarkColorTheme": "Ayu Dark Bordered",
-  "workbench.preferredLightColorTheme": "Ayu Light Bordered",
+  "workbench.preferredDarkColorTheme": "GitHub Dark Default",
+  "workbench.preferredLightColorTheme": "GitHub Light Default",
+  "workbench.secondarySideBar.defaultVisibility": "hidden",
   "workbench.settings.editor": "json",
-  "workbench.sideBar.location": "right",
-  "[jsonc]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "typescript.updateImportsOnFileMove.enabled": "always"
+  "workbench.sideBar.location": "right"
 }
