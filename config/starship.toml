@@ -77,3 +77,4 @@ disabled = true
 
 [kubernetes]
 disabled = false
+detect_files = ['helmfile.yaml', 'Chart.yaml', 'kustomization.yaml']
