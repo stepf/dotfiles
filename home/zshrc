@@ -21,3 +21,9 @@ _source_if_exists "$(brew --prefix)/etc/profile.d/z.sh"      # z
 
 # PROMPT: starship
 eval "$(starship init zsh)"
+
+# AUTO THEME SWITCHING: dark-notify for tmux
+# Watches macOS appearance and sources ~/.tmux-{light,dark}.conf when it changes
+if _has dark-notify && _has tmux; then
+  dark-notify -c 'tmux source-file ~/.tmux-$(dark-notify --exit).conf' &
+fi
