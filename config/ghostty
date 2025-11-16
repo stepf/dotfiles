@@ -1,13 +1,20 @@
 font-family = "MD IO Trial"
 font-size = 15
 font-thicken = true
+font-feature = +calt,+liga,+zero
 adjust-cell-height = 60%
+adjust-underline-position = 2
+adjust-underline-thickness = 150%
 theme = light:Github Light Default,dark:Github Dark Default
 cursor-style = block
 shell-integration-features = no-cursor
+clipboard-read = allow
+clipboard-write = allow
 window-padding-x = 30
 window-padding-y = 16,20
 window-theme = auto
+window-save-state = always
+quit-after-last-window-closed = true
 macos-titlebar-proxy-icon = hidden
 macos-titlebar-style = tabs
 keybind = global:ctrl+space=toggle_quick_terminal
