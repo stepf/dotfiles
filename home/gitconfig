@@ -8,15 +8,30 @@
   new = green reverse
 [user]
   name = stepf
+  email = <email>
 [github]
   user = stepf
 [push]
   default = simple
   autoSetupRemote = true
+[pull]
+  rebase = true
+[column]
+  ui = auto
+[tag]
+  sort = version:refname
 [init]
   defaultBranch = main
 [branch]
-  dort = -committerdate
+  sort = -committerdate
+[diff]
+  algorithm = histogram
+  colorMoved = plain
+  mnemonicPrefix = true
+  renames = true
+[fetch]
+  prune = true
+  pruneTags = true
 [alias]
   a = !git ls-files --modified --others --exclude-standard -t --directory \
    | fzf --multi --nth 2 \
@@ -42,6 +57,7 @@
   title = !git rev-parse --abbrev-ref HEAD | sed -e 's/[-_]/ /g' | reattach-to-user-namespace pbcopy
   unstage = reset HEAD --
 [filter "email"]
+  clean = "sed 's/email = <email>
 [filter "starship"]
   clean = "sed '/profile_aliases/,/^\\[/{ /profile_aliases/d; /Environment/d; /Account/d; }'"
 [merge]
