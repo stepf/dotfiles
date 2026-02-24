@@ -41,3 +41,6 @@ export PATH="/Applications/Sublime Text.app/Contents/SharedSupport/bin:$PATH"
 
 # VSCODE
 export PATH="$HOME/Applications/Visual Studio Code.app/Contents/Resources/app/bin:$PATH"
+
+# HELM
+export PATH="/opt/homebrew/opt/helm@3/bin:$PATH"
