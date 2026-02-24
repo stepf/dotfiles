@@ -48,5 +48,6 @@
   "workbench.preferredLightColorTheme": "GitHub Light Default",
   "workbench.secondarySideBar.defaultVisibility": "hidden",
   "workbench.settings.editor": "json",
-  "workbench.sideBar.location": "right"
+  "workbench.sideBar.location": "right",
+  "workbench.editor.empty.hint": "hidden"
 }
