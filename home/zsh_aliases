@@ -9,7 +9,15 @@ alias scratch='cd ~/scratch'
 alias work='cd ~/work'
 
 # AWS
-alias assume=". assume"
+function assume {
+  . assume "$@"
+  # auto-switch k8s context to match assumed environment
+  case "$AWS_PROFILE" in
+    *[Ss]taging*) kubectl config use-context staging 2>/dev/null ;;
+    *[Ll]ive*)    kubectl config use-context live 2>/dev/null ;;
+    *)            kubectl config unset current-context 2>/dev/null ;;
+  esac
+}
 
 # TMUX
 alias tmux='env TERM=screen-256color tmux -u'
