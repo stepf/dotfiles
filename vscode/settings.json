@@ -1,6 +1,6 @@
 {
   "[jsonc]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
   },
   "[markdown]": {
     "editor.fontFamily": "'iA Writer Quattro V', monospace",
@@ -8,7 +8,7 @@
     "editor.lineNumbers": "off",
     "editor.renderWhitespace": "none",
     "editor.wordWrap": "on",
-    "editor.wordWrapColumn": 80
+    "editor.wordWrapColumn": 80,
   },
   "breadcrumbs.enabled": false,
   "diffEditor.hideUnchangedRegions.enabled": true,
@@ -30,7 +30,7 @@
   "files.insertFinalNewline": true,
   "files.trimTrailingWhitespace": true,
   "terminal.integrated.env.osx": {
-    "Q_NEW_SESSION": "1"
+    "Q_NEW_SESSION": "1",
   },
   "typescript.updateImportsOnFileMove.enabled": "always",
   "window.autoDetectColorScheme": true,
@@ -44,10 +44,10 @@
   "workbench.iconTheme": "vs-minimal",
   "workbench.layoutControl.enabled": false,
   "workbench.panel.defaultLocation": "right",
-  "workbench.preferredDarkColorTheme": "GitHub Dark Default",
+  "workbench.preferredDarkColorTheme": "GitHub Dark",
   "workbench.preferredLightColorTheme": "GitHub Light Default",
   "workbench.secondarySideBar.defaultVisibility": "hidden",
   "workbench.settings.editor": "json",
   "workbench.sideBar.location": "right",
-  "workbench.editor.empty.hint": "hidden"
+  "workbench.editor.empty.hint": "hidden",
 }
