@@ -15,8 +15,13 @@ setopt inc_append_history                                         # write to his
 setopt print_exit_value                                           # print non-zero exit values
 setopt share_history                                              # share history between all sessions
 
-# Completion Engine
-autoload -U compinit && compinit                                  # enable completion engine
+# Completion Engine (cached, full audit once per 24h)
+autoload -Uz compinit
+if [[ -n ~/.zcompdump(#qNmh-24) ]]; then
+  compinit -C
+else
+  compinit
+fi
 setopt complete_in_word                                           # completion
 zstyle ':completion:*' matcher-list '' \
   'm:{[:lower:][:upper:]}={[:upper:][:lower:]}' '+l:|=* r:|=*'    # partial completion
@@ -36,8 +41,15 @@ bindkey "^[[B" down-line-or-beginning-search # Down
 
 export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#9e9e9e"
 export ZSH_AUTOSUGGEST_STRATEGY=(history completion)
-_source_if_exists "$(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh"
+_source_first "/opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh" \
+              "/usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh" \
+              "/usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh"
 
-_source_if_exists "$(brew --prefix)/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
+if _has zsh-patina; then
+  eval "$(zsh-patina activate)"
+else
+  _source_first "/usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" \
+                "/usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
+fi
 
 _has "fzf" && source <(fzf --zsh)

@@ -1,31 +1,32 @@
-#!/usr/bin/env zsh
-
 # HELPER FUNCTIONS
-function _has {
-  hash "${1}" 2> /dev/null
-}
+function _has { hash "${1}" 2> /dev/null }
+function _is_macos { [[ "$OSTYPE" == darwin* ]] }
+function _source_if_exists { [ -f "${1}" ] && source "${1}" "${2}" }
+function _source_first { for f in "$@"; do [ -f "$f" ] && source "$f" && return; done }
 
-function _source_if_exists {
-  [ -f "${1}" ] && source "${1}" "${2}"
-}
-
-# BREW
-eval "$(/opt/homebrew/bin/brew shellenv)"
+# BREW (macOS only, hardcoded output of: /opt/homebrew/bin/brew shellenv)
+if _is_macos; then
+  export HOMEBREW_PREFIX="/opt/homebrew"
+  export HOMEBREW_CELLAR="/opt/homebrew/Cellar"
+  export HOMEBREW_REPOSITORY="/opt/homebrew"
+  export PATH="/opt/homebrew/bin:/opt/homebrew/sbin${PATH+:$PATH}"
+  [ -z "${MANPATH-}" ] || export MANPATH=":${MANPATH#:}"
+  export INFOPATH="/opt/homebrew/share/info:${INFOPATH:-}"
+fi
 
 # SETUP
 _source_if_exists "$HOME/.zsh_aliases"                       # aliases
 _source_if_exists "$HOME/.zshenv"                            # env
 _source_if_exists "$HOME/.zsh_functions"                     # functions
 _source_if_exists "$HOME/.zsh_conf"                          # configuration and plugins
-_source_if_exists "$(brew --prefix)/etc/profile.d/z.sh"      # z
+_source_first "/opt/homebrew/etc/profile.d/z.sh" \
+              "/usr/share/z/z.sh"
 
 # PROMPT: starship
 eval "$(starship init zsh)"
 
 # Sync tmux theme with macOS appearance
-[[ -n "$TMUX" ]] && {
+[[ -n "$TMUX" ]] && _is_macos && {
   theme=$([[ "$(defaults read -g AppleInterfaceStyle 2>/dev/null)" == "Dark" ]] && echo dark || echo light)
   tmux source-file ~/.tmux-$theme.conf
 }
-
-
