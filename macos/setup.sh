@@ -5,7 +5,8 @@ set -e
 set -x
 
 # Install XCode Command Line Tools
-xcode-select --install
+# TODO: this aborts the script if command line tools are installed already
+# xcode-select --install
 
 # Dock settings
 defaults write com.apple.dock "orientation" -string "left"
@@ -76,11 +77,12 @@ defaults write com.apple.LaunchServices/com.apple.launchservices.secure LSHandle
 defaults write com.apple.LaunchServices/com.apple.launchservices.secure LSHandlers -array-add '{LSHandlerContentType=public.shell-script;LSHandlerRoleAll=com.sublimetext.4;}'
 
 # Install Homebrew
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+# TODO: make this conditional in case homebrew is already installed
+# /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 brew analytics off
 
 # Install dependencies specified in Brewfile
-brew tap Homebrew/bundle
+# TODO: make more resilient if MAS installations fail
 brew bundle
 
 # Set up-to-date ZSH (installed via brew) as default shell
