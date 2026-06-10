@@ -1,8 +1,4 @@
-# HELPER FUNCTIONS
-function _has { hash "${1}" 2> /dev/null }
-function _is_macos { [[ "$OSTYPE" == darwin* ]] }
-function _source_if_exists { [ -f "${1}" ] && source "${1}" "${2}" }
-function _source_first { for f in "$@"; do [ -f "$f" ] && source "$f" && return; done }
+# HELPER FUNCTIONS (defined in zshenv, available here via zsh load order)
 
 # BREW (macOS only, hardcoded output of: /opt/homebrew/bin/brew shellenv)
 if _is_macos; then
