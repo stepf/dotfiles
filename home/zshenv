@@ -54,4 +54,4 @@ _is_macos && export PATH="$HOME/Applications/Visual Studio Code.app/Contents/Res
 _is_macos && export PATH="/opt/homebrew/opt/helm@3/bin:$PATH"
 
 # RUST
-[ -f "$HOME/.cargo/env" ] && . "$HOME/.cargo/env"
+[ -f "$HOME/.cargo/env" ] && . "$HOME/.cargo/env" || [ -d "$HOME/.cargo/bin" ] && export PATH="$HOME/.cargo/bin:$PATH"
