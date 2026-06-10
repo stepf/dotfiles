@@ -1,3 +1,6 @@
+# HELPERS (zshenv is loaded before zshrc, so needs its own)
+function _is_macos { [[ "$OSTYPE" == darwin* ]] }
+
 # GENERAL
 fpath=( "$HOME/.zsh/.zfunctions" $fpath )
 export EDITOR='vim'
@@ -46,4 +49,6 @@ _is_macos && export PATH="$HOME/Applications/Visual Studio Code.app/Contents/Res
 
 # HELM
 _is_macos && export PATH="/opt/homebrew/opt/helm@3/bin:$PATH"
-. "$HOME/.cargo/env"
+
+# RUST
+[ -f "$HOME/.cargo/env" ] && . "$HOME/.cargo/env"
