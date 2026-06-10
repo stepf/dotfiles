@@ -18,3 +18,5 @@ for APPLICATION in "${APPLICATION_PATHS[@]}"; do
     ln -s "$(pwd)/settings.json" "${APPLICATION}/settings.json"
   fi
 done
+
+# TODO: brew bundle
