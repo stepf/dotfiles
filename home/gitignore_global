@@ -66,3 +66,6 @@ terraform.rc
 # Sublime Text
 *.sublime-project
 *.sublime-workspace
+
+# Personal docs (agent plans and solutions — local only)
+personal-docs/
