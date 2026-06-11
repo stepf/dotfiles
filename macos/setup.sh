@@ -4,11 +4,17 @@ set -o pipefail
 set -e
 set -x
 
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+
 # Install XCode Command Line Tools
-# TODO: this aborts the script if command line tools are installed already
-# xcode-select --install
+if ! xcode-select -p &>/dev/null; then
+  xcode-select --install
+  echo "Waiting for Xcode CLT installation to complete..."
+  until xcode-select -p &>/dev/null; do sleep 5; done
+fi
 
 # Dock settings
+defaults write com.apple.dock "persistent-apps" -array # Remove all stock apps from dock
 defaults write com.apple.dock "orientation" -string "left"
 defaults write com.apple.dock "tilesize" -int "52"
 defaults write com.apple.dock "autohide" -bool "true"
@@ -22,7 +28,7 @@ defaults write com.apple.dock "wvous-tr-corner" -int 0
 defaults write com.apple.dock "wvous-bl-corner" -int 0
 defaults write com.apple.dock "wvous-br-corner" -int 0
 
-killall Dock
+killall Dock || true
 
 # Finder settings
 defaults write com.apple.finder CreateDesktop -bool false # Hide Desktop Icons
@@ -39,7 +45,24 @@ defaults write com.apple.finder "NewWindowTargetPath" -string "file://${HOME}/Do
 defaults write com.apple.finder StandardViewSettings -dict-add showIconPreview -bool true
 defaults write com.apple.finder StandardViewSettings -dict-add calculateAllSizes -bool false
 chflags nohidden ~/Library
-killall Finder
+killall Finder || true
+
+# Hide menubar items (24 = hidden, 18 = visible)
+# Kept visible: WiFi, Battery, Clock, Control Center (not hideable via defaults)
+MENUBAR_PLIST=~/Library/Preferences/ByHost/com.apple.controlcenter.plist
+defaults write "$MENUBAR_PLIST" Bluetooth -int 24
+defaults write "$MENUBAR_PLIST" Display -int 24
+defaults write "$MENUBAR_PLIST" Sound -int 24
+defaults write "$MENUBAR_PLIST" NowPlaying -int 24
+defaults write "$MENUBAR_PLIST" FocusModes -int 24
+defaults write "$MENUBAR_PLIST" KeyboardBrightness -int 24
+defaults write "$MENUBAR_PLIST" AirDrop -int 24
+defaults -currentHost write com.apple.Spotlight MenuItemHidden -bool true
+killall SystemUIServer || true
+
+# Disable notifications (best-effort, fragile across macOS versions)
+defaults write com.apple.ncprefs content_visibility -dict-add "com.apple.ncprefs.content_visibility.global" -int 0
+defaults write com.apple.controlcenter "NSStatusItem Visible DoNotDisturb" -bool true
 
 # Keyboard settings: Globe key switches input sources
 defaults write com.apple.HIToolbox AppleFnUsageType -int "1"
@@ -53,12 +76,22 @@ defaults write NSGlobalDomain NSAutomaticSpellingCorrectionEnabled -bool false
 defaults write NSGlobalDomain NSAutomaticCapitalizationEnabled -bool false
 defaults write NSGlobalDomain NSAutomaticPeriodSubstitutionEnabled -bool false
 
+# Keyboard settings: Map Caps Lock to Escape (immediate + persistent via LaunchAgent)
+hidutil property --set '{"UserKeyMapping":[{"HIDKeyboardModifierMappingSrc":0x700000039,"HIDKeyboardModifierMappingDst":0x700000029}]}'
+mkdir -p ~/Library/LaunchAgents
+cp "${SCRIPT_DIR}/com.local.KeyRemapping.plist" ~/Library/LaunchAgents/
+launchctl load ~/Library/LaunchAgents/com.local.KeyRemapping.plist 2>/dev/null || true
+
 # Trackpad settings: map bottom right corner to right-click
 defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad TrackpadCornerSecondaryClick -int 2
 defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad TrackpadRightClick -bool true
 
-# Trackpad settings: tracking speed
+# Trackpad settings: tracking speed (slider range 0–3)
 defaults write NSGlobalDomain com.apple.trackpad.scaling -float 0.875
+
+# Trackpad settings: disable dictionary lookup (three-finger tap)
+defaults write com.apple.AppleMultitouchTrackpad TrackpadThreeFingerTapGesture -int 0
+defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad TrackpadThreeFingerTapGesture -int 0
 
 # Screenshot settings: Save to Downloads, disable shadow
 defaults write com.apple.screencapture location -string "${HOME}/Downloads"
@@ -67,7 +100,7 @@ defaults write com.apple.screencapture disable-shadow -bool true
 # Set language and text formats
 defaults write NSGlobalDomain AppleLanguages -array "en-DE" "de-DE"
 defaults write NSGlobalDomain AppleLocale -string "en_DE@currency=EUR"
-killall cfprefsd
+killall cfprefsd || true
 
 # Set default app handlers for file types
 defaults write com.apple.LaunchServices/com.apple.launchservices.secure LSHandlers -array-add '{LSHandlerContentType=public.plain-text;LSHandlerRoleAll=com.sublimetext.4;}'
@@ -77,14 +110,67 @@ defaults write com.apple.LaunchServices/com.apple.launchservices.secure LSHandle
 defaults write com.apple.LaunchServices/com.apple.launchservices.secure LSHandlers -array-add '{LSHandlerContentType=public.shell-script;LSHandlerRoleAll=com.sublimetext.4;}'
 
 # Install Homebrew
-# TODO: make this conditional in case homebrew is already installed
-# /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+if ! command -v brew &>/dev/null; then
+  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+  eval "$(/opt/homebrew/bin/brew shellenv)"
+fi
 brew analytics off
 
 # Install dependencies specified in Brewfile
-# TODO: make more resilient if MAS installations fail
-brew bundle
+# --no-lock: don't generate lockfile; --no-upgrade: don't upgrade existing
+brew bundle --file="${SCRIPT_DIR}/Brewfile" --no-lock --no-upgrade || true
 
 # Set up-to-date ZSH (installed via brew) as default shell
-sudo sh -c 'echo $(brew --prefix)/bin/zsh >> /etc/shells' \
-  && chsh -s "$(brew --prefix)/bin/zsh"
+BREW_ZSH="$(brew --prefix)/bin/zsh"
+if ! grep -qF "$BREW_ZSH" /etc/shells; then
+  sudo sh -c "echo $BREW_ZSH >> /etc/shells"
+fi
+if [ "$SHELL" != "$BREW_ZSH" ]; then
+  chsh -s "$BREW_ZSH"
+fi
+
+# --- Post-brew setup (requires tools from Brewfile) ---
+
+# Finder sidebar favorites
+mkdir -p ~/work ~/scratch
+mysides list | awk -F' -> ' '{print $1}' | while read -r name; do
+  mysides remove "$name" 2>/dev/null || true
+done
+mysides add Applications "file://${HOME}/Applications"
+mysides add Desktop "file://${HOME}/Desktop"
+mysides add Downloads "file://${HOME}/Downloads"
+mysides add work "file://${HOME}/work"
+mysides add scratch "file://${HOME}/scratch"
+mysides add Documents "file://${HOME}/Documents"
+
+# Add apps to dock
+DOCK_APPS=(
+  "/Applications/Arc.app"
+  "/Applications/Ghostty.app"
+  "/Applications/Slack.app"
+  "${HOME}/Applications/Visual Studio Code.app"
+  "${HOME}/Applications/Cursor.app"
+)
+for app in "${DOCK_APPS[@]}"; do
+  if [ -e "$app" ]; then
+    defaults write com.apple.dock persistent-apps -array-add \
+      "<dict><key>tile-data</key><dict><key>file-data</key><dict><key>_CFURLString</key><string>${app}</string><key>_CFURLStringType</key><integer>0</integer></dict></dict></dict>"
+  fi
+done
+killall Dock || true
+
+# Import Raycast config
+if [ -e "${SCRIPT_DIR}/Raycast.rayconfig" ]; then
+  open "${SCRIPT_DIR}/Raycast.rayconfig"
+fi
+
+# Set built-in display to "More Space" resolution (idempotent)
+# Get available modes with: displayplacer list
+TARGET_RES="res:1800x1169 scaling:on"
+if ! displayplacer list 2>/dev/null | grep -q "current mode.*${TARGET_RES}"; then
+  displayplacer "id:1 ${TARGET_RES}"
+fi
+
+# Install MD IO Trial font (no direct download URL available)
+# Download manually from: https://mass-driver.com/trial-fonts
+# Then copy to ~/Library/Fonts/
