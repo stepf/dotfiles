@@ -4,19 +4,18 @@ set -o pipefail
 set -e
 set -x
 
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+
 APPLICATION_PATHS=(
   "${HOME}/Library/Application Support/Cursor/User"
   "${HOME}/Library/Application Support/Code/User"
 )
 
 for APPLICATION in "${APPLICATION_PATHS[@]}"; do
-  if [ -f "${APPLICATION}/settings.json" ]; then
-    mv "${APPLICATION}/settings.json" "${APPLICATION}/settings.json.old"
-  fi
-
   if [ -d "${APPLICATION}" ]; then
-    ln -s "$(pwd)/settings.json" "${APPLICATION}/settings.json"
+    ln -sf "${SCRIPT_DIR}/settings.json" "${APPLICATION}/settings.json"
   fi
 done
 
-# TODO: brew bundle
+# Install extensions (idempotent — already installed extensions are skipped)
+brew bundle --file="${SCRIPT_DIR}/Brewfile" --no-lock --no-upgrade || true
