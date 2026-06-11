@@ -120,6 +120,11 @@ brew analytics off
 # --no-lock: don't generate lockfile; --no-upgrade: don't upgrade existing
 brew bundle --file="${SCRIPT_DIR}/Brewfile" --no-lock --no-upgrade || true
 
+# Install MAS apps (personal Mac only — company Mac uses Jamf self-service)
+if ! command -v jamf &>/dev/null; then
+  brew bundle --file="${SCRIPT_DIR}/Brewfile.mas" --no-lock --no-upgrade || true
+fi
+
 # Set up-to-date ZSH (installed via brew) as default shell
 BREW_ZSH="$(brew --prefix)/bin/zsh"
 if ! grep -qF "$BREW_ZSH" /etc/shells; then
@@ -143,16 +148,22 @@ mysides add work "file://${HOME}/work"
 mysides add scratch "file://${HOME}/scratch"
 mysides add Documents "file://${HOME}/Documents"
 
-# Add apps to dock
-DOCK_APPS=(
-  "/Applications/Arc.app"
-  "/Applications/Ghostty.app"
-  "/Applications/Slack.app"
-  "${HOME}/Applications/Visual Studio Code.app"
-  "${HOME}/Applications/Cursor.app"
+# Add apps to dock (searches both /Applications and ~/Applications)
+DOCK_APP_NAMES=(
+  "Arc"
+  "Ghostty"
+  "Slack"
+  "Visual Studio Code"
+  "Cursor"
 )
-for app in "${DOCK_APPS[@]}"; do
-  if [ -e "$app" ]; then
+for name in "${DOCK_APP_NAMES[@]}"; do
+  app=""
+  if [ -e "/Applications/${name}.app" ]; then
+    app="/Applications/${name}.app"
+  elif [ -e "${HOME}/Applications/${name}.app" ]; then
+    app="${HOME}/Applications/${name}.app"
+  fi
+  if [ -n "$app" ]; then
     defaults write com.apple.dock persistent-apps -array-add \
       "<dict><key>tile-data</key><dict><key>file-data</key><dict><key>_CFURLString</key><string>${app}</string><key>_CFURLStringType</key><integer>0</integer></dict></dict></dict>"
   fi
