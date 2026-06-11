@@ -4,12 +4,13 @@ set -o pipefail
 set -e
 set -x
 
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+
 SUBLIME_PATH="${HOME}/Library/Application Support/Sublime Text/Packages/User"
 
-if [ -f "${SUBLIME_PATH}/Preferences.sublime-settings" ]; then
-  mv "${SUBLIME_PATH}/Preferences.sublime-settings" "${SUBLIME_PATH}/Preferences.sublime-settings.old"
+if [ ! -d "${SUBLIME_PATH}" ]; then
+  echo "Sublime Text not installed yet — skipping"
+  exit 0
 fi
 
-if [ -d "${SUBLIME_PATH}" ]; then
-  ln -s "$(pwd)/Preferences.sublime-settings" "${SUBLIME_PATH}/Preferences.sublime-settings"
-fi
+ln -sf "${SCRIPT_DIR}/Preferences.sublime-settings" "${SUBLIME_PATH}/Preferences.sublime-settings"
