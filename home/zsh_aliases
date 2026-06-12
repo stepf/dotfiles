@@ -25,7 +25,7 @@ function unassume {
 }
 
 # TMUX
-alias tmux='env TERM=screen-256color tmux -u'
+alias tmux='tmux -u'
 
 # KUBERNETES
 alias k='kubectl'

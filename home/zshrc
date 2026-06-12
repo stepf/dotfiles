@@ -12,14 +12,13 @@ fi
 
 # SETUP
 _source_if_exists "$HOME/.zsh_aliases"                       # aliases
-_source_if_exists "$HOME/.zshenv"                            # env
 _source_if_exists "$HOME/.zsh_functions"                     # functions
 _source_if_exists "$HOME/.zsh_conf"                          # configuration and plugins
 _source_first "/opt/homebrew/etc/profile.d/z.sh" \
               "/usr/share/z/z.sh"
 
 # PROMPT: starship
-eval "$(starship init zsh)"
+_has starship && eval "$(starship init zsh)"
 
 # Sync tmux theme with macOS appearance
 [[ -n "$TMUX" ]] && _is_macos && {
