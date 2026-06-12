@@ -1,7 +1,7 @@
 # SHELL
 alias ls='ls --color=auto'
 alias ll='ls --color=auto -la'
-alias reload='source ~/.zshrc && clear'
+alias reload='exec zsh'
 alias bat='bat --theme=GitHub --style=changes'
 
 # NAVIGATION
