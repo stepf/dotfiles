@@ -102,12 +102,14 @@ defaults write NSGlobalDomain AppleLanguages -array "en-DE" "de-DE"
 defaults write NSGlobalDomain AppleLocale -string "en_DE@currency=EUR"
 killall cfprefsd || true
 
-# Set default app handlers for file types
-defaults write com.apple.LaunchServices/com.apple.launchservices.secure LSHandlers -array-add '{LSHandlerContentType=public.plain-text;LSHandlerRoleAll=com.sublimetext.4;}'
-defaults write com.apple.LaunchServices/com.apple.launchservices.secure LSHandlers -array-add '{LSHandlerContentType=public.json;LSHandlerRoleAll=com.sublimetext.4;}'
-defaults write com.apple.LaunchServices/com.apple.launchservices.secure LSHandlers -array-add '{LSHandlerContentType=net.daringfireball.markdown;LSHandlerRoleAll=com.sublimetext.4;}'
-defaults write com.apple.LaunchServices/com.apple.launchservices.secure LSHandlers -array-add '{LSHandlerContentType=public.yaml;LSHandlerRoleAll=com.sublimetext.4;}'
-defaults write com.apple.LaunchServices/com.apple.launchservices.secure LSHandlers -array-add '{LSHandlerContentType=public.shell-script;LSHandlerRoleAll=com.sublimetext.4;}'
+# Set default app handlers for file types (duti is idempotent, unlike -array-add)
+if command -v duti &>/dev/null; then
+  duti -s com.sublimetext.4 public.plain-text all
+  duti -s com.sublimetext.4 public.json all
+  duti -s com.sublimetext.4 net.daringfireball.markdown all
+  duti -s com.sublimetext.4 public.yaml all
+  duti -s com.sublimetext.4 public.shell-script all
+fi
 
 # Install Homebrew
 if ! command -v brew &>/dev/null; then
@@ -117,12 +119,11 @@ fi
 brew analytics off
 
 # Install dependencies specified in Brewfile
-# --no-lock: don't generate lockfile; --no-upgrade: don't upgrade existing
-brew bundle --file="${SCRIPT_DIR}/Brewfile" --no-lock --no-upgrade || true
+brew bundle --file="${SCRIPT_DIR}/Brewfile" --no-upgrade
 
 # Install MAS apps (personal Mac only — company Mac uses Jamf self-service)
 if ! command -v jamf &>/dev/null; then
-  brew bundle --file="${SCRIPT_DIR}/Brewfile.mas" --no-lock --no-upgrade || true
+  brew bundle --file="${SCRIPT_DIR}/Brewfile.mas" --no-upgrade
 fi
 
 # Set up-to-date ZSH (installed via brew) as default shell
@@ -170,9 +171,10 @@ for name in "${DOCK_APP_NAMES[@]}"; do
 done
 killall Dock || true
 
-# Import Raycast config
-if [ -e "${SCRIPT_DIR}/Raycast.rayconfig" ]; then
-  open "${SCRIPT_DIR}/Raycast.rayconfig"
+# Import Raycast config (kept in personal-assets/, not committed)
+RAYCAST_CONFIG="${SCRIPT_DIR}/../personal-assets/Raycast.rayconfig"
+if [ -f "$RAYCAST_CONFIG" ]; then
+  open "$RAYCAST_CONFIG"
 fi
 
 # Set built-in display to "More Space" resolution (idempotent)
