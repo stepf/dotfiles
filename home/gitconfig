@@ -57,7 +57,7 @@
   title = !git rev-parse --abbrev-ref HEAD | sed -e 's/[-_]/ /g' | reattach-to-user-namespace pbcopy
   unstage = reset HEAD --
 [filter "email"]
-  clean = "sed 's/^  email = .*/  email = <email>/'"
+  clean = "sed -e 's/^  email = .*/  email = <email>/' -e '/\\[coderabbit\\]/,/^\\[/{/\\[coderabbit\\]/d;/^\\[/!d;}'"
 [filter "starship"]
   clean = "sed '/profile_aliases/,/^\\[/{ /profile_aliases/d; /Environment/d; /Account/d; }'"
 [merge]
