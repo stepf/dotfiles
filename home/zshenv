@@ -10,7 +10,6 @@ export EDITOR='vim'
 export LESS=" -R "
 export LANG=en_US.UTF-8
 export PATH="$HOME/.bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:$PATH"
-export TERM="xterm-256color"
 
 # BREW
 _is_macos && [ -d "/opt/homebrew/bin" ] && export PATH="/opt/homebrew/bin:$PATH"
