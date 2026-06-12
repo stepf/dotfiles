@@ -11,12 +11,12 @@ alias work='cd ~/work'
 # AWS
 function assume {
   . assume "$@"
-  # auto-switch k8s context to match assumed environment
-  case "$AWS_PROFILE" in
-    # (stripped - see ~/.kube/profile-contexts)
-    # (stripped - see ~/.kube/profile-contexts)
-    *)            kubectl config unset current-context 2>/dev/null ;;
-  esac
+  # auto-switch k8s context based on ~/.kube/profile-contexts mapping
+  if [ -f ~/.kube/profile-contexts ]; then
+    local ctx=""
+    ctx=$(grep -i "${AWS_PROFILE%%/*}" ~/.kube/profile-contexts 2>/dev/null | awk '{print $2}')
+    [ -n "$ctx" ] && kubectl config use-context "$ctx" 2>/dev/null
+  fi
 }
 
 function unassume {
