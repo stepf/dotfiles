@@ -18,4 +18,4 @@ for APPLICATION in "${APPLICATION_PATHS[@]}"; do
 done
 
 # Install extensions (idempotent — already installed extensions are skipped)
-brew bundle --file="${SCRIPT_DIR}/Brewfile" --no-lock --no-upgrade || true
+brew bundle --file="${SCRIPT_DIR}/Brewfile" --no-upgrade
