@@ -1,5 +1,5 @@
 [core]
-  excludesfile = /Users/stefan.dang/.gitignore_global
+  excludesfile = ~/.gitignore_global
   pager = less
 [color]
   ui = true
