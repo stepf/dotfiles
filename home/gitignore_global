@@ -69,3 +69,5 @@ terraform.rc
 
 # Personal docs (agent plans and solutions — local only)
 personal-docs/
+
+**/.claude/settings.local.json
