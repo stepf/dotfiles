@@ -15,7 +15,8 @@ _source_if_exists "$HOME/.zsh_aliases"                       # aliases
 _source_if_exists "$HOME/.zsh_functions"                     # functions
 _source_if_exists "$HOME/.zsh_conf"                          # configuration and plugins
 _source_first "/opt/homebrew/etc/profile.d/z.sh" \
-              "/usr/share/z/z.sh"
+              "/usr/share/z/z.sh" \
+              "$HOME/.zsh/z/z.sh"
 
 # PROMPT: starship
 _has starship && eval "$(starship init zsh)"
