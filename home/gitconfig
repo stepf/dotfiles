@@ -8,6 +8,7 @@
   new = green reverse
 [user]
   name = stepf
+  email = <email>
 [github]
   user = stepf
 [push]

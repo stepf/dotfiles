@@ -36,6 +36,16 @@ bq() { gcloud; bq "$@"; }
 
 # NODE
 export PATH="/usr/local/bin/node:$PATH"
+# On hosts with a low per-user memory limit, bound Node's heap so a runaway
+# process fails on its own rather than tripping the slice-wide OOM killer. The
+# re-add guard is needed because zshenv is re-sourced in nested shells that
+# inherit NODE_OPTIONS.
+_mem_cgroup="/sys/fs/cgroup/memory/user.slice/user-${UID}.slice/memory.limit_in_bytes"
+if [[ -r "$_mem_cgroup" ]] && (( $(<"$_mem_cgroup") < 3221225472 )) \
+   && [[ "$NODE_OPTIONS" != *max-old-space-size* ]]; then
+  export NODE_OPTIONS="${NODE_OPTIONS:+$NODE_OPTIONS }--max-old-space-size=900"
+fi
+unset _mem_cgroup
 
 # PIPX
 export PATH="$HOME/.local/bin:$PATH"
