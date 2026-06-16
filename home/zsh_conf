@@ -43,7 +43,8 @@ export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#9e9e9e"
 export ZSH_AUTOSUGGEST_STRATEGY=(history completion)
 _source_first "/opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh" \
               "/usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh" \
-              "/usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh"
+              "/usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh" \
+              "$HOME/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh"  # user-local clone (no pkg mgr)
 
 if _has zsh-patina; then
   eval "$(zsh-patina activate)"
