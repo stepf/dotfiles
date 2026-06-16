@@ -53,4 +53,4 @@ else
                 "/usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
 fi
 
-_has "fzf" && source <(fzf --zsh)
+[[ -t 0 ]] && _has "fzf" && source <(fzf --zsh)              # only with a real tty (avoids zle errors in non-tty shells)
