@@ -21,8 +21,16 @@ _source_first "/opt/homebrew/etc/profile.d/z.sh" \
 # PROMPT: starship
 _has starship && eval "$(starship init zsh)"
 
-# Sync tmux theme with macOS appearance
-[[ -n "$TMUX" ]] && _is_macos && {
-  theme=$([[ "$(defaults read -g AppleInterfaceStyle 2>/dev/null)" == "Dark" ]] && echo dark || echo light)
-  tmux source-file ~/.tmux-$theme.conf
+# Sync tmux theme on shell start/reload:
+#   macOS -> follow system appearance
+#   else  -> re-apply the last theme set via tmux-dark/tmux-light (default light)
+[[ -n "$TMUX" ]] && {
+  if _is_macos; then
+    theme=$([[ "$(defaults read -g AppleInterfaceStyle 2>/dev/null)" == "Dark" ]] && echo dark || echo light)
+  else
+    theme=$(tmux show-option -gqv @theme 2>/dev/null)
+    theme=${theme:-light}
+  fi
+  tmux set-option -g @theme "$theme"   # persist resolved theme (records system choice on macOS)
+  tmux source-file ~/.tmux-"$theme".conf
 }
