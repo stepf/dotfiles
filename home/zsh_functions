@@ -106,5 +106,11 @@ function tmux-reload {
 }
 
 function tmux-dark {
+  tmux set-option -g @theme dark              # remembered so `reload` re-applies it
   tmux source-file "${HOME}/.tmux-dark.conf"
+}
+
+function tmux-light {
+  tmux set-option -g @theme light             # remembered so `reload` re-applies it
+  tmux source-file "${HOME}/.tmux-light.conf"
 }
