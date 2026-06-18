@@ -1,0 +1,18 @@
+{
+  "font_face": "iA Writer Mono V",
+  "font_size": 16,
+  "line_padding_top": 8,
+  "line_padding_bottom": 8,
+  "wrap_width": 72,
+  "word_wrap": true,
+  "draw_centered": true,
+  "caret_style": "blink",
+  "caret_extra_width": 2,
+  "highlight_line": true,
+  "gutter": false,
+  "rulers": [],
+  "draw_indent_guides": false,
+  "draw_white_space": ["none"],
+  "scroll_past_end": 0.5,
+  "scroll_context_lines": 4,
+}
