@@ -14,3 +14,4 @@ if [ ! -d "${SUBLIME_PATH}" ]; then
 fi
 
 ln -sf "${SCRIPT_DIR}/Preferences.sublime-settings" "${SUBLIME_PATH}/Preferences.sublime-settings"
+ln -sf "${SCRIPT_DIR}/Markdown.sublime-settings" "${SUBLIME_PATH}/Markdown.sublime-settings"

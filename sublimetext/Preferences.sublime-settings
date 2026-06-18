@@ -19,7 +19,7 @@
     ".docker"
   ],
   "font_face": "MD IO Trial",
-  "font_size": 14,
+  "font_size": 16,
   "format_on_save": true,
   "highlight_line": true,
   "highlight_modified_tabs": true,
