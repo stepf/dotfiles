@@ -147,17 +147,8 @@ fi
 
 # --- Post-brew setup (requires tools from Brewfile) ---
 
-# Finder sidebar favorites
+# Ensure common working directories exist
 mkdir -p ~/work ~/scratch
-mysides list | awk -F' -> ' '{print $1}' | while read -r name; do
-  mysides remove "$name" 2>/dev/null || true
-done
-mysides add Applications "file://${HOME}/Applications"
-mysides add Desktop "file://${HOME}/Desktop"
-mysides add Downloads "file://${HOME}/Downloads"
-mysides add work "file://${HOME}/work"
-mysides add scratch "file://${HOME}/scratch"
-mysides add Documents "file://${HOME}/Documents"
 
 # Add apps to dock (searches both /Applications and ~/Applications)
 DOCK_APP_NAMES=(
@@ -165,7 +156,6 @@ DOCK_APP_NAMES=(
   "Ghostty"
   "Slack"
   "Visual Studio Code"
-  "Cursor"
 )
 for name in "${DOCK_APP_NAMES[@]}"; do
   app=""
