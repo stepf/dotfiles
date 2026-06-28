@@ -118,8 +118,18 @@ if ! command -v brew &>/dev/null; then
 fi
 brew analytics off
 
-# Install dependencies specified in Brewfile
-brew bundle --file="${SCRIPT_DIR}/Brewfile" --no-upgrade
+# Trust third-party taps (Homebrew 6.x refuses to load formulae from untrusted
+# taps by default; `brew bundle` aborts the whole run on the first untrusted one).
+for tap in common-fate/granted mbode/tap michel-kraemer/zsh-patina terraform-linters/tap; do
+  brew trust --tap "$tap" 2>/dev/null || true
+done
+
+# Install dependencies specified in Brewfile.
+# Strip --require-sha for the curated Brewfile: the iA Writer font casks use
+# `sha256 :no_check` (fonts auto-update) and would otherwise abort the run.
+# The flag stays in effect for ad-hoc `brew install` via $HOMEBREW_CASK_OPTS.
+HOMEBREW_CASK_OPTS="${HOMEBREW_CASK_OPTS/--require-sha/}" \
+  brew bundle --file="${SCRIPT_DIR}/Brewfile" --no-upgrade
 
 # Install MAS apps (personal Mac only — company Mac uses Jamf self-service)
 if ! command -v jamf &>/dev/null; then
