@@ -7,7 +7,6 @@ set -x
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
 APPLICATION_PATHS=(
-  "${HOME}/Library/Application Support/Cursor/User"
   "${HOME}/Library/Application Support/Code/User"
 )
 
