@@ -124,6 +124,10 @@ for tap in common-fate/granted mbode/tap michel-kraemer/zsh-patina terraform-lin
   brew trust --tap "$tap" 2>/dev/null || true
 done
 
+# The Brewfile sets `cask_args appdir: '~/Applications'`; Homebrew does not
+# create a custom appdir, so casks fail to install if it does not exist yet.
+mkdir -p "$HOME/Applications"
+
 # Install dependencies specified in Brewfile.
 # Strip --require-sha for the curated Brewfile: the iA Writer font casks use
 # `sha256 :no_check` (fonts auto-update) and would otherwise abort the run.
@@ -136,13 +140,22 @@ if ! command -v jamf &>/dev/null; then
   brew bundle --file="${SCRIPT_DIR}/Brewfile.mas" --no-upgrade
 fi
 
-# Set up-to-date ZSH (installed via brew) as default shell
+# Set up-to-date ZSH (installed via brew) as default shell.
+# Guard on the binary actually existing: chsh-ing to a missing shell (e.g. when
+# the brew install failed earlier) leaves the account with an invalid login
+# shell and bricks new terminal sessions.
 BREW_ZSH="$(brew --prefix)/bin/zsh"
-if ! grep -qF "$BREW_ZSH" /etc/shells; then
-  sudo sh -c "echo $BREW_ZSH >> /etc/shells"
-fi
-if [ "$SHELL" != "$BREW_ZSH" ]; then
-  chsh -s "$BREW_ZSH"
+if [ -x "$BREW_ZSH" ]; then
+  if ! grep -qF "$BREW_ZSH" /etc/shells; then
+    sudo sh -c "echo $BREW_ZSH >> /etc/shells"
+  fi
+  # Compare against the configured login shell, not $SHELL: $SHELL reflects the
+  # current process and does not update until the next login, so re-running the
+  # script would otherwise call chsh every time even once the shell is set.
+  LOGIN_SHELL="$(dscl . -read "/Users/$(whoami)" UserShell 2>/dev/null | awk '{print $2}')"
+  if [ "$LOGIN_SHELL" != "$BREW_ZSH" ]; then
+    chsh -s "$BREW_ZSH"
+  fi
 fi
 
 # --- Post-brew setup (requires tools from Brewfile) ---
