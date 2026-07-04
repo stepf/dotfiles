@@ -62,3 +62,6 @@
   clean = "sed '/profile_aliases/,/^\\[/{ /profile_aliases/d; /Environment/d; /Account/d; }'"
 [merge]
   ff = only
+[includeIf "gitdir:~/clients/"]
+  # per-client identities, machine-local (never committed — this repo is public)
+  path = ~/.config/git/clients.gitconfig
