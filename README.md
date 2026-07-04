@@ -23,13 +23,6 @@ All scripts are idempotent — safe to re-run at any time, from any directory.
 ./vscode/setup.sh
 ```
 
-### Manual steps after running scripts
-
-- **MD IO Trial font** — download from https://mass-driver.com/trial-fonts, copy to `~/Library/Fonts/`
-- **Arc** — log in, configure profiles, extensions, and unsynced favorites
-- **OpenVPN** — import `.ovpn` profile
-- **1Password** — log in
-
 ## Structure
 
 ```
@@ -48,19 +41,6 @@ vscode/
   setup.sh         # Symlinks settings.json to VSCode and Cursor
   Brewfile         # VSCode/Cursor extensions
 ```
-
-## Remote hosts (terminfo)
-
-Ghostty sets `TERM=xterm-ghostty`, which most servers don't know. Symptoms on
-SSH: broken line editing, `tput: unknown terminal`, `clear`/`less`/`vim` errors.
-Fix by installing the entry into the remote `~/.terminfo` (done for Uberspace
-2026-07-01, same pattern as `tmux-256color` earlier):
-
-```bash
-infocmp -x xterm-ghostty | ssh <host> -- tic -x -
-```
-
-Re-run after Ghostty terminfo updates or on any new host.
 
 ## Contribute
 
