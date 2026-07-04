@@ -34,3 +34,12 @@ _has starship && eval "$(starship init zsh)"
   tmux set-option -g @theme "$theme"   # persist resolved theme (records system choice on macOS)
   tmux source-file ~/.tmux-"$theme".conf
 }
+
+# SYNTAX HIGHLIGHTING (must load last, after all other ZLE/prompt setup)
+#   macOS -> zsh-patina; else -> zsh-syntax-highlighting plugin fallback
+if _has zsh-patina; then
+  eval "$(zsh-patina activate)"
+else
+  _source_first "/usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" \
+                "/usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
+fi
