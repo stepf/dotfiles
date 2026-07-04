@@ -46,11 +46,4 @@ _source_first "/opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh" 
               "/usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh" \
               "$HOME/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh"  # user-local clone (no pkg mgr)
 
-if _has zsh-patina; then
-  eval "$(zsh-patina activate)"
-else
-  _source_first "/usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" \
-                "/usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
-fi
-
 [[ -t 0 ]] && _has "fzf" && source <(fzf --zsh)              # only with a real tty (avoids zle errors in non-tty shells)
