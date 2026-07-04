@@ -49,6 +49,19 @@ vscode/
   Brewfile         # VSCode/Cursor extensions
 ```
 
+## Remote hosts (terminfo)
+
+Ghostty sets `TERM=xterm-ghostty`, which most servers don't know. Symptoms on
+SSH: broken line editing, `tput: unknown terminal`, `clear`/`less`/`vim` errors.
+Fix by installing the entry into the remote `~/.terminfo` (done for Uberspace
+2026-07-01, same pattern as `tmux-256color` earlier):
+
+```bash
+infocmp -x xterm-ghostty | ssh <host> -- tic -x -
+```
+
+Re-run after Ghostty terminfo updates or on any new host.
+
 ## Contribute
 
 Show me in our next pair programming session :)
