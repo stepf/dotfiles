@@ -32,6 +32,7 @@ style = "italic yellow"
 [git_branch]
 format = "on [$branch]($style) "
 style = "bright-black italic"
+truncation_length = 24
 truncation_symbol = "…"
 
 [git_state]
@@ -44,10 +45,18 @@ stashed = ""
 [hostname]
 disabled = true
 
+[bun]
+disabled = true
+
 [java]
 disabled = true
 
 [nodejs]
+disabled = true
+
+# some shared hosts run each account in its own netns; the module only repeats
+# the login name, and its 🛜 emoji breaks cursor alignment in narrow/old terminals
+[netns]
 disabled = true
 
 [package]
