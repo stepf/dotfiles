@@ -128,3 +128,22 @@ function tmux-light {
   tmux set-option -g @theme light             # remembered so `reload` re-applies it
   tmux source-file "${HOME}/.tmux-light.conf"
 }
+
+# Print "dark" or "light" by asking the terminal for its background colour
+# (OSC 11). Prints nothing if the terminal doesn't answer within ~300ms.
+# Sends the query both plain and tmux-passthrough-wrapped so it reaches the
+# outer terminal from inside tmux (requires allow-passthrough for the reply).
+function _terminal-bg-theme {
+  emulate -L zsh
+  [[ -e /dev/tty ]] || return 1
+  local saved reply
+  saved=$({ stty -g < /dev/tty; } 2>/dev/null) || return 1
+  { stty raw -echo min 0 time 3 < /dev/tty; } 2>/dev/null || return 1
+  printf '\033]11;?\033\\\033Ptmux;\033\033]11;?\033\033\\\033\\' > /dev/tty
+  reply=$(dd if=/dev/tty bs=1 count=64 2>/dev/null)
+  stty "$saved" < /dev/tty
+  [[ "$reply" =~ 'rgb:([0-9a-fA-F]{2})[0-9a-fA-F]*/([0-9a-fA-F]{2})[0-9a-fA-F]*/([0-9a-fA-F]{2})' ]] || return 1
+  # perceived luminance, ITU-R BT.601
+  (( 299 * 16#$match[1] + 587 * 16#$match[2] + 114 * 16#$match[3] < 128000 )) \
+    && echo dark || echo light
+}
