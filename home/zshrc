@@ -23,16 +23,22 @@ _has starship && eval "$(starship init zsh)"
 
 # Sync tmux theme on shell start/reload:
 #   macOS -> follow system appearance
-#   else  -> re-apply the last theme set via tmux-dark/tmux-light (default light)
+#   else  -> re-apply the last theme set via tmux-dark/tmux-light; on a fresh
+#            server, autodetect from the terminal background (OSC 11)
 [[ -n "$TMUX" ]] && {
   if _is_macos; then
     theme=$([[ "$(defaults read -g AppleInterfaceStyle 2>/dev/null)" == "Dark" ]] && echo dark || echo light)
+    tmux set-option -g @theme "$theme"   # records the system choice
   else
     theme=$(tmux show-option -gqv @theme 2>/dev/null)
-    theme=${theme:-light}
+    if [[ -z "$theme" ]]; then
+      theme=$(_terminal-bg-theme)
+      # persist only a real answer: a silent terminal (e.g. no client attached
+      # yet) falls back to light below but stays re-detectable
+      [[ -n "$theme" ]] && tmux set-option -g @theme "$theme"
+    fi
   fi
-  tmux set-option -g @theme "$theme"   # persist resolved theme (records system choice on macOS)
-  tmux source-file ~/.tmux-"$theme".conf
+  tmux source-file ~/.tmux-"${theme:-light}".conf
 }
 
 # SYNTAX HIGHLIGHTING (must load last, after all other ZLE/prompt setup)
