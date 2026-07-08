@@ -34,11 +34,12 @@ _has starship && eval "$(starship init zsh)"
     if [[ -z "$theme" ]]; then
       theme=$(_terminal-bg-theme)
       # persist only a real answer: a silent terminal (e.g. no client attached
-      # yet) falls back to light below but stays re-detectable
+      # yet, or one that ignores OSC 11) falls back to dark below but stays
+      # re-detectable
       [[ -n "$theme" ]] && tmux set-option -g @theme "$theme"
     fi
   fi
-  tmux source-file ~/.tmux-"${theme:-light}".conf
+  tmux source-file ~/.tmux-"${theme:-dark}".conf
 }
 
 # SYNTAX HIGHLIGHTING (must load last, after all other ZLE/prompt setup)
