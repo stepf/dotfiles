@@ -112,6 +112,22 @@ function claude {
 }
 
 # ----------------------------------------------------------------------------------------------------------------------
+# -- GitHub CLI
+# ----------------------------------------------------------------------------------------------------------------------
+
+# pick profile by directory — ~/clients/<x> gets its own login (config in ~/.gh-profiles/<x>)
+# gh keeps its auth in one config dir per user, so without this every client repo
+# would talk to the API as whichever account was last active.
+function gh {
+  case "$PWD/" in
+    "$HOME/clients/"*)
+      local client="${${PWD#$HOME/clients/}%%/*}"
+      GH_CONFIG_DIR="$HOME/.gh-profiles/$client" command gh "$@" ;;
+    *) command gh "$@" ;;
+  esac
+}
+
+# ----------------------------------------------------------------------------------------------------------------------
 # -- tmux
 # ----------------------------------------------------------------------------------------------------------------------
 
