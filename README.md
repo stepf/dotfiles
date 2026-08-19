@@ -13,13 +13,16 @@ All scripts are idempotent — safe to re-run at any time, from any directory.
 # 2. Symlink dotfiles to $HOME
 ./home/setup.sh
 
-# 3. Symlink starship and ghostty to ~/.config
+# 3. Symlink starship, ghostty and herdr to ~/.config
 ./config/setup.sh
 
-# 4. Symlink Sublime Text settings (skips if app not installed yet)
+# 4. Symlink Claude Code settings, statusline and output style to ~/.claude
+./claude/setup.sh
+
+# 5. Symlink Sublime Text settings (skips if app not installed yet)
 ./sublimetext/setup.sh
 
-# 5. Symlink VSCode/Cursor settings + install extensions (skips if app not opened yet)
+# 6. Symlink VSCode/Cursor settings + install extensions (skips if app not opened yet)
 ./vscode/setup.sh
 ```
 
@@ -34,7 +37,9 @@ macos/
 home/
   setup.sh         # Symlinks all dotfiles to $HOME (as ~/.filename)
 config/
-  setup.sh         # Symlinks starship.toml and ghostty config
+  setup.sh         # Symlinks starship.toml, ghostty and herdr configs
+claude/
+  setup.sh         # Symlinks settings.json, statusline.sh and output styles
 sublimetext/
   setup.sh         # Symlinks Sublime Text 4 preferences
 vscode/
