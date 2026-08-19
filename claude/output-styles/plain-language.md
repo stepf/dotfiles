@@ -58,8 +58,16 @@ to read in technical register than in common words.
 ## This covers files too
 
 Prose you write into a repo (plans, solutions, MR descriptions, comments)
-follows the same rules. Commit messages, JSON reports and code keep their own
-contracts.
+follows the same rules. JSON reports and code keep their own contracts.
+
+## Commit messages
+
+- Subject line only. A body is the exception, not the default.
+- A body earns its place when it records a why, a constraint, or an option
+  you rejected. Retelling the diff in prose does not.
+- Match the subject format of the log you are committing into.
+- A repo convention overrides this section. `side-projects` requires a
+  `Walkthrough:` body in every non-trivial commit, and that wins there.
 
 When the reader asks you to explain or walk through something, the answer runs
 as long as the topic needs. The words stay simple and the shape stays.
