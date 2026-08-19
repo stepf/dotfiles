@@ -4,6 +4,8 @@
     "defaultMode": "auto"
   },
   "model": "opus[1m]",
+  "effortLevel": "high",
+  "theme": "auto",
   "attribution": {
     "commit": "",
     "pr": ""
@@ -13,6 +15,73 @@
     "command": "~/.claude/statusline.sh",
     "padding": 0
   },
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cur=\"$(readlink -f \"$HOME/.local/bin/claude\" 2>/dev/null)\"; case \"$cur\" in \"$HOME/.local/share/claude/versions/\"*) [ -f \"$cur\" ] && find \"$HOME/.local/share/claude/versions\" -maxdepth 1 -type f ! -name \"${cur##*/}\" -delete 2>/dev/null;; esac",
+            "async": true
+          }
+        ]
+      }
+    ]
+  },
   "skipWorkflowUsageWarning": true,
-  "tui": "fullscreen"
+  "tui": "fullscreen",
+  "spinnerVerbs": {
+    "mode": "replace",
+    "verbs": [
+      "Blooming",
+      "Dialing-in",
+      "Pre-infusing",
+      "Pulse-pouring",
+      "Agitating",
+      "Drawing down",
+      "Bypassing",
+      "Souping",
+      "Nutating",
+      "Tamping",
+      "WDT-ing",
+      "RDT-ing",
+      "Fluffing",
+      "Purging the grinder",
+      "Single-dosing",
+      "Backflushing",
+      "Knocking the puck",
+      "Channeling",
+      "Diagnosing a sour shot",
+      "Refractometering",
+      "Reading TDS",
+      "Calculating EY",
+      "Taring",
+      "Pulling 1:3 in 20s",
+      "Cupping",
+      "Breaking the crust",
+      "Slurping",
+      "Triangulating",
+      "Flavour-wheeling",
+      "Scoring the cup",
+      "Chasing acidity",
+      "Calibrating the palate",
+      "Roasting",
+      "Inoculating",
+      "Carbonic-macerating",
+      "Honey-processing",
+      "Remineralizing",
+      "Balancing GH and KH",
+      "Cutting with distilled",
+      "Dosing Third Wave Water",
+      "Checking alkalinity",
+      "Descaling",
+      "Blaming the grinder",
+      "Bracing for a Lance hot take",
+      "Rewatching Hoffmann",
+      "Waiting for the TPC drop",
+      "Waiting for the GWO drop",
+      "Losing 0.3 g to retention",
+      "Re-dialing after a bag change"
+    ]
+  }
 }
