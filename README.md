@@ -16,7 +16,8 @@ All scripts are idempotent — safe to re-run at any time, from any directory.
 # 3. Symlink starship, ghostty and herdr to ~/.config
 ./config/setup.sh
 
-# 4. Symlink Claude Code settings, statusline and output style to ~/.claude
+# 4. Symlink Claude Code settings, statusline and output style to ~/.claude,
+#    and build a profile in ~/.claude-profiles for each dir in ~/clients
 ./claude/setup.sh
 
 # 5. Symlink Sublime Text settings (skips if app not installed yet)
@@ -39,7 +40,11 @@ home/
 config/
   setup.sh         # Symlinks starship.toml, ghostty and herdr configs
 claude/
-  setup.sh         # Symlinks settings.json, statusline.sh and output styles
+  setup.sh         # Symlinks settings.json, statusline.sh and output styles;
+                   # builds one ~/.claude-profiles/<client> per ~/clients/<client>
+  settings.json    # Personal config (Claude Code writes to this file itself)
+  statusline.sh    # Shared by every profile; reads ~/.claude/statusline.local.sh
+  output-styles/   # Linked into the personal dir and every client profile
 sublimetext/
   setup.sh         # Symlinks Sublime Text 4 preferences
 vscode/
