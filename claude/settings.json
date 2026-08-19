@@ -1,0 +1,18 @@
+{
+  "outputStyle": "Plain language",
+  "permissions": {
+    "defaultMode": "auto"
+  },
+  "model": "opus[1m]",
+  "attribution": {
+    "commit": "",
+    "pr": ""
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "~/.claude/statusline.sh",
+    "padding": 0
+  },
+  "skipWorkflowUsageWarning": true,
+  "tui": "fullscreen"
+}
