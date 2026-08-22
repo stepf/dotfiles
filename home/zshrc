@@ -50,3 +50,9 @@ else
   _source_first "/usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" \
                 "/usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
 fi
+
+# bun. The installer appends this itself and hardcodes an absolute path to the
+# completions file; $HOME keeps it working on a machine with another username.
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"
+[ -s "$BUN_INSTALL/_bun" ] && source "$BUN_INSTALL/_bun"
