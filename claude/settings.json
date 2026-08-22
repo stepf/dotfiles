@@ -1,20 +1,12 @@
 {
-  "outputStyle": "Plain language",
-  "permissions": {
-    "defaultMode": "auto"
-  },
-  "model": "opus[1m]",
-  "effortLevel": "high",
-  "theme": "auto",
   "attribution": {
     "commit": "",
     "pr": ""
   },
-  "statusLine": {
-    "type": "command",
-    "command": "~/.claude/statusline.sh",
-    "padding": 0
+  "permissions": {
+    "defaultMode": "auto"
   },
+  "model": "opus[1m]",
   "hooks": {
     "SessionStart": [
       {
@@ -28,8 +20,12 @@
       }
     ]
   },
-  "skipWorkflowUsageWarning": true,
-  "tui": "fullscreen",
+  "statusLine": {
+    "type": "command",
+    "command": "~/.claude/statusline.sh",
+    "padding": 0
+  },
+  "outputStyle": "Plain language",
   "spinnerVerbs": {
     "mode": "replace",
     "verbs": [
@@ -83,5 +79,10 @@
       "Losing 0.3 g to retention",
       "Re-dialing after a bag change"
     ]
-  }
+  },
+  "effortLevel": "high",
+  "tui": "fullscreen",
+  "skipWorkflowUsageWarning": true,
+  "theme": "auto",
+  "agentPushNotifEnabled": true
 }
