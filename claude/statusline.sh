@@ -16,8 +16,10 @@ set -u
 
 # \x1f, not tab: bash strips empty fields when IFS is whitespace, and effort,
 # git_worktree and five are all absent early in a session.
-IFS=$'\x1f' read -r model effort pct five five_at cwd proj wt added removed \
-                 pr_num pr_state pr_kind < <(
+# _proj and _wt are read but unused: the fields still have to be consumed in
+# order for everything after them to land in the right variable.
+IFS=$'\x1f' read -r model effort pct five five_at cwd _proj _wt added removed \
+                 pr_num pr_state pr_kind wt_name wt_branch repo_name < <(
   jq -r '[
     .model.display_name,
     (.effort.level // ""),
@@ -33,7 +35,10 @@ IFS=$'\x1f' read -r model effort pct five five_at cwd proj wt added removed \
     (.cost.total_lines_removed // 0),
     (.pr.number // ""),
     (.pr.review_state // ""),
-    (.pr.kind // "")
+    (.pr.kind // ""),
+    (.worktree.name // ""),
+    (.worktree.branch // ""),
+    (.workspace.repo.name // "")
   ] | map(tostring) | join("\u001f")'
 )
 
@@ -112,12 +117,35 @@ ver="${name#* }"; [[ $ver != "$name" ]] && handle+="$ver"
 case $effort in
   low) e=l;; medium) e=m;; high) e=h;; xhigh) e=x;; max) e=mx;; *) e="$effort";;
 esac
-out+="${sep}${handle}${e:+ $e}"
+
+# opusplan resolves to Opus in plan mode and Sonnet everywhere else, so "s5"
+# here is exactly what's running this turn but looks identical to a session
+# actually configured to run Sonnet outright. Nothing in this JSON says which
+# mode is configured, only the concrete model that's live right now — the
+# alias lives in settings.json alone, so read it directly. » prefixes the
+# handle to flag "this model is where opusplan landed," not the only model
+# the session will ever run.
+#
+# settings.json is the configured DEFAULT, not this turn's model — a session
+# that started as opusplan but was since pointed at Fable via /model still
+# reads opusplan there, so the handle itself gets the final say: only o* or
+# s* (opusplan's two actual legs) can carry the marker, never f or anything
+# else.
+cfg="${CLAUDE_CONFIG_DIR:-$HOME/.claude}/settings.json"
+plan=""
+if [[ $handle == [os]* ]] && [[ $(jq -r '.model // ""' "$cfg" 2>/dev/null) == opusplan ]]; then
+  plan="»"
+fi
+out+="${sep}${plan}${handle}${e:+ $e}"
 
 # Blast radius. The aws profile shows only when one is in the environment; the
 # kube context follows the [kubernetes] detect_files rule from starship.toml, so
 # it appears in a directory that deploys charts and nowhere else. That also
 # keeps kubectl off the hot path in every other repo.
+#
+# ⎈ is U+2388 HELM SYMBOL, East Asian Width N, so it is one cell in every locale
+# and needs no variation selector — unlike the ⛅︎ above it, which is emoji-capable
+# and only narrows because of the VS15. Prefer ⎈ over ☸ for exactly that reason.
 if [[ -z ${STATUSLINE_NO_AWS:-} ]]; then
   aws="${AWS_PROFILE:-${AWSUME_PROFILE:-}}"
   [[ -n $aws ]] && out+="${sep}${yellow}⛅︎ ${aws}${reset}"
@@ -125,7 +153,7 @@ fi
 if [[ -z ${STATUSLINE_NO_K8S:-} ]] &&
    [[ -e "$cwd/helmfile.yaml" || -e "$cwd/Chart.yaml" || -e "$cwd/kustomization.yaml" ]]; then
   kube=$(kubectl config current-context 2>/dev/null)
-  [[ -n $kube ]] && out+="${sep}${yellow}k8s ${kube}${reset}"
+  [[ -n $kube ]] && out+="${sep}${yellow}⎈ ${kube}${reset}"
 fi
 
 if declare -F statusline_local >/dev/null; then
@@ -133,17 +161,48 @@ if declare -F statusline_local >/dev/null; then
   [[ -n $extra ]] && out+="${sep}${extra}${reset}"
 fi
 
-# directory: basename, with the worktree name or an arrow when cwd left home.
-# Neutral, like everything else that is not a usage number.
-# Held apart from $out rather than appended, because the width guard below
-# drops the worktree name and the project prefix independently.
-dir_base="${cwd##*/}"
-dir_wt=""; [[ -n $wt ]] && dir_wt="${dim}@${wt}${reset}"
-dir_proj=""; [[ $cwd != "$proj" ]] && dir_proj="${proj##*/}${dim}→${reset}"
+# repo identity: .workspace.repo.name (from the origin remote) survives a
+# --worktree checkout, whose own git toplevel is the worktree directory, not
+# the repo. It's also the fix for a workspace that holds several repos under
+# one umbrella folder: .workspace.project_dir is that umbrella, sitting one
+# level ABOVE every repo, so comparing cwd to project_dir made every session
+# read "‹umbrella›→...", never the repo cwd was actually in.
+git_top=$(git -C "$cwd" rev-parse --show-toplevel 2>/dev/null)
+repo="${repo_name:-${git_top##*/}}"
+[[ -z $repo ]] && repo="${cwd##*/}"
+# The repo name is the guessable half — it's the same on every line in a
+# given directory, and this is the multi-repo workspace's own name for it.
+# The branch is the half that actually changes and is worth reading in full,
+# so it's the repo name that gives way when the segment runs long.
+[[ ${#repo} -gt 24 ]] && repo="${repo:0:23}…"
 
-branch=$(git -C "$cwd" branch --show-current 2>/dev/null)
-[[ ${#branch} -gt 24 ]] && branch="${branch:0:23}…"
-seg_branch=""; [[ -n $branch ]] && seg_branch=" on ${branch}"
+# branch: .worktree.branch is authoritative for a --worktree session (no
+# shell-out needed); everything else still has to ask git directly.
+if [[ -n $wt_branch ]]; then
+  branch="$wt_branch"
+else
+  branch=$(git -C "$cwd" branch --show-current 2>/dev/null)
+fi
+
+# One segment, not three: repo@branch, plus a bare (wt) flag for a --worktree
+# session. No separate branch glyph and no worktree slug: the slug used to
+# repeat itself against a branch name that (by a ticket-key naming
+# convention) already carries it, and repo@branch says exactly as much either
+# way.
+#
+# The arrow survives only for the ordinary case of cd-ing into a subdirectory
+# of a plain repo (no worktree in play) — dropped for a worktree session,
+# whose cwd already IS the root Claude Code put you at.
+anchor="$git_top"; [[ -n $wt_name ]] && anchor="$cwd"
+dir_proj=""
+if [[ -n $anchor && $cwd != "$anchor" ]]; then
+  dir_proj="${repo}${dim}→${reset}"
+  dir_base="${cwd##*/}"
+else
+  dir_base="$repo"
+fi
+seg_branch=""; [[ -n $branch ]] && seg_branch="@${branch}"
+dir_wt=""; [[ -n $wt_name ]] && dir_wt="${dim}(wt)${reset}"
 
 seg_diff=""
 (( added || removed )) && seg_diff="${sep}+${added}${dim}/${reset}-${removed}"
@@ -152,17 +211,22 @@ seg_diff=""
 # notification eats from the right and the least urgent thing here. Absent until
 # one is found and gone again once it merges, so it costs nothing at rest.
 # GitLab remotes fill the same fields for a merge request, which numbers with !
-# rather than #. Only changes_requested takes a colour: it is the one state that
-# is waiting on me. review_state is independently optional, so a PR with no
-# review yet shows the bare number.
+# rather than #. review_state is independently optional, so a PR with no review
+# yet shows the bare number.
+#
+# The state is one dot, not a word: "approved" alone was nine cells on the
+# segment that truncation eats first. Shape says how far along the review is,
+# colour says whether it is on me — filled is decided, hollow is waiting, dotted
+# is not a real review yet. All four are Geometric Shapes, the block ◱ and ◷
+# already proved renders at one cell here.
 seg_pr=""
 if [[ -n $pr_num ]]; then
   [[ $pr_kind == mr ]] && seg_pr="${sep}!${pr_num}" || seg_pr="${sep}#${pr_num}"
   case $pr_state in
-    approved)          seg_pr+="${green} approved${reset}" ;;
-    changes_requested) seg_pr+="${yellow} changes${reset}" ;;
-    pending)           seg_pr+=" pending" ;;
-    draft)             seg_pr+=" draft" ;;
+    approved)          seg_pr+="${green} ●${reset}" ;;
+    changes_requested) seg_pr+="${yellow} ●${reset}" ;;
+    pending)           seg_pr+=" ○" ;;
+    draft)             seg_pr+="${dim} ◌${reset}" ;;
   esac
 fi
 
@@ -204,7 +268,7 @@ vis_width() {
 }
 
 assemble() {
-  line="${out}${sep}${dir_proj}${dir_base}${dir_wt}${seg_branch}${seg_diff}${seg_pr}"
+  line="${out}${sep}${dir_proj}${dir_base}${seg_branch}${dir_wt}${seg_diff}${seg_pr}"
 }
 
 assemble
