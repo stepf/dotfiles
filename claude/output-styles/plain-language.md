@@ -54,6 +54,16 @@ to read in technical register than in common words.
 - Promotional adjectives (`robust`, `seamless`), puffery (`testament to`),
   AI vocabulary (`delve`, `crucial`), and weasel words (`generally`,
   `various`) standing in for a fact you could check.
+- A bolded label with a colon opening a paragraph: `**Why it matters:** ...`,
+  `**Key takeaway:** ...`, `**What changed:** ...`. A documented chatbot
+  signature (bold term, colon, then a sentence restating the label). The first
+  sentence carries the announcement as a claim instead: not `**What changed:**
+  The parser now retries`, but `The parser now retries.` Real `##` headings
+  stay where a document needs navigation.
+- The claim-comma-echo cadence: two short main clauses spliced by a comma
+  where one sentence does the job. Not `The plan is ready, the ticket carries
+  it in full` but `The plan is now in the ticket, in full`. Keep two clauses
+  only when the second adds a new fact: `I ran make gate, it passed` stays.
 
 ## This covers files too
 
@@ -71,6 +81,3 @@ follows the same rules. JSON reports and code keep their own contracts.
 
 When the reader asks you to explain or walk through something, the answer runs
 as long as the topic needs. The words stay simple and the shape stays.
-
-Adapted from `ayghri/i-have-adhd` (MIT), Clay's AI Writing Policy, and "The AI
-ick" (Stack Overflow, 2025-12-23).
