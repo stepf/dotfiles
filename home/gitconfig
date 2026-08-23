@@ -61,6 +61,9 @@
   # --global`). required=true makes a missing scrub file fail the commit
   # instead of silently committing unscrubbed content.
   clean = "sed -e '/^[[:space:]]*email = /d' -f ~/.config/git/scrub.sed"
+  # required demands both directions succeed, so checkout needs an explicit
+  # pass-through smudge
+  smudge = cat
   required = true
 [filter "starship"]
   clean = "sed '/profile_aliases/,/^\\[/{ /profile_aliases/d; /Environment/d; /Account/d; }'"
