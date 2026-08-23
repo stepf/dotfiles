@@ -8,7 +8,6 @@
   new = green reverse
 [user]
   name = stepf
-  email = <email>
 [github]
   user = stepf
 [push]
@@ -57,11 +56,19 @@
   title = !git rev-parse --abbrev-ref HEAD | sed -e 's/[-_]/ /g' | reattach-to-user-namespace pbcopy
   unstage = reset HEAD --
 [filter "email"]
-  clean = "sed -e 's/^  email = .*/  email = <email>/' -e '/\\[scrubbed\\]/,/^\\[/{/\\[scrubbed\\]/d;/^\\[/!d;}'"
+  # Drops any email line and every section listed in the machine-local scrub
+  # rules (tools write their own sections into this file via `git config
+  # --global`). required=true makes a missing scrub file fail the commit
+  # instead of silently committing unscrubbed content.
+  clean = "sed -e '/^[[:space:]]*email = /d' -f ~/.config/git/scrub.sed"
+  required = true
 [filter "starship"]
   clean = "sed '/profile_aliases/,/^\\[/{ /profile_aliases/d; /Environment/d; /Account/d; }'"
 [merge]
   ff = only
+[include]
+  # identity and private tool sections, machine-local (never committed — this repo is public)
+  path = ~/.config/git/local.gitconfig
 [includeIf "gitdir:~/clients/"]
   # per-client identities, machine-local (never committed — this repo is public)
   path = ~/.config/git/clients.gitconfig
