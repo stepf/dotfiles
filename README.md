@@ -1,56 +1,37 @@
 # Dotfiles
 
-Light-weight macOS dev setup. Default settings and builtins over frameworks and plugins.
+Light-weight dev setup, macOS first. Default settings and builtins over frameworks
+and plugins. The shell, git and tmux config also run on Linux; everything under
+`macos/` does not.
 
 ## Installation
 
 All scripts are idempotent — safe to re-run at any time, from any directory.
 
 ```bash
-# 1. macOS defaults, Xcode CLT, Homebrew, Brewfile, display, shell
+# 1. macOS defaults, Xcode CLT, Homebrew, Brewfiles, dock, display, login shell
 ./macos/setup.sh
 
-# 2. Symlink dotfiles to $HOME
+# 2. Symlink dotfiles to $HOME, create the machine-local git files,
+#    clone zsh plugins on machines without Homebrew
 ./home/setup.sh
 
-# 3. Symlink starship, ghostty and herdr to ~/.config
+# 3. Symlink starship and ghostty configs to ~/.config
 ./config/setup.sh
 
-# 4. Symlink Claude Code settings, statusline and output style to ~/.claude,
+# 4. Symlink Claude Code settings, statusline and output styles to ~/.claude,
 #    and build a profile in ~/.claude-profiles for each dir in ~/clients
 ./claude/setup.sh
 
-# 5. Symlink Sublime Text settings (skips if app not installed yet)
+# 5. Symlink Sublime Text settings (skips if the app is not installed yet)
 ./sublimetext/setup.sh
 
-# 6. Symlink VSCode/Cursor settings + install extensions (skips if app not opened yet)
+# 6. Symlink VSCode settings, then install extensions with brew bundle
 ./vscode/setup.sh
 ```
 
-## Structure
-
-```
-macos/
-  setup.sh         # macOS defaults, Xcode CLT, Homebrew, Brewfile, display, dock, sidebar
-  Brewfile         # CLIs, casks, MAS apps, fonts
-  Raycast.rayconfig          # Raycast settings (imported automatically)
-  com.local.KeyRemapping.plist  # Caps Lock → Escape (LaunchAgent)
-home/
-  setup.sh         # Symlinks all dotfiles to $HOME (as ~/.filename)
-config/
-  setup.sh         # Symlinks starship.toml, ghostty and herdr configs
-claude/
-  setup.sh         # Symlinks settings.json, statusline.sh and output styles;
-                   # builds one ~/.claude-profiles/<client> per ~/clients/<client>
-  settings.json    # Personal config (Claude Code writes to this file itself)
-  statusline.sh    # Shared by every profile; reads ~/.claude/statusline.local.sh
-  output-styles/   # Linked into the personal dir and every client profile
-sublimetext/
-  setup.sh         # Symlinks Sublime Text 4 preferences
-vscode/
-  setup.sh         # Symlinks settings.json to VSCode and Cursor
-  Brewfile         # VSCode/Cursor extensions
-```
+On Linux, run steps 2 to 4. Step 1 is macOS-only, and steps 5 and 6 need macOS
+paths and Homebrew.
 
 ## Contribute
 
