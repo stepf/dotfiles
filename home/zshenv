@@ -21,8 +21,13 @@ export HOMEBREW_USE_INTERNAL_API=true
 export FZF_DEFAULT_OPTS="--height 50% --min-height 30 --border --ansi --color light"
 
 # GO
-export GOPATH=$HOME/work/go
-export PATH=$GOPATH/bin:$PATH
+# GOPATH is deliberately NOT exported here. It lives in ~/.config/go/env
+# (`go env -w GOPATH=...`), which every `go` invocation reads no matter which
+# shell started it -- cron and supervisord do not source this file, and a
+# shell-only export is what let a second GOPATH grow at ~/work/go. The value
+# there is $HOME/go, which is also Go's built-in default, so losing that file
+# changes nothing.
+export PATH=$HOME/go/bin:$PATH
 
 # GOOGLE CLOUD SDK (lazy-loaded)
 gcloud() {
