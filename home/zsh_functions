@@ -102,14 +102,24 @@ function unkontext {
 # ----------------------------------------------------------------------------------------------------------------------
 
 # pick profile by directory — ~/clients/<x> gets its own login (profile in ~/.claude-profiles/<x>)
-function claude {
+# a suffix selects an alternate profile for the same client: `claude2` → ~/.claude-profiles/<x>-2
+function _claude-profile {
+  local suffix="$1"; shift
   case "$PWD/" in
     "$HOME/clients/"*)
       local client="${${PWD#$HOME/clients/}%%/*}"
-      CLAUDE_CONFIG_DIR="$HOME/.claude-profiles/$client" command claude "$@" ;;
-    *) command claude "$@" ;;
+      CLAUDE_CONFIG_DIR="$HOME/.claude-profiles/${client}${suffix}" command claude "$@" ;;
+    *)
+      if [ -n "$suffix" ]; then
+        echo "claude${suffix#-}: only works inside ~/clients/<client>" >&2
+        return 1
+      fi
+      command claude "$@" ;;
   esac
 }
+
+function claude  { _claude-profile ""   "$@" }
+function claude2 { _claude-profile "-2" "$@" }
 
 # ----------------------------------------------------------------------------------------------------------------------
 # -- GitHub CLI
