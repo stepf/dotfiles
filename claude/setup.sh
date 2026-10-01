@@ -96,3 +96,28 @@ for CLIENT_DIR in "$HOME"/clients/*/; do
 JSON
   fi
 done
+
+### Alternate client profiles
+# claude2 profiles (<client>-2) mirror their base profile once Claude Code has created them.
+# A settings.json without statusLine is the bare first-launch file, so it gets replaced.
+# Plugins, MCP servers and connector logins are per account and still need /mcp.
+for ALT in "$HOME"/.claude-profiles/*-[0-9]*/; do
+  [ -d "$ALT" ] || continue
+  ALT="${ALT%/}"
+  BASE="${ALT%-*}"
+  [ -d "$HOME/clients/$(basename "$BASE")" ] || continue
+
+  mkdir -p "$ALT/output-styles"
+  for STYLE in "${SCRIPT_DIR}"/output-styles/*.md; do
+    ln -sf "$STYLE" "$ALT/output-styles/$(basename "$STYLE")"
+  done
+
+  if [ -f "$BASE/CLAUDE.md" ] && { [ ! -e "$ALT/CLAUDE.md" ] || [ -L "$ALT/CLAUDE.md" ]; }; then
+    ln -sfn "$BASE/CLAUDE.md" "$ALT/CLAUDE.md"
+  fi
+
+  if [ -f "$BASE/settings.json" ] && ! grep -q '"statusLine"' "$ALT/settings.json" 2>/dev/null; then
+    [ -f "$ALT/settings.json" ] && mv "$ALT/settings.json" "$ALT/settings.json.bak"
+    cp "$BASE/settings.json" "$ALT/settings.json"
+  fi
+done
