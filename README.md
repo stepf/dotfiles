@@ -20,7 +20,8 @@ All scripts are idempotent — safe to re-run at any time, from any directory.
 ./config/setup.sh
 
 # 4. Symlink Claude Code settings, statusline and output styles to ~/.claude,
-#    and build a profile in ~/.claude-profiles for each dir in ~/clients
+#    build a profile in ~/.claude-profiles for each dir in ~/clients, and
+#    seed any <client>-2 profile that claude2 has created from its base
 ./claude/setup.sh
 
 # 5. Symlink Sublime Text settings (skips if the app is not installed yet)
