@@ -120,4 +120,30 @@ for ALT in "$HOME"/.claude-profiles/*-[0-9]*/; do
     [ -f "$ALT/settings.json" ] && mv "$ALT/settings.json" "$ALT/settings.json.bak"
     cp "$BASE/settings.json" "$ALT/settings.json"
   fi
+
+  # Share transcripts, prompt history and checkpoints with the base profile (sessions/ stays per profile).
+  # Merging moves files a live session is writing, so it waits until no session of this client runs.
+  running=""
+  for S in "$BASE"/sessions/*.json "$ALT"/sessions/*.json; do
+    [ -f "$S" ] && kill -0 "$(basename "$S" .json)" 2>/dev/null && running=1
+  done
+  if [ -n "$running" ]; then
+    set +x
+    echo "⚠️  a $(basename "$BASE") session is running, close it and re-run to share history with $(basename "$ALT")"
+    set -x
+    continue
+  fi
+  for SHARED in projects file-history history.jsonl; do
+    [ -L "$ALT/$SHARED" ] && continue
+    case "$SHARED" in *.jsonl) touch "$BASE/$SHARED" ;; *) mkdir -p "$BASE/$SHARED" ;; esac
+    if [ -d "$ALT/$SHARED" ]; then
+      # -r without -l skips symlinks, i.e. the memory links into the base profile
+      rsync -r --times --ignore-existing "$ALT/$SHARED/" "$BASE/$SHARED/"
+      rm -rf "${ALT:?}/$SHARED"
+    elif [ -f "$ALT/$SHARED" ]; then
+      cat "$ALT/$SHARED" >> "$BASE/$SHARED"
+      rm "$ALT/$SHARED"
+    fi
+    ln -sfn "$BASE/$SHARED" "$ALT/$SHARED"
+  done
 done
