@@ -138,6 +138,15 @@ if [[ $handle == [os]* ]] && [[ $(jq -r '.model // ""' "$cfg" 2>/dev/null) == op
 fi
 out+="${sep}${plan}${handle}${e:+ $e}"
 
+# Profile number (p1, p2), shown only when the client has a claude2 profile (<client>-N).
+prof="${CLAUDE_CONFIG_DIR:-}"; prof="${prof%/}"
+[[ $prof =~ ^(.+)-([0-9]+)$ ]] && base="${BASH_REMATCH[1]}" num="${BASH_REMATCH[2]}" || base=""
+if [[ -n $base && -d $base ]]; then
+  out+="${sep}p${num}"
+elif [[ $prof == "$HOME/.claude-profiles/"* ]]; then
+  for alt in "$prof"-[0-9]*; do [[ -d $alt ]] && out+="${sep}p1"; break; done
+fi
+
 # Blast radius. The aws profile shows only when one is in the environment; the
 # kube context follows the [kubernetes] detect_files rule from starship.toml, so
 # it appears in a directory that deploys charts and nowhere else. That also
