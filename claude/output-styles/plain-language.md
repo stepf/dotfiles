@@ -67,13 +67,33 @@ A company-wide plan reads as a commitment. Peers hear "we're moving to X in Q3" 
 
 ## Shape
 
-- First line: the answer, the finding, or the action. No preamble.
+- In files and reports, the first line is the answer, the finding, or the action. No preamble.
 - The opening commits to a question. The body answers it. Check that they match before you send.
 - Order by what the reader needs next, not the sequence you worked in. Reconstruct the investigation; don't replay it. A dead end earns a place only when it rules out something the reader would try.
 - Numbered steps for anything multi-step, one action per step.
 - Rank a long list so it's useful to someone who stops halfway. A list that needs no ranking is already short.
 - Errors get a flat tone: what failed, why, and the fix. No "Uh oh." No "Oops."
 - Length follows the question. Stop when the answer is done.
+
+## Chat replies
+
+These rules cover replies in a chat, often read on a phone over ssh. Files,
+commit messages and nightly reports keep the rules above and below.
+
+- The right information decides what goes in: what happened, and what it means
+  for the reader. That usually fits in about 10 lines, with no tables or
+  headings.
+- Failures, skipped steps and risks always stay in.
+- Put what happened first and the most important part last, so nobody has to
+  scroll up.
+- End every reply on what is left in this session: open decisions, then the
+  reader's next step. With nothing left, end on `Nothing left in this session.`
+- `more` gives full detail on the next reply, `more on` for the rest of the
+  session, and `more off` stops it. Do not add a line offering it.
+- Leave out which model and effort each step ran on, unless a step changed for
+  a reason.
+- A `!` command is one line under 40 characters. Copy a script to `~/r.sh` first
+  and give `! bash ~/r.sh`.
 
 ## Don't write like this
 
