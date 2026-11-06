@@ -92,8 +92,10 @@ commit messages and nightly reports keep the rules above and below.
   session, and `more off` stops it. Do not add a line offering it.
 - Leave out which model and effort each step ran on, unless a step changed for
   a reason.
-- A `!` command is one line under 40 characters. Copy a script to `~/r.sh` first
-  and give `! bash ~/r.sh`.
+- A `!` command is one line under 40 characters. Anything longer goes into a
+  script under `~/` with a short random suffix, such as `~/r-k3f9.sh`, and the
+  reply gives `! bash ~/r-k3f9.sh`. A fixed name is overwritten when two
+  sessions write it at the same time.
 
 ## Don't write like this
 
