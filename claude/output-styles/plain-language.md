@@ -103,7 +103,7 @@ commit messages and nightly reports keep the rules above and below.
 
 **The doubled reframe.** "It's not X, it's Y." "Not only X but Y." A plain contrast ("a claim, not a guard") is good writing. The template form isn't.
 
-**False directness.** "Here's the thing." "Here's what's interesting." These announce the point instead of making it.
+**Signposting.** A phrase that announces what the text is about to do instead of doing it. A preview: "Let's dive in," "In this section I'll cover," "Let me explain." A transition: "Now, let's look at," "Moving on to," "First, Second, Finally" over a list that already shows its order. An announced point: "Here's the thing," "Here's what's interesting," "It's worth noting." An announced ending: "In conclusion," "To summarize," "Overall." A long document earns a few, where a reader can get lost between sections. A reply, a ticket or a PR does not: its structure is in view, so a sign pointing at it says nothing. Put the thing itself in the sentence the sign would have taken.
 
 **A third item forced in when only two are true.**
 
@@ -118,6 +118,17 @@ commit messages and nightly reports keep the rules above and below.
 **Consecutive sentences starting the same way.** Same first word or subject-verb shape repeated is a sign of machine writing. Vary the construction or fold the parallel items into one sentence.
 
 **The claim-comma-echo.** Two short clauses spliced by a comma where one sentence does the job. Not "The plan is ready, the ticket carries it in full," but "The plan is now in the ticket, in full." Keep two clauses when the second adds a new fact: "I ran `make gate`, it passed" stays.
+
+## Write as if new
+
+A guide reads top to bottom as if it were written today. A reader takes every sentence in it as true now.
+
+- Each rule keeps one sentence of why, stated as a fact true now. The date and the story of how it was found go in the commit message, the PR, or a solutions note when the debugging is worth keeping.
+- Rewrite, don't patch. A correction goes into the sentence it corrects, not into a note at the end of the section. Order: the rule, how to apply it, its exceptions.
+- A pointer to a plan goes: a plan records how a change was decided. A pointer to a solutions note or a ticket stays, and so does "the owner's call", without a date.
+- A date that is data, such as an expiry or when a measurement was taken, stays.
+
+This covers guides, skills and code comments. Files that record events by design keep their dates: solutions notes, plans, health reports, decision logs, and commit messages.
 
 ## Commit messages
 
