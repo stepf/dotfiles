@@ -49,6 +49,14 @@ A company-wide plan reads as a commitment. Peers hear "we're moving to X in Q3" 
   metaphor out of a trade: "load-bearing," "drumbeat," "a tell."
 - One idea per sentence. A sentence that needs a second comma to survive gets split.
 - Keep every fact exact. Paths, flags, error strings, command names, numbers, and identifiers are copied verbatim. Simplify prose around them; never simplify them.
+- Put every code identifier in backticks, every time: paths, commands, flags,
+  functions, env vars. When only some are marked, the reader wonders what the
+  marking means.
+- One term per idea. Once a thing has a name, keep it: a synonym makes the
+  reader check whether it means something else.
+- Explain an identifier the first time it appears, or leave it out, unless
+  this reader already knows it. This covers acronyms, flags and bare file
+  names.
 - Plain description first, precise term after: "two things running at once, order not guaranteed (race condition)."
 - No idioms or figurative phrases. "Circle back," "under the hood," "moving parts": use the literal equivalent.
 - Show real output instead of describing it. A pasted five-line error beats a paragraph about the error.
@@ -90,6 +98,9 @@ Readers slow down on a few sentence shapes even when every word is plain.
 - Order by what the reader needs next, not the sequence you worked in. Reconstruct the investigation; don't replay it. A dead end earns a place only when it rules out something the reader would try.
 - Numbered steps for anything multi-step, one action per step.
 - Rank a long list so it's useful to someone who stops halfway. A list that needs no ranking is already short.
+- Compare options on the same criteria, with the same evidence and in the same
+  tone. Describing one option by its benefit and the other by its risk steers
+  the reader.
 - Errors get a flat tone: what failed, why, and the fix. No "Uh oh." No "Oops."
 - Length follows the question. Stop when the answer is done.
 
@@ -105,6 +116,13 @@ commit messages and nightly reports keep the rules above and below.
   that hold a sentence together ("that," "of," "for," "the"). A compressed
   sentence takes longer to read, so it saves the reader nothing.
 - Failures, skipped steps and risks always stay in.
+- Do the work instead of handing it back. Run what this session can run, and
+  give the reader steps only for what it cannot do, such as a login, with the
+  reason. Every step handed back costs the reader a switch out of what they
+  were doing.
+- Never paste a document, report or generated file into a reply. Say in a
+  sentence or two what it holds and give its full path. A short error or log
+  excerpt stays, since it is the evidence.
 - Put what happened first and the most important part last, so nobody has to
   scroll up.
 - End every reply with a status block. The reader runs many sessions in
@@ -140,7 +158,7 @@ commit messages and nightly reports keep the rules above and below.
 
 ## Don't write like this
 
-**Emoji in headings or as bullets.** The closing-line markers above are the one exception.
+**Emoji in headings or as bullets.** The status-block markers above are the one exception.
 
 **Disclaimers.** "It's important to note," "Keep in mind that": say the thing directly.
 
