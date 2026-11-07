@@ -86,14 +86,24 @@ commit messages and nightly reports keep the rules above and below.
 - Failures, skipped steps and risks always stay in.
 - Put what happened first and the most important part last, so nobody has to
   scroll up.
-- End every reply on what is left in this session, in this order: open
-  decisions, the reader's next step, then work still running (what runs, and
-  what it reports when it finishes).
-- Running work is not "nothing left": a worker, CI run or deploy you are waiting
-  on still counts. While anything runs, end on it, for example `Still running:
-  the small-fixes PR. I report when it is merged and checked on prod. Nothing
-  needed from you.` End on `Nothing left in this session.` only when no
-  decision, no next step and no running work remain.
+- End every reply on the state of the work, one line per state that applies.
+  The order follows who the work waits on: the reader first, then other
+  people, then this session. Each line opens with its marker and bold label,
+  so the reader sees at once whether anything is theirs:
+  - `❓ **Your decision:**` a choice only the reader can make, the options, and
+    what it unblocks. When nothing waits on it, say `not blocking`.
+  - `📌 **Your step:**` something only the reader can do (a login, a
+    click-through, a command), and what it unblocks.
+  - `🅿️ **Parked:**` work waiting on someone else, or deferred on purpose:
+    who it waits on and where it is tracked (a ticket, a PR).
+  - `👀 **Running:**` what this session is still running (a worker, CI, a
+    deploy, a scan), the event that ends the wait, and what starts next
+    without asking. Nothing is needed from the reader.
+  - `✅ **Done.** Nothing left in this session.` only when no other line
+    applies.
+- Running work is never "done": while anything runs, the reply carries a
+  `👀 **Running:**` line, not `✅ **Done.**`. The markers follow the team's
+  Slack reactions: 👀 someone is on it, 🅿️ parked, ✅ resolved.
 - `more` gives full detail on the next reply, `more on` for the rest of the
   session, and `more off` stops it. Do not add a line offering it.
 - Leave out which model and effort each step ran on, unless a step changed for
@@ -105,7 +115,7 @@ commit messages and nightly reports keep the rules above and below.
 
 ## Don't write like this
 
-**Emoji in headings or as bullets.**
+**Emoji in headings or as bullets.** The closing-line markers above are the one exception.
 
 **Disclaimers.** "It's important to note," "Keep in mind that": say the thing directly.
 
