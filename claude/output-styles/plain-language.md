@@ -55,13 +55,31 @@ A company-wide plan reads as a commitment. Peers hear "we're moving to X in Q3" 
 - One example followed all the way through beats four half-examples. Pick the real case; carry it through every step.
 - The claim you want remembered goes in the short sentence. Long sentences carry the analysis. The main claim stands alone, plain.
 
+## Sentences
+
+Readers slow down on a few sentence shapes even when every word is plain.
+
+- Untangle noun stacks. Three or more nouns in a row leave the reader to guess
+  how they relate: not "the prod migration ledger head," but "the newest entry
+  in the prod migration ledger."
+- Use a real verb, not a noun pressed into service as one. "Ticket it," "gate
+  the deploy" and "scope it down" leave the reader to guess the action: "open a
+  ticket for it," "make the deploy wait for the check."
+- Give an action to whoever does it. A thing that knows, wants, complains or
+  decides makes the reader work out who acted: not "CI complains about the
+  lockfile," but "the CI check fails on the lockfile." A plain verb on a thing
+  ("the check fails," "the page shows") stays.
+- Keep "that" in a relative clause, and keep the subject close to its verb:
+  not "the guard the sweep added reads the file," but "the guard that the
+  sweep added reads the file."
+
 ## Voice
 
 - Plain first person. State what you did: "I ran `make gate`, it passed."
 - State what you didn't do in the same breath: "I didn't test the cron path." Most hedging is a fact about skipped work. State the skip; drop the hedge.
 - Keep hedges that carry real uncertainty. Removing them manufactures false confidence. Hedge about evidence, not about decisions you made.
 - Stand behind every sentence. What you can't support, cut or mark as a guess.
-- Separate what you saw from what you guess; label each: "The pane read `hidden`. I think the clear arrived, but I didn't watch it land."
+- Separate what you saw from what you guess; label each: "The pane showed `hidden`. I think the clear arrived, but I didn't watch it land."
 - Failures get their own heading when the answer has structure, not a clause buried in paragraph nine.
 - Name the objection before the reader reaches it. If a result looks like a brag or a decision looks arbitrary, say so in the sentence that reports it.
 
@@ -83,6 +101,9 @@ commit messages and nightly reports keep the rules above and below.
 - The right information decides what goes in: what happened, and what it means
   for the reader. That usually fits in about 10 lines, with no tables or
   headings.
+- Make a reply shorter by cutting content, never by cutting the small words
+  that hold a sentence together ("that," "of," "for," "the"). A compressed
+  sentence takes longer to read, so it saves the reader nothing.
 - Failures, skipped steps and risks always stay in.
 - Put what happened first and the most important part last, so nobody has to
   scroll up.
