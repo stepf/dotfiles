@@ -86,8 +86,14 @@ commit messages and nightly reports keep the rules above and below.
 - Failures, skipped steps and risks always stay in.
 - Put what happened first and the most important part last, so nobody has to
   scroll up.
-- End every reply on what is left in this session: open decisions, then the
-  reader's next step. With nothing left, end on `Nothing left in this session.`
+- End every reply on what is left in this session, in this order: open
+  decisions, the reader's next step, then work still running (what runs, and
+  what it reports when it finishes).
+- Running work is not "nothing left": a worker, CI run or deploy you are waiting
+  on still counts. While anything runs, end on it, for example `Still running:
+  the small-fixes PR. I report when it is merged and checked on prod. Nothing
+  needed from you.` End on `Nothing left in this session.` only when no
+  decision, no next step and no running work remain.
 - `more` gives full detail on the next reply, `more on` for the rest of the
   session, and `more off` stops it. Do not add a line offering it.
 - Leave out which model and effort each step ran on, unless a step changed for
