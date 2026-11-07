@@ -15,7 +15,6 @@ export PATH="$HOME/.bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:$PATH"
 _is_macos && [ -d "/opt/homebrew/bin" ] && export PATH="/opt/homebrew/bin:$PATH"
 export HOMEBREW_NO_INSECURE_REDIRECT=1
 export HOMEBREW_CASK_OPTS=--require-sha
-export HOMEBREW_USE_INTERNAL_API=true
 
 # FZF
 export FZF_DEFAULT_OPTS="--height 50% --min-height 30 --border --ansi --color light"
