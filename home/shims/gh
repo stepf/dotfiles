@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+# gh with its own login per ~/clients/<name> (~/.gh-profiles/<name>)
+exec "$(dirname "$0")/.client-exec" gh GH_CONFIG_DIR "$HOME/.gh-profiles" "" "$@"
