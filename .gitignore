@@ -1,2 +1,6 @@
+# Files to restore on a new machine, such as a Raycast export.
+private/
+# Old name of private/, still on the previous laptop.
 personal-assets/
 .DS_Store
+.claude/settings.local.json
