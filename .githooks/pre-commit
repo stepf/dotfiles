@@ -1,0 +1,36 @@
+#!/usr/bin/env sh
+# Active once config/setup.sh has set core.hooksPath to this directory.
+
+fail() { echo "pre-commit: $*" >&2; exit 1; }
+
+# Without the filter, git silently ignores filter=email and commits the config unscrubbed.
+if [ -z "$(git config --get filter.email.clean)" ]; then
+  fail "filter.email is not configured, run ./config/setup.sh first"
+fi
+if git diff --cached -- config/git/config | grep -qE '^\+[[:space:]]*email = '; then
+  fail "config/git/config would commit an email line"
+fi
+
+# Tools write into claude/settings.json and config/git/config. gitleaks misses a
+# plain password there, so the grep below checks these two files as well.
+if command -v gitleaks >/dev/null 2>&1; then
+  gitleaks protect --staged --redact --no-banner >/dev/null 2>&1 \
+    || fail "gitleaks found a secret in the staged changes (run: gitleaks protect --staged --redact)"
+else
+  echo "pre-commit: gitleaks not installed, only the pattern check runs" >&2
+fi
+staged_tool_files=$(git diff --cached --name-only --diff-filter=AM -- claude/settings.json config/git/config)
+if [ -n "$staged_tool_files" ]; then
+  # shellcheck disable=SC2086  # split into file names
+  # Added lines, not the +++ header, that name a secret, a user:pass@ URL or -p<value>.
+  if git diff --cached -U0 -- $staged_tool_files \
+     | grep -E '^\+[^+]' \
+     | grep -iE 'password|passwd|secret|token|api[_-]?key|authorization|://[^/ ]+:[^/ ]+@| -p ?[^ -]' ; then
+    fail "the lines above look like a secret in a tool-written file; move the value to an environment variable or a machine-local file"
+  fi
+fi
+
+# There is no CI, so this is the only zsh syntax check.
+for f in $(git diff --cached --name-only --diff-filter=AM -- 'home/zsh*' 'home/zprofile'); do
+  zsh -n "$f" || fail "zsh -n failed for $f"
+done
