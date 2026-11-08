@@ -24,8 +24,8 @@ fi
 export HOMEBREW_NO_INSECURE_REDIRECT=1
 export HOMEBREW_CASK_OPTS=--require-sha
 
-# FZF (--color 16 follows the terminal's light or dark theme)
-export FZF_DEFAULT_OPTS="--height 50% --min-height 30 --border --ansi --color 16"
+# FZF: no background colours, and the selected line is reverse video, so it stays readable in light and dark.
+export FZF_DEFAULT_OPTS="--height 50% --min-height 30 --border --ansi --color 16,bg+:-1,gutter:-1:dim,fg+:-1:reverse"
 
 # GO (GOPATH is set with `go env -w` so cron sees it too; don't export it here)
 export PATH=$HOME/go/bin:$PATH
