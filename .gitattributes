@@ -1,2 +1,3 @@
-home/gitconfig filter=email
+# Filters live in config/git/config and only work once it is linked to ~/.config/git/config.
+config/git/config filter=email
 config/starship.toml filter=starship
