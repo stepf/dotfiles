@@ -9,14 +9,7 @@ becomes `~/.shims`), `config/` mirrors `~/.config/`, and each tool with its own
 setup logic has a directory (`claude/`, `vscode/`, `sublimetext/`). `macos/`
 is the platform-only part.
 
-## Personal and professional accounts on one machine
-
-I use several accounts for the same tools on one machine. The directory I work
-in picks the account: under `~/clients/<name>/`, git, `gh` and `claude` use
-that name's identity and profile, everywhere else my personal ones. The
-wrappers in `home/shims` switch `gh` and `claude`, an `includeIf` in
-`config/git/config` switches git. The logic is thin, but enough for my
-purposes.
+I use several accounts for the same tools. The wrappers in `home/shims` switch `gh` and `claude`, and `config/git/config` switches `git`, all based on the current directory.
 
 ## Installation
 
