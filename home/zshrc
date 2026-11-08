@@ -1,58 +1,84 @@
-# HELPER FUNCTIONS (defined in zshenv, available here via zsh load order)
+# Order matters: zoxide must load after compinit, and syntax highlighting last.
 
-# BREW (macOS only, hardcoded output of: /opt/homebrew/bin/brew shellenv)
-if _is_macos; then
-  export HOMEBREW_PREFIX="/opt/homebrew"
-  export HOMEBREW_CELLAR="/opt/homebrew/Cellar"
-  export HOMEBREW_REPOSITORY="/opt/homebrew"
-  export PATH="/opt/homebrew/bin:/opt/homebrew/sbin${PATH+:$PATH}"
-  [ -z "${MANPATH-}" ] || export MANPATH=":${MANPATH#:}"
-  export INFOPATH="/opt/homebrew/share/info:${INFOPATH:-}"
+function _source_if_exists { [ -f "${1}" ] && source "${1}" }
+function _source_first { for f in "$@"; do [ -f "$f" ] && source "$f" && return; done }
+
+_source_if_exists "$HOME/.zsh_aliases"
+_source_if_exists "$HOME/.zsh_functions"
+
+# ----------------------------------------------------------------------------------------------------------------------
+# -- Options
+# ----------------------------------------------------------------------------------------------------------------------
+
+bindkey -e                                                        # enable emacs navigation
+
+# History (^R comes from fzf below)
+HISTFILE=$HOME/.zsh_history                                       # path to history file; needed for shared history
+HISTSIZE=50000                                                    # read up to $HISTSIZE lines
+SAVEHIST=50000                                                    # write up to $SAVEHIST lines
+setopt hist_ignore_all_dups                                       # delete old entries if new entry is a duplicate
+setopt hist_verify                                                # don't execute immediately upon history expansion
+setopt inc_append_history                                         # write to history immediately, not on shell exit
+setopt print_exit_value                                           # print non-zero exit values
+setopt share_history                                              # share history between all sessions
+
+# Completion (cached; full check once per 24h; find, because a (#q) glob needs extended_glob)
+autoload -Uz compinit
+if [[ -f ~/.zcompdump && -z "$(find ~/.zcompdump -mtime +0 2>/dev/null)" ]]; then
+  compinit -C
+else
+  compinit
+fi
+setopt complete_in_word                                           # completion
+zstyle ':completion:*' matcher-list '' \
+  'm:{[:lower:][:upper:]}={[:upper:][:lower:]}' '+l:|=* r:|=*'    # partial completion
+zstyle ':completion:*' menu select                                # highlight entries on tab
+
+# Incremental Search with Arrow Keys
+autoload -U up-line-or-beginning-search
+autoload -U down-line-or-beginning-search
+zle -N up-line-or-beginning-search
+zle -N down-line-or-beginning-search
+bindkey "^[[A" up-line-or-beginning-search # Up
+bindkey "^[[B" down-line-or-beginning-search # Down
+
+# ----------------------------------------------------------------------------------------------------------------------
+# -- Plugins
+# ----------------------------------------------------------------------------------------------------------------------
+
+ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#9e9e9e"
+ZSH_AUTOSUGGEST_STRATEGY=(history completion)
+ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20                                # no suggestions for long buffers
+_source_first "/opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh" \
+              "/usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh" \
+              "/usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh" \
+              "$HOME/.local/share/zsh/zsh-autosuggestions/zsh-autosuggestions.zsh"  # user-local clone (no pkg mgr)
+_warn-if-stale "$HOME/.local/share/zsh/zsh-autosuggestions"
+
+[[ -t 0 ]] && _has "fzf" && source <(fzf --zsh)              # only with a real tty (avoids zle errors in non-tty shells)
+
+_has zoxide && eval "$(zoxide init zsh)"                        # z and zi; after compinit
+
+# Google Cloud SDK completion, loaded on first use (PATH is set in .zshenv)
+if [ -f "$HOME/.google-cloud-sdk/completion.zsh.inc" ]; then
+  gcloud() { unset -f gcloud; . "$HOME/.google-cloud-sdk/completion.zsh.inc"; gcloud "$@" }
 fi
 
-# SETUP
-_source_if_exists "$HOME/.zsh_aliases"                       # aliases
-_source_if_exists "$HOME/.zsh_functions"                     # functions
-_source_if_exists "$HOME/.zsh_conf"                          # configuration and plugins
-_source_first "/opt/homebrew/etc/profile.d/z.sh" \
-              "/usr/share/z/z.sh" \
-              "$HOME/.zsh/z/z.sh"
+# bun completion
+[ -s "$BUN_INSTALL/_bun" ] && source "$BUN_INSTALL/_bun"
 
-# PROMPT: starship
+# ----------------------------------------------------------------------------------------------------------------------
+# -- Prompt and theme
+# ----------------------------------------------------------------------------------------------------------------------
+
 _has starship && eval "$(starship init zsh)"
 
-# Sync tmux theme on shell start/reload:
-#   macOS -> follow system appearance
-#   else  -> re-apply the last theme set via tmux-dark/tmux-light; on a fresh
-#            server, autodetect from the terminal background (OSC 11)
-[[ -n "$TMUX" ]] && {
-  if _is_macos; then
-    theme=$([[ "$(defaults read -g AppleInterfaceStyle 2>/dev/null)" == "Dark" ]] && echo dark || echo light)
-    tmux set-option -g @theme "$theme"   # records the system choice
-  else
-    theme=$(tmux show-option -gqv @theme 2>/dev/null)
-    if [[ -z "$theme" ]]; then
-      theme=$(_terminal-bg-theme)
-      # persist only a real answer: a silent terminal (e.g. no client attached
-      # yet, or one that ignores OSC 11) falls back to dark below but stays
-      # re-detectable
-      [[ -n "$theme" ]] && tmux set-option -g @theme "$theme"
-    fi
-  fi
-  tmux source-file ~/.tmux-"${theme:-dark}".conf
-}
+tmux-sync-theme                                                   # no-op outside tmux
 
-# SYNTAX HIGHLIGHTING (must load last, after all other ZLE/prompt setup)
-#   macOS -> zsh-patina; else -> zsh-syntax-highlighting plugin fallback
+# SYNTAX HIGHLIGHTING (must load last)
 if _has zsh-patina; then
   eval "$(zsh-patina activate)"
 else
   _source_first "/usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" \
                 "/usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
 fi
-
-# bun. The installer appends this itself and hardcodes an absolute path to the
-# completions file; $HOME keeps it working on a machine with another username.
-export BUN_INSTALL="$HOME/.bun"
-export PATH="$BUN_INSTALL/bin:$PATH"
-[ -s "$BUN_INSTALL/_bun" ] && source "$BUN_INSTALL/_bun"

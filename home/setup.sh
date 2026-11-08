@@ -1,41 +1,41 @@
 #!/usr/bin/env bash
 
-set -o pipefail
-set -e
-set -x
-
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+. "${SCRIPT_DIR}/../lib.sh"
 
-### Symlink dotfiles to home directory
+# Each home/<name> becomes ~/.<name>, directories included.
 for file in "${SCRIPT_DIR}"/*; do
   name="$(basename "$file")"
   [[ "$name" == "setup.sh" ]] && continue
-  ln -sf "$file" "$HOME/.$name"
+  link "$file" "$HOME/.$name"
 done
 
-### Machine-local git config referenced from .gitconfig (never committed).
-### scrub.sed must exist or the required "email" clean filter fails; add rules
-### for private tool sections there. local.gitconfig holds the identity.
-mkdir -p "$HOME/.config/git"
-touch "$HOME/.config/git/scrub.sed"
-if [[ ! -f "$HOME/.config/git/local.gitconfig" ]]; then
-  printf '[user]\n  email = 4513275+stepf@users.noreply.github.com\n' \
-    > "$HOME/.config/git/local.gitconfig"
-fi
+# Remove links into home/ whose file was renamed or moved.
+for dst in "$HOME"/.*; do
+  [[ -L "$dst" && ! -e "$dst" && "$(readlink "$dst")" == "${SCRIPT_DIR}/"* ]] || continue
+  if [[ "$DRY_RUN" = 1 ]]; then log would "rm $dst"; else log unlink "$dst"; rm "$dst"; fi
+done
 
-### User-local clones for systems without Homebrew (macOS installs these via brew).
-### Skipped entirely when brew is present.
+# Only for hosts without Homebrew; macOS gets these from the Brewfile.
 if ! command -v brew >/dev/null 2>&1; then
-  # zsh-autosuggestions (sourced from .zsh_conf)
-  ZSH_AUTOSUGGESTIONS_DIR="$HOME/.zsh/zsh-autosuggestions"
-  if [[ ! -d "$ZSH_AUTOSUGGESTIONS_DIR" ]]; then
-    git clone --depth 1 \
-      https://github.com/zsh-users/zsh-autosuggestions "$ZSH_AUTOSUGGESTIONS_DIR"
+  if ! command -v zoxide >/dev/null 2>&1; then
+    run sh -c "$(curl -sSfL https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh)"
   fi
 
-  # z (rupa) jump-around tool (sourced from .zshrc)
-  Z_DIR="$HOME/.zsh/z"
-  if [[ ! -d "$Z_DIR" ]]; then
-    git clone --depth 1 https://github.com/rupa/z "$Z_DIR"
+  # The clone tracks upstream, and .zshrc warns once it is a month old.
+  ZSH_PLUGINS="$HOME/.local/share/zsh"
+  ensure_dir "$ZSH_PLUGINS"
+  if [[ -L "$HOME/.zsh/zsh-autosuggestions" ]]; then
+    run rm "$HOME/.zsh/zsh-autosuggestions"   # compat link from the move
+  elif [[ -d "$HOME/.zsh/zsh-autosuggestions" && ! -d "$ZSH_PLUGINS/zsh-autosuggestions" ]]; then
+    run mv "$HOME/.zsh/zsh-autosuggestions" "$ZSH_PLUGINS/zsh-autosuggestions"   # old location
   fi
+  if [[ ! -d "$ZSH_PLUGINS/zsh-autosuggestions" ]]; then
+    run git clone --quiet --depth 1 \
+      https://github.com/zsh-users/zsh-autosuggestions "$ZSH_PLUGINS/zsh-autosuggestions"
+  fi
+
+  # zoxide replaced rupa/z. Its data in ~/.z stays.
+  [[ -d "$HOME/.zsh/z" ]] && run rm -rf "$HOME/.zsh/z"
+  [[ -d "$HOME/.zsh" ]] && rmdir "$HOME/.zsh" 2>/dev/null && log rmdir "$HOME/.zsh"
 fi
