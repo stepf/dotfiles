@@ -24,8 +24,7 @@ truncate_to_repo = true
 [docker_context]
 disabled = true
 
-[env_var]
-variable = "AWSUME_PROFILE"
+[env_var.AWSUME_PROFILE]
 symbol = ""
 style = "italic yellow"
 
@@ -54,8 +53,7 @@ disabled = true
 [nodejs]
 disabled = true
 
-# some shared hosts run each account in its own netns; the module only repeats
-# the login name, and its 🛜 emoji breaks cursor alignment in narrow/old terminals
+# Off, because on shared hosts it only repeats the login name and its emoji misaligns the cursor.
 [netns]
 disabled = true
 
