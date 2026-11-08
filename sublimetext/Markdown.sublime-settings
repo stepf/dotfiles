@@ -12,7 +12,7 @@
   "gutter": false,
   "rulers": [],
   "draw_indent_guides": false,
-  "draw_white_space": ["none"],
+  "draw_white_space": ["all_none"],
   "scroll_past_end": 0.5,
   "scroll_context_lines": 4,
 }
