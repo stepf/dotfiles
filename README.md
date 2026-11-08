@@ -1,43 +1,50 @@
 # Dotfiles
 
-Light-weight dev setup, macOS first. Default settings and builtins over frameworks
-and plugins. The shell, git and tmux config also run on Linux; everything under
-`macos/` does not.
+This is my personal dev setup. I use multiple machines, both macOS and Linux, so I try to keep my config as portable as possible and prefer default settings and built-in features (over frameworks and plugins). My setup aims to help me stay effective and provide lots of nice-to-haves, but for the must-haves I want retain the muscle memory to navigate almost any setup.
 
-Layout: `home/` holds files linked as `~/.<name>` (a directory like `home/shims`
-becomes `~/.shims`), `config/` mirrors `~/.config/`, and each tool with its own
-setup logic has a directory (`claude/`, `vscode/`, `sublimetext/`). `macos/`
-is the platform-only part.
+I work in several environments and on personal projects so my setup lets me use use several accounts for the same tools.
 
-I use several accounts for the same tools. The wrappers in `home/shims` switch `gh` and `claude`, and `config/git/config` switches `git`, all based on the current directory.
-
-## Installation
+## Install
 
 ```bash
-./setup.sh            # everything, in order; skips the macOS-only steps on Linux
-./setup.sh --dry-run  # show what would change
+./setup.sh                # run steps 1 to 6 below; on Linux only steps 2 to 4
+./setup.sh --dry-run      # show what would change, change nothing
+./home/setup.sh --dry-run # the same for a single step
 ```
 
-Every script is idempotent and prints one line per step: `ok` when nothing
-changed, `link`, `mkdir` or `run` when something did. `--dry-run` works on each
-script alone too, for example `./claude/setup.sh --dry-run`.
+Each setup script should be idempotent and prints:
 
-The steps `setup.sh` runs, in this order:
+- `ok`: nothing changed
+- `link`, `mkdir`, `run`, `unlink`: something did
+- `would`: what `--dry-run` would do
+- `skip`: an app is not installed yet
+- `warn`: a real file was in the way and was moved to `.bak`
 
-1. `macos/setup.sh`: Xcode command line tools, Homebrew, Brewfiles, login shell, then macOS
-   defaults, dock and display. Installs first, so a failed brew run leaves the
-   desktop untouched.
+The global setup script runs these steps in this specific order:
+
+1. `macos/setup.sh`: Xcode command line tools, Homebrew, Brewfiles, login shell,
+   then macOS defaults, dock and display. It installs first, so a failed brew
+   run leaves the desktop untouched.
 2. `home/setup.sh`: symlink dotfiles to `$HOME`, install zoxide and clone
    zsh-autosuggestions on machines without Homebrew.
 3. `config/setup.sh`: mirror `config/` into `~/.config` (git, starship,
-   ghostty), create the machine-local git files, enable this repo's pre-commit
-   hook.
-4. `claude/setup.sh`: symlink Claude Code settings, statusline and output
-   styles to `~/.claude`, and build a profile for each directory in
-   `~/clients`.
+   ghostty). Create `~/.config/git/local.gitconfig` (your identity and URL
+   rewrites) and `~/.config/git/scrub.sed` (sections to strip before commit).
+   Enable this repo's pre-commit hook.
+4. `claude/setup.sh`: symlink Claude Code settings, statusline and output styles
+   to `~/.claude`. Build a profile in `~/.claude-profiles/<name>` for each
+   `~/clients/<name>`, and mirror a `<name>-2` profile.
 5. `sublimetext/setup.sh`: symlink Sublime Text settings (skips if the app is
    not installed yet).
-6. `vscode/setup.sh`: symlink VSCode settings, install extensions with brew bundle.
+6. `vscode/setup.sh`: symlink VSCode settings (skips if the app is not
+   installed yet), then install extensions with brew bundle.
+
+### Pre-Installation
+
+1. macOS: run `xcode-select --install`.
+2. Linux: Ensure `git`, `curl` and `zsh` (as login shell) are available.
+3. Clone to a path that does not move, otherwise it breaks all symlinks.
+4. Optional, macOS: Copy the newest Raycast export into `private/` (gitignored). Make sure all fonts are installed.
 
 ## Contribute
 
