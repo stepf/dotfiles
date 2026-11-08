@@ -36,6 +36,6 @@ if ! command -v brew >/dev/null 2>&1; then
   fi
 
   # zoxide replaced rupa/z. Its data in ~/.z stays.
-  [[ -d "$HOME/.zsh/z" ]] && run rm -rf "$HOME/.zsh/z"
-  [[ -d "$HOME/.zsh" ]] && rmdir "$HOME/.zsh" 2>/dev/null && log rmdir "$HOME/.zsh"
+  if [[ -d "$HOME/.zsh/z" ]]; then run rm -rf "$HOME/.zsh/z"; fi
+  if [[ "$DRY_RUN" != 1 ]] && rmdir "$HOME/.zsh" 2>/dev/null; then log rmdir "$HOME/.zsh"; fi
 fi
