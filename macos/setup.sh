@@ -1,16 +1,59 @@
 #!/usr/bin/env bash
-
-set -o pipefail
-set -e
-set -x
+# Installs run before the defaults, which need tools and apps from the Brewfile.
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+. "${SCRIPT_DIR}/../lib.sh"
 
-# Install XCode Command Line Tools
+### Phase 1: install
+
+# Xcode Command Line Tools
 if ! xcode-select -p &>/dev/null; then
-  xcode-select --install
-  echo "Waiting for Xcode CLT installation to complete..."
-  until xcode-select -p &>/dev/null; do sleep 5; done
+  run xcode-select --install
+  if [ "$DRY_RUN" != 1 ]; then
+    echo "Waiting for Xcode CLT installation to complete..."
+    until xcode-select -p &>/dev/null; do sleep 5; done
+  fi
+fi
+
+# Homebrew
+if ! command -v brew &>/dev/null; then
+  run /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+  eval "$(/opt/homebrew/bin/brew shellenv)"
+fi
+run brew analytics off
+
+# Homebrew doesn't create the Brewfile's appdir, and casks fail without it.
+ensure_dir "$HOME/Applications"
+
+run brew bundle --file="${SCRIPT_DIR}/Brewfile" --no-upgrade
+
+# App Store apps only on the personal Mac. The company Mac has jamf and uses Self Service.
+if ! command -v jamf &>/dev/null; then
+  run brew bundle --file="${SCRIPT_DIR}/Brewfile.mas" --no-upgrade
+fi
+
+# Make brew's zsh the login shell. The -x guard matters, because chsh to a missing shell locks out new terminals.
+BREW_ZSH="$(brew --prefix 2>/dev/null || echo /opt/homebrew)/bin/zsh"
+if [ -x "$BREW_ZSH" ]; then
+  if ! grep -qF "$BREW_ZSH" /etc/shells; then
+    run sudo sh -c "echo $BREW_ZSH >> /etc/shells"
+  fi
+  # Not $SHELL, which only changes at the next login.
+  LOGIN_SHELL="$(dscl . -read "/Users/$(whoami)" UserShell 2>/dev/null | awk '{print $2}')"
+  if [ "$LOGIN_SHELL" != "$BREW_ZSH" ]; then
+    run chsh -s "$BREW_ZSH"
+  fi
+fi
+
+ensure_dir ~/work
+ensure_dir ~/scratch
+
+# The MD IO Trial font is a manual step: download it from https://mass-driver.com/trial-fonts into ~/Library/Fonts.
+
+### Phase 2: system defaults (run bare, so --dry-run skips the whole phase)
+if [ "$DRY_RUN" = 1 ]; then
+  log would "apply macOS defaults, dock, keyboard, trackpad and display (phase 2)"
+  exit 0
 fi
 
 # Dock settings
@@ -28,6 +71,27 @@ defaults write com.apple.dock "wvous-tr-corner" -int 0
 defaults write com.apple.dock "wvous-bl-corner" -int 0
 defaults write com.apple.dock "wvous-br-corner" -int 0
 
+# Add apps to dock (searches both /Applications and ~/Applications)
+DOCK_APP_NAMES=(
+  "Arc"
+  "Ghostty"
+  "Slack"
+  "Visual Studio Code"
+)
+for name in "${DOCK_APP_NAMES[@]}"; do
+  app=""
+  if [ -e "/Applications/${name}.app" ]; then
+    app="/Applications/${name}.app"
+  elif [ -e "${HOME}/Applications/${name}.app" ]; then
+    app="${HOME}/Applications/${name}.app"
+  fi
+  if [ -n "$app" ]; then
+    defaults write com.apple.dock persistent-apps -array-add \
+      "<dict><key>tile-data</key><dict><key>file-data</key><dict><key>_CFURLString</key><string>${app}</string><key>_CFURLStringType</key><integer>0</integer></dict></dict></dict>"
+  else
+    log skip "dock: ${name}.app not installed"
+  fi
+done
 killall Dock || true
 
 # Finder settings
@@ -47,22 +111,8 @@ defaults write com.apple.finder StandardViewSettings -dict-add calculateAllSizes
 chflags nohidden ~/Library
 killall Finder || true
 
-# Hide menubar items (24 = hidden, 18 = visible)
-# Kept visible: WiFi, Battery, Clock, Control Center (not hideable via defaults)
-MENUBAR_PLIST=~/Library/Preferences/ByHost/com.apple.controlcenter.plist
-defaults write "$MENUBAR_PLIST" Bluetooth -int 24
-defaults write "$MENUBAR_PLIST" Display -int 24
-defaults write "$MENUBAR_PLIST" Sound -int 24
-defaults write "$MENUBAR_PLIST" NowPlaying -int 24
-defaults write "$MENUBAR_PLIST" FocusModes -int 24
-defaults write "$MENUBAR_PLIST" KeyboardBrightness -int 24
-defaults write "$MENUBAR_PLIST" AirDrop -int 24
-defaults -currentHost write com.apple.Spotlight MenuItemHidden -bool true
-killall SystemUIServer || true
-
-# Disable notifications (best-effort, fragile across macOS versions)
-defaults write com.apple.ncprefs content_visibility -dict-add "com.apple.ncprefs.content_visibility.global" -int 0
-defaults write com.apple.controlcenter "NSStatusItem Visible DoNotDisturb" -bool true
+# Show Focus in the menu bar. The other menu bar items have no defaults keys since macOS 26.
+defaults write com.apple.controlcenter "NSStatusItem Visible FocusModes" -bool true
 
 # Keyboard settings: Globe key switches input sources
 defaults write com.apple.HIToolbox AppleFnUsageType -int "1"
@@ -78,9 +128,10 @@ defaults write NSGlobalDomain NSAutomaticPeriodSubstitutionEnabled -bool false
 
 # Keyboard settings: Map Caps Lock to Escape (immediate + persistent via LaunchAgent)
 hidutil property --set '{"UserKeyMapping":[{"HIDKeyboardModifierMappingSrc":0x700000039,"HIDKeyboardModifierMappingDst":0x700000029}]}'
-mkdir -p ~/Library/LaunchAgents
+ensure_dir ~/Library/LaunchAgents
 cp "${SCRIPT_DIR}/com.local.KeyRemapping.plist" ~/Library/LaunchAgents/
-launchctl load ~/Library/LaunchAgents/com.local.KeyRemapping.plist 2>/dev/null || true
+# This fails harmlessly when the agent is already loaded.
+launchctl bootstrap "gui/$(id -u)" ~/Library/LaunchAgents/com.local.KeyRemapping.plist 2>/dev/null || true
 
 # Trackpad settings: map bottom right corner to right-click
 defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad TrackpadCornerSecondaryClick -int 2
@@ -102,101 +153,41 @@ defaults write NSGlobalDomain AppleLanguages -array "en-DE" "de-DE"
 defaults write NSGlobalDomain AppleLocale -string "en_DE@currency=EUR"
 killall cfprefsd || true
 
-# Set default app handlers for file types (duti is idempotent, unlike -array-add)
+# Default app per file type
 if command -v duti &>/dev/null; then
   duti -s com.sublimetext.4 public.plain-text all
   duti -s com.sublimetext.4 public.json all
   duti -s com.sublimetext.4 net.daringfireball.markdown all
   duti -s com.sublimetext.4 public.yaml all
   duti -s com.sublimetext.4 public.shell-script all
+else
+  log skip "duti not installed, default app handlers unchanged"
 fi
 
-# Install Homebrew
-if ! command -v brew &>/dev/null; then
-  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-  eval "$(/opt/homebrew/bin/brew shellenv)"
-fi
-brew analytics off
-
-# Trust third-party taps (Homebrew 6.x refuses to load formulae from untrusted
-# taps by default; `brew bundle` aborts the whole run on the first untrusted one).
-for tap in common-fate/granted mbode/tap michel-kraemer/zsh-patina terraform-linters/tap; do
-  brew trust --tap "$tap" 2>/dev/null || true
+# Import the newest Raycast export from private/, iCloud Drive/Raycast or Downloads.
+# Raycast then asks for the export's passphrase.
+RAYCAST_ICLOUD="${HOME}/Library/Mobile Documents/com~apple~CloudDocs/Raycast"
+[ -d "$RAYCAST_ICLOUD" ] && { brctl download "$RAYCAST_ICLOUD" 2>/dev/null || true; }
+RAYCAST_CONFIG=""
+for f in "${SCRIPT_DIR}"/../private/*.rayconfig "$RAYCAST_ICLOUD"/*.rayconfig "$HOME"/Downloads/*.rayconfig; do
+  [ -f "$f" ] || continue
+  if [ -z "$RAYCAST_CONFIG" ] || [ "$f" -nt "$RAYCAST_CONFIG" ]; then RAYCAST_CONFIG="$f"; fi
 done
-
-# The Brewfile sets `cask_args appdir: '~/Applications'`; Homebrew does not
-# create a custom appdir, so casks fail to install if it does not exist yet.
-mkdir -p "$HOME/Applications"
-
-# Install dependencies specified in Brewfile.
-# Strip --require-sha for the curated Brewfile: the iA Writer font casks use
-# `sha256 :no_check` (fonts auto-update) and would otherwise abort the run.
-# The flag stays in effect for ad-hoc `brew install` via $HOMEBREW_CASK_OPTS.
-HOMEBREW_CASK_OPTS="${HOMEBREW_CASK_OPTS/--require-sha/}" \
-  brew bundle --file="${SCRIPT_DIR}/Brewfile" --no-upgrade
-
-# Install MAS apps (personal Mac only — company Mac uses Jamf self-service)
-if ! command -v jamf &>/dev/null; then
-  brew bundle --file="${SCRIPT_DIR}/Brewfile.mas" --no-upgrade
+if [ -n "$RAYCAST_CONFIG" ]; then
+  log run "import $RAYCAST_CONFIG"
+  open -a Raycast "$RAYCAST_CONFIG"
+else
+  warn "No Raycast export found, so Raycast settings were NOT imported."
+  warn "On the old Mac: Raycast > Export Settings & Data, save to iCloud Drive/Raycast, then rerun."
 fi
 
-# Set up-to-date ZSH (installed via brew) as default shell.
-# Guard on the binary actually existing: chsh-ing to a missing shell (e.g. when
-# the brew install failed earlier) leaves the account with an invalid login
-# shell and bricks new terminal sessions.
-BREW_ZSH="$(brew --prefix)/bin/zsh"
-if [ -x "$BREW_ZSH" ]; then
-  if ! grep -qF "$BREW_ZSH" /etc/shells; then
-    sudo sh -c "echo $BREW_ZSH >> /etc/shells"
-  fi
-  # Compare against the configured login shell, not $SHELL: $SHELL reflects the
-  # current process and does not update until the next login, so re-running the
-  # script would otherwise call chsh every time even once the shell is set.
-  LOGIN_SHELL="$(dscl . -read "/Users/$(whoami)" UserShell 2>/dev/null | awk '{print $2}')"
-  if [ "$LOGIN_SHELL" != "$BREW_ZSH" ]; then
-    chsh -s "$BREW_ZSH"
-  fi
-fi
-
-# --- Post-brew setup (requires tools from Brewfile) ---
-
-# Ensure common working directories exist
-mkdir -p ~/work ~/scratch
-
-# Add apps to dock (searches both /Applications and ~/Applications)
-DOCK_APP_NAMES=(
-  "Arc"
-  "Ghostty"
-  "Slack"
-  "Visual Studio Code"
-)
-for name in "${DOCK_APP_NAMES[@]}"; do
-  app=""
-  if [ -e "/Applications/${name}.app" ]; then
-    app="/Applications/${name}.app"
-  elif [ -e "${HOME}/Applications/${name}.app" ]; then
-    app="${HOME}/Applications/${name}.app"
-  fi
-  if [ -n "$app" ]; then
-    defaults write com.apple.dock persistent-apps -array-add \
-      "<dict><key>tile-data</key><dict><key>file-data</key><dict><key>_CFURLString</key><string>${app}</string><key>_CFURLStringType</key><integer>0</integer></dict></dict></dict>"
-  fi
-done
-killall Dock || true
-
-# Import Raycast config (kept in personal-assets/, not committed)
-RAYCAST_CONFIG="${SCRIPT_DIR}/../personal-assets/Raycast.rayconfig"
-if [ -f "$RAYCAST_CONFIG" ]; then
-  open "$RAYCAST_CONFIG"
-fi
-
-# Set built-in display to "More Space" resolution (idempotent)
-# Get available modes with: displayplacer list
+# Set the built-in display to "More Space". `displayplacer list` shows modes and ids.
 TARGET_RES="res:1800x1169 scaling:on"
-if ! displayplacer list 2>/dev/null | grep -q "current mode.*${TARGET_RES}"; then
-  displayplacer "id:1 ${TARGET_RES}"
+if command -v displayplacer &>/dev/null; then
+  SCREEN_ID="$(displayplacer list 2>/dev/null | awk '/Persistent screen id/ {print $NF; exit}')"
+  if [ -n "$SCREEN_ID" ] && ! displayplacer list 2>/dev/null | grep -q "current mode.*${TARGET_RES}"; then
+    displayplacer "id:${SCREEN_ID} ${TARGET_RES}"
+  fi
+else
+  log skip "displayplacer not installed, display resolution unchanged"
 fi
-
-# Install MD IO Trial font (no direct download URL available)
-# Download manually from: https://mass-driver.com/trial-fonts
-# Then copy to ~/Library/Fonts/
