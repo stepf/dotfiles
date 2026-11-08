@@ -74,6 +74,7 @@ fi
 _has starship && eval "$(starship init zsh)"
 
 tmux-sync-theme                                                   # no-op outside tmux
+[[ -n "$TMUX" ]] && TRAPUSR1() { tmux-sync-theme }                # sent by the client-attached hook
 
 # SYNTAX HIGHLIGHTING (must load last)
 if _has zsh-patina; then

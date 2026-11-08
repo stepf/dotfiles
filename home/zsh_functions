@@ -147,9 +147,16 @@ function tmux-light {
 # On macOS follow the system appearance. Elsewhere reuse the last choice or ask the terminal.
 function tmux-sync-theme {
   [[ -n "$TMUX" ]] || return 0
-  # From 3.8, tmux switches themes itself (see tmux.conf).
-  [[ "$(tmux show-option -gqv theme 2>/dev/null)" == "detect" ]] && return 0
   local theme
+  # From 3.8, tmux switches themes itself (see tmux.conf), but only for terminals that
+  # report them (Ghostty). Termius answers OSC 11 only, so ask it once per shell.
+  if [[ "$(tmux show-option -gqv theme 2>/dev/null)" == "detect" ]]; then
+    theme=$(_terminal-bg-theme)
+    [[ -n "$theme" && "$theme" != "$(tmux show-option -gqv @theme 2>/dev/null)" ]] || return 0
+    tmux set-option -g @theme "$theme"
+    tmux source-file ~/.tmux-"$theme".conf
+    return 0
+  fi
   if _is_macos; then
     theme=$([[ "$(defaults read -g AppleInterfaceStyle 2>/dev/null)" == "Dark" ]] && echo dark || echo light)
     tmux set-option -g @theme "$theme"   # records the system choice
