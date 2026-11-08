@@ -1,20 +1,24 @@
-[core]
-  excludesfile = ~/.gitignore_global
-  pager = less
-[color]
-  ui = true
 [color "diff"]
   old = red reverse
   new = green reverse
 [user]
   name = stepf
-[github]
-  user = stepf
 [push]
-  default = simple
   autoSetupRemote = true
+  followTags = true
 [pull]
   rebase = true
+[rebase]
+  autoStash = true
+  autoSquash = true
+  updateRefs = true
+[rerere]
+  enabled = true
+  autoUpdate = true
+[commit]
+  verbose = true
+[help]
+  autocorrect = prompt
 [column]
   ui = auto
 [tag]
@@ -27,10 +31,11 @@
   algorithm = histogram
   colorMoved = plain
   mnemonicPrefix = true
-  renames = true
 [fetch]
   prune = true
   pruneTags = true
+[core]
+  untrackedCache = true
 [alias]
   a = !git ls-files --modified --others --exclude-standard -t --directory \
    | fzf --multi --nth 2 \
@@ -40,9 +45,9 @@
   aliases = !git config --list | grep 'alias\\.' | sed 's/alias\\.\\([^=]*\\)=\\(.*\\)/\\1\\ \t => \\2/' | sort
   amend = commit --amend --no-edit
   branches = branch -av
-  changelog = !git shortlog master...$(git describe --tags --abbrev=0) --merges
+  changelog = !git shortlog origin/HEAD...$(git describe --tags --abbrev=0) --merges
   co = checkout
-  hash = !git log --format="%H" -n 1 | reattach-to-user-namespace pbcopy
+  hash = !git log --format="%H" -n 1 | pbcopy
   jedi = !git push --force-with-lease && figlet -f starwars 'Use the force'
   l = !git --no-pager log --oneline --decorate -n 10 --no-merges
   lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative
@@ -50,28 +55,27 @@
   nicecommit = !git commit -m "$(git rev-parse --abbrev-ref HEAD)"
   pb = !git push -u origin $(git rev-parse --abbrev-ref HEAD) # push and track the current branch
   recent = for-each-ref --count=10 --sort=-committerdate refs/heads/ --format="%(refname:short)"
-  rbm = !git fetch origin master:master && git rebase master
+  rbm = !git fetch origin && git rebase origin/HEAD
   sith = !git commit --amend --no-edit && git push --force && cowsay -f vader 'The dark side'
   st = !git status --short | sort
-  title = !git rev-parse --abbrev-ref HEAD | sed -e 's/[-_]/ /g' | reattach-to-user-namespace pbcopy
+  title = !git rev-parse --abbrev-ref HEAD | sed -e 's/[-_]/ /g' | pbcopy
   unstage = reset HEAD --
 [filter "email"]
-  # Drops any email line and every section listed in the machine-local scrub
-  # rules (tools write their own sections into this file via `git config
-  # --global`). required=true makes a missing scrub file fail the commit
-  # instead of silently committing unscrubbed content.
+  # Drops email lines and the sections listed in the machine-local scrub.sed,
+  # where tools write via `git config --global`. If the filter fails, so does the commit.
   clean = "sed -e '/^[[:space:]]*email = /d' -f ~/.config/git/scrub.sed"
-  # required demands both directions succeed, so checkout needs an explicit
-  # pass-through smudge
+  # With required set, checkout needs a smudge too, so it passes content through.
   smudge = cat
   required = true
 [filter "starship"]
+  # Removes the AWS profile, environment and account lines from profile_aliases.
   clean = "sed '/profile_aliases/,/^\\[/{ /profile_aliases/d; /Environment/d; /Account/d; }'"
 [merge]
   ff = only
+  conflictStyle = zdiff3
 [include]
-  # identity and private tool sections, machine-local (never committed — this repo is public)
+  # Identity, URL rewrites and private tool sections stay machine-local, because this repo is public.
   path = ~/.config/git/local.gitconfig
 [includeIf "gitdir:~/clients/"]
-  # per-client identities, machine-local (never committed — this repo is public)
+  # One identity per ~/clients/<name>, also machine-local.
   path = ~/.config/git/clients.gitconfig
