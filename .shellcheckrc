@@ -1,0 +1,3 @@
+# Find lib.sh relative to each script.
+source-path=SCRIPTDIR
+external-sources=true
