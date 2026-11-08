@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+# second claude profile for the same ~/clients/<name> (~/.claude-profiles/<name>-2)
+exec "$(dirname "$0")/.client-exec" claude CLAUDE_CONFIG_DIR "$HOME/.claude-profiles" "-2" "$@"

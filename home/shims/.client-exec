@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+# Usage: .client-exec TOOL VAR PROFILES SUFFIX [ARGS...]
+# Under ~/clients/<name> it sets VAR=PROFILES/<name><SUFFIX>, then runs the next TOOL on PATH.
+set -e
+tool="$1" var="$2" profiles="$3" suffix="$4"
+shift 4
+
+case "$PWD/" in
+  "$HOME/clients/"*)
+    client="${PWD#"$HOME"/clients/}"
+    client="${client%%/*}"
+    export "$var=$profiles/$client$suffix" ;;
+  *)
+    if [ -n "$suffix" ]; then
+      echo "$tool${suffix#-}: only works inside ~/clients/<client>" >&2
+      exit 1
+    fi ;;
+esac
+
+self="$(cd "$(dirname "$0")" && pwd -P)"
+IFS=: read -ra dirs <<< "$PATH"
+for d in "${dirs[@]}"; do
+  [ -n "$d" ] || continue
+  [ "$(cd "$d" 2>/dev/null && pwd -P)" = "$self" ] && continue
+  [ -x "$d/$tool" ] && exec "$d/$tool" "$@"
+done
+echo "$tool: not found in PATH" >&2
+exit 127
