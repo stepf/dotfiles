@@ -2,27 +2,11 @@
 alias ls='ls --color=auto'
 alias ll='ls --color=auto -la'
 alias reload='exec zsh'
-alias bat='bat --theme=GitHub --style=changes'
+alias bat='bat --theme=ansi --style=changes'   # ansi follows the terminal's light or dark theme
 
 # NAVIGATION
 alias scratch='cd ~/scratch'
 alias work='cd ~/work'
-
-# AWS
-function assume {
-  . assume "$@"
-  # auto-switch k8s context based on ~/.kube/profile-contexts mapping
-  if [ -f ~/.kube/profile-contexts ]; then
-    local ctx=""
-    ctx=$(grep -i "${AWS_PROFILE%%/*}" ~/.kube/profile-contexts 2>/dev/null | awk '{print $2}')
-    [ -n "$ctx" ] && kubectl config use-context "$ctx" 2>/dev/null
-  fi
-}
-
-function unassume {
-  assume --unset
-  unkontext
-}
 
 # TMUX
 alias tmux='tmux -u'

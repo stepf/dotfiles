@@ -1,53 +1,44 @@
-# HELPERS (zshenv is loaded before zshrc, so needs its own)
+# Read by every zsh, scripts and agents included: environment only, interactive setup goes in .zshrc.
 function _has { hash "${1}" 2> /dev/null }
 function _is_macos { [[ "$OSTYPE" == darwin* ]] }
-function _source_if_exists { [ -f "${1}" ] && source "${1}" "${2}" }
-function _source_first { for f in "$@"; do [ -f "$f" ] && source "$f" && return; done }
+
+# Keep PATH unique across nested shells. It needs PATH too, because `path` alone misses string assignments.
+typeset -U PATH path
 
 # GENERAL
-fpath=( "$HOME/.zsh/.zfunctions" $fpath )
 export EDITOR='vim'
 export LESS=" -R "
 export LANG=en_US.UTF-8
-export PATH="$HOME/.bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:$PATH"
+# ~/.shims must stay first, or gh and claude bypass the account switch.
+export PATH="$HOME/.shims:$HOME/.bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:$PATH"
 
-# BREW
-_is_macos && [ -d "/opt/homebrew/bin" ] && export PATH="/opt/homebrew/bin:$PATH"
+# BREW (output of `brew shellenv`, hardcoded to save a process per shell)
+if _is_macos && [ -d /opt/homebrew/bin ]; then
+  export HOMEBREW_PREFIX="/opt/homebrew"
+  export HOMEBREW_CELLAR="/opt/homebrew/Cellar"
+  export HOMEBREW_REPOSITORY="/opt/homebrew"
+  export PATH="/opt/homebrew/bin:/opt/homebrew/sbin:$PATH"
+  [ -z "${MANPATH-}" ] || export MANPATH=":${MANPATH#:}"
+  export INFOPATH="/opt/homebrew/share/info:${INFOPATH:-}"
+fi
 export HOMEBREW_NO_INSECURE_REDIRECT=1
 export HOMEBREW_CASK_OPTS=--require-sha
 
-# FZF
-export FZF_DEFAULT_OPTS="--height 50% --min-height 30 --border --ansi --color light"
+# FZF (--color 16 follows the terminal's light or dark theme)
+export FZF_DEFAULT_OPTS="--height 50% --min-height 30 --border --ansi --color 16"
 
-# GO
-# GOPATH is deliberately NOT exported here. It lives in ~/.config/go/env
-# (`go env -w GOPATH=...`), which every `go` invocation reads no matter which
-# shell started it -- cron and supervisord do not source this file, and a
-# shell-only export is what let a second GOPATH grow at ~/work/go. The value
-# there is $HOME/go, which is also Go's built-in default, so losing that file
-# changes nothing.
+# GO (GOPATH is set with `go env -w` so cron sees it too; don't export it here)
 export PATH=$HOME/go/bin:$PATH
 
-# GOOGLE CLOUD SDK (lazy-loaded)
-gcloud() {
-  unset -f gcloud gsutil bq
-  [ -f "$HOME/.google-cloud-sdk/path.zsh.inc" ] && . "$HOME/.google-cloud-sdk/path.zsh.inc"
-  [ -f "$HOME/.google-cloud-sdk/completion.zsh.inc" ] && . "$HOME/.google-cloud-sdk/completion.zsh.inc"
-  gcloud "$@"
-}
-gsutil() { gcloud; gsutil "$@"; }
-bq() { gcloud; bq "$@"; }
+# GOOGLE CLOUD SDK (completion is lazy-loaded in .zshrc)
+[ -d "$HOME/.google-cloud-sdk/bin" ] && export PATH="$HOME/.google-cloud-sdk/bin:$PATH"
 
-# NODE
-export PATH="/usr/local/bin/node:$PATH"
-# On hosts with a low per-user memory limit, bound Node's heap so a runaway
-# process fails on its own rather than tripping the slice-wide OOM killer. The
-# re-add guard is needed because zshenv is re-sourced in nested shells that
-# inherit NODE_OPTIONS.
+# NODE: On hosts with a low memory limit, cap the heap, so a runaway process fails
+# before the OOM killer takes down the whole user slice.
 _mem_cgroup="/sys/fs/cgroup/memory/user.slice/user-${UID}.slice/memory.limit_in_bytes"
 if [[ -r "$_mem_cgroup" ]] && (( $(<"$_mem_cgroup") < 3221225472 )) \
    && [[ "$NODE_OPTIONS" != *max-old-space-size* ]]; then
-  export NODE_OPTIONS="${NODE_OPTIONS:+$NODE_OPTIONS }--max-old-space-size=900"
+  export NODE_OPTIONS="${NODE_OPTIONS:+$NODE_OPTIONS }--max-old-space-size=700"
 fi
 unset _mem_cgroup
 
@@ -67,4 +58,12 @@ _is_macos && export PATH="$HOME/Applications/Visual Studio Code.app/Contents/Res
 _is_macos && export PATH="/opt/homebrew/opt/helm@3/bin:$PATH"
 
 # RUST
-[ -f "$HOME/.cargo/env" ] && . "$HOME/.cargo/env" || [ -d "$HOME/.cargo/bin" ] && export PATH="$HOME/.cargo/bin:$PATH"
+if [ -f "$HOME/.cargo/env" ]; then
+  . "$HOME/.cargo/env"
+elif [ -d "$HOME/.cargo/bin" ]; then
+  export PATH="$HOME/.cargo/bin:$PATH"
+fi
+
+# BUN (completion is sourced in .zshrc)
+export BUN_INSTALL="$HOME/.bun"
+[ -d "$BUN_INSTALL/bin" ] && export PATH="$BUN_INSTALL/bin:$PATH"

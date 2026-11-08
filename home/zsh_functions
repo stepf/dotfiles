@@ -2,10 +2,20 @@
 # -- General
 # ----------------------------------------------------------------------------------------------------------------------
 
+# Warn when a user-local plugin clone was last fetched over 30 days ago.
+function _warn-if-stale {
+  local mark="$1/.git/FETCH_HEAD"
+  [[ -e "$mark" ]] || mark="$1/.git/HEAD"
+  [[ -e "$mark" ]] || return 0
+  [[ -z "$(find "$mark" -mtime +30 2>/dev/null)" ]] && return 0
+  echo "zsh: $(basename "$1") was last updated over 30 days ago, run: git -C $1 pull"
+}
+
 # glorified cd
 function dir {
-  export DISABLE_AUTO_TITLE="true"
-  dir="$(z | awk '{print $2}' | fzf -q "${1}")"  # pick from fuzzy-searchable list of most used directories
+  local dir
+  dir="$(zoxide query --list | fzf -q "${1}")"   # pick from fuzzy-searchable list of most used directories
+  [[ -n "$dir" ]] || return 1
   echo -e "\033];$(basename "${dir}")\007"       # change terminal tab title
   cd "${dir}" || false                           # cd into directory
 }
@@ -17,7 +27,7 @@ cat << EOM
 build		Changes that affect the build system or external dependencies (example scopes: gulp, broccoli, npm)
 ci		Changes to our CI configuration files and scripts (example scopes: Gitlab CI, Jenkins, CodePipeline)
 docs		Documentation only changes
-feature		A new feature
+feat		A new feature
 fix		A bug fix
 perf		A code change that improves performance
 refactor	A code change that neither fixes a bug nor adds a feature
@@ -98,43 +108,22 @@ function unkontext {
 }
 
 # ----------------------------------------------------------------------------------------------------------------------
-# -- Claude Code
+# -- AWS
 # ----------------------------------------------------------------------------------------------------------------------
 
-# pick profile by directory — ~/clients/<x> gets its own login (profile in ~/.claude-profiles/<x>)
-# a suffix selects an alternate profile for the same client: `claude2` → ~/.claude-profiles/<x>-2
-function _claude-profile {
-  local suffix="$1"; shift
-  case "$PWD/" in
-    "$HOME/clients/"*)
-      local client="${${PWD#$HOME/clients/}%%/*}"
-      CLAUDE_CONFIG_DIR="$HOME/.claude-profiles/${client}${suffix}" command claude "$@" ;;
-    *)
-      if [ -n "$suffix" ]; then
-        echo "claude${suffix#-}: only works inside ~/clients/<client>" >&2
-        return 1
-      fi
-      command claude "$@" ;;
-  esac
+function assume {
+  . assume "$@"
+  # auto-switch k8s context based on ~/.kube/profile-contexts mapping
+  if [ -f ~/.kube/profile-contexts ]; then
+    local ctx=""
+    ctx=$(grep -i "${AWS_PROFILE%%/*}" ~/.kube/profile-contexts 2>/dev/null | awk '{print $2}')
+    [ -n "$ctx" ] && kubectl config use-context "$ctx" 2>/dev/null
+  fi
 }
 
-function claude  { _claude-profile ""   "$@" }
-function claude2 { _claude-profile "-2" "$@" }
-
-# ----------------------------------------------------------------------------------------------------------------------
-# -- GitHub CLI
-# ----------------------------------------------------------------------------------------------------------------------
-
-# pick profile by directory — ~/clients/<x> gets its own login (config in ~/.gh-profiles/<x>)
-# gh keeps its auth in one config dir per user, so without this every client repo
-# would talk to the API as whichever account was last active.
-function gh {
-  case "$PWD/" in
-    "$HOME/clients/"*)
-      local client="${${PWD#$HOME/clients/}%%/*}"
-      GH_CONFIG_DIR="$HOME/.gh-profiles/$client" command gh "$@" ;;
-    *) command gh "$@" ;;
-  esac
+function unassume {
+  assume --unset
+  unkontext
 }
 
 # ----------------------------------------------------------------------------------------------------------------------
@@ -155,10 +144,28 @@ function tmux-light {
   tmux source-file "${HOME}/.tmux-light.conf"
 }
 
-# Print "dark" or "light" by asking the terminal for its background colour
-# (OSC 11). Prints nothing if the terminal doesn't answer within ~300ms.
-# Sends the query both plain and tmux-passthrough-wrapped so it reaches the
-# outer terminal from inside tmux (requires allow-passthrough for the reply).
+# On macOS follow the system appearance. Elsewhere reuse the last choice or ask the terminal.
+function tmux-sync-theme {
+  [[ -n "$TMUX" ]] || return 0
+  # From 3.8, tmux switches themes itself (see tmux.conf).
+  [[ "$(tmux show-option -gqv theme 2>/dev/null)" == "detect" ]] && return 0
+  local theme
+  if _is_macos; then
+    theme=$([[ "$(defaults read -g AppleInterfaceStyle 2>/dev/null)" == "Dark" ]] && echo dark || echo light)
+    tmux set-option -g @theme "$theme"   # records the system choice
+  else
+    theme=$(tmux show-option -gqv @theme 2>/dev/null)
+    if [[ -z "$theme" ]]; then
+      theme=$(_terminal-bg-theme)
+      # Store only a real answer, so a silent terminal is asked again next time.
+      [[ -n "$theme" ]] && tmux set-option -g @theme "$theme"
+    fi
+  fi
+  tmux source-file ~/.tmux-"${theme:-dark}".conf
+}
+
+# Prints "dark" or "light" from the terminal background (OSC 11), or nothing after ~300ms.
+# The query goes out plain and tmux-wrapped, so it also works inside tmux with allow-passthrough.
 function _terminal-bg-theme {
   emulate -L zsh
   [[ -e /dev/tty ]] || return 1

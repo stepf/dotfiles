@@ -1,0 +1,3 @@
+# On macOS, path_helper in /etc/zprofile moves system dirs to the front. This puts ours back.
+_is_macos && [ -d /opt/homebrew/bin ] && export PATH="/opt/homebrew/bin:/opt/homebrew/sbin:$PATH"
+export PATH="$HOME/.shims:$PATH"
