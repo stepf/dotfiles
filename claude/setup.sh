@@ -1,69 +1,35 @@
 #!/usr/bin/env bash
-
-set -o pipefail
-set -e
-set -x
+# Personal profile in ~/.claude, one more per directory in ~/clients (see README).
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+. "${SCRIPT_DIR}/../lib.sh"
 CLAUDE_DIR="$HOME/.claude"
 
-mkdir -p "$CLAUDE_DIR/output-styles"
+ensure_dir "$CLAUDE_DIR/output-styles"
 
-### settings.json
-# Claude Code rewrites this file itself (/config, /model, plugin installs). It
-# writes in place, so the symlink survives and the edits land as a git diff. If
-# a future version replaces the link with a regular file, keep that file rather
-# than dropping the settings it holds.
+# Claude Code writes this file in place, so /model and /config show up as a git diff.
 SETTINGS="$CLAUDE_DIR/settings.json"
-if [ -f "$SETTINGS" ] && [ ! -L "$SETTINGS" ]; then
-  mv "$SETTINGS" "${SETTINGS}.bak"
-  set +x
-  echo "⚠️  ${SETTINGS} was a real file, moved to ${SETTINGS}.bak — merge it by hand"
-  set -x
-fi
-ln -sf "${SCRIPT_DIR}/settings.json" "$SETTINGS"
+link "${SCRIPT_DIR}/settings.json" "$SETTINGS"   # a real file is kept as .bak by link()
 
-### Statusline (referenced by the statusLine key in settings.json)
-ln -sf "${SCRIPT_DIR}/statusline.sh" "$CLAUDE_DIR/statusline.sh"
+# The statusLine key in settings.json points here.
+link "${SCRIPT_DIR}/statusline.sh" "$CLAUDE_DIR/statusline.sh"
 
-### Output styles, one link per file so styles created in the app stay untouched
-for STYLE in "${SCRIPT_DIR}"/output-styles/*.md; do
-  ln -sf "$STYLE" "$CLAUDE_DIR/output-styles/$(basename "$STYLE")"
-done
-
-### Client profiles
-# The claude() function in ~/.zsh_functions points CLAUDE_CONFIG_DIR at
-# ~/.claude-profiles/<client> under ~/clients/<client>, which relocates the whole
-# config directory — credentials, history and settings alike. Without the loop
-# below a client session would start with none of the settings above.
-#
-# The client settings.json is generated, not symlinked: Claude Code writes to it,
-# so a shared link would let /model in a client session rewrite the personal
-# config. It is written once and then left alone, so per-client changes stick
-# across re-runs.
-#
-# Deliberately narrower than the personal file. No defaultMode, so edits and
-# commands prompt in someone else's codebase; no model pin, so a client login on
-# another plan is not forced onto a model it cannot bill. The version-cleanup
-# hook is kept because the binaries it prunes are shared across all profiles, and
-# in a client-heavy week the personal profile may not start often enough to run it.
-#
-# The client name is read from the directory at runtime and never written to this
-# repo, which is public.
-for CLIENT_DIR in "$HOME"/clients/*/; do
-  [ -d "$CLIENT_DIR" ] || continue
-  CLIENT="$(basename "$CLIENT_DIR")"
-  PROFILE="$HOME/.claude-profiles/$CLIENT"
-
-  mkdir -p "$PROFILE/output-styles"
+# One link per file, so styles created in the app stay local.
+link_styles() {
   for STYLE in "${SCRIPT_DIR}"/output-styles/*.md; do
-    ln -sf "$STYLE" "$PROFILE/output-styles/$(basename "$STYLE")"
+    link "$STYLE" "$1/output-styles/$(basename "$STYLE")"
   done
+}
+link_styles "$CLAUDE_DIR"
 
-  # statusline.sh is shared from the personal directory on purpose — one script,
-  # and its machine-local extras in ~/.claude/statusline.local.sh apply everywhere.
-  if [ ! -e "$PROFILE/settings.json" ]; then
-    cat > "$PROFILE/settings.json" <<'JSON'
+### Profiles for ~/clients/<name>, picked by the claude shim
+# settings.json is a copy written once, not a link: a link would let /model there
+# change the personal file. No defaultMode and no model on purpose, so it prompts
+# in other people's code and never picks a model the account can't bill.
+write_client_settings() {
+  if [ "$DRY_RUN" = 1 ]; then log would "write $1"; return 0; fi
+  log run "write $1"
+  cat > "$1" <<'JSON'
 {
   "outputStyle": "Plain language",
   "effortLevel": "high",
@@ -77,73 +43,74 @@ for CLIENT_DIR in "$HOME"/clients/*/; do
     "command": "~/.claude/statusline.sh",
     "padding": 0
   },
-  "hooks": {
-    "SessionStart": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "cur=\"$(readlink -f \"$HOME/.local/bin/claude\" 2>/dev/null)\"; case \"$cur\" in \"$HOME/.local/share/claude/versions/\"*) [ -f \"$cur\" ] && find \"$HOME/.local/share/claude/versions\" -maxdepth 1 -type f ! -name \"${cur##*/}\" -delete 2>/dev/null;; esac",
-            "async": true
-          }
-        ]
-      }
-    ]
-  },
   "skipWorkflowUsageWarning": true,
   "tui": "fullscreen"
 }
 JSON
-  fi
+}
+
+for CLIENT_DIR in "$HOME"/clients/*/; do
+  [ -d "$CLIENT_DIR" ] || continue
+  CLIENT="$(basename "$CLIENT_DIR")"
+  PROFILE="$HOME/.claude-profiles/$CLIENT"
+
+  ensure_dir "$PROFILE/output-styles"
+  link_styles "$PROFILE"
+
+  # statusLine points at ~/.claude on purpose, so statusline.local.sh applies to every profile.
+  [ -e "$PROFILE/settings.json" ] || write_client_settings "$PROFILE/settings.json"
 done
 
-### Alternate client profiles
-# claude2 profiles (<client>-2) mirror their base profile once Claude Code has created them.
-# A settings.json without statusLine is the bare first-launch file, so it gets replaced.
-# Plugins, MCP servers and connector logins are per account and still need /mcp.
+### Alternate profiles <name>-2 (claude2), mirrored from their base once Claude Code created them
+# A settings.json without statusLine is the bare first-launch file and gets replaced.
+# Plugins, MCP servers and connector logins are per account: run /mcp there.
 for ALT in "$HOME"/.claude-profiles/*-[0-9]*/; do
   [ -d "$ALT" ] || continue
   ALT="${ALT%/}"
   BASE="${ALT%-*}"
   [ -d "$HOME/clients/$(basename "$BASE")" ] || continue
 
-  mkdir -p "$ALT/output-styles"
-  for STYLE in "${SCRIPT_DIR}"/output-styles/*.md; do
-    ln -sf "$STYLE" "$ALT/output-styles/$(basename "$STYLE")"
-  done
+  ensure_dir "$ALT/output-styles"
+  link_styles "$ALT"
 
   if [ -f "$BASE/CLAUDE.md" ] && { [ ! -e "$ALT/CLAUDE.md" ] || [ -L "$ALT/CLAUDE.md" ]; }; then
-    ln -sfn "$BASE/CLAUDE.md" "$ALT/CLAUDE.md"
+    link "$BASE/CLAUDE.md" "$ALT/CLAUDE.md"
   fi
 
   if [ -f "$BASE/settings.json" ] && ! grep -q '"statusLine"' "$ALT/settings.json" 2>/dev/null; then
-    [ -f "$ALT/settings.json" ] && mv "$ALT/settings.json" "$ALT/settings.json.bak"
-    cp "$BASE/settings.json" "$ALT/settings.json"
+    [ -f "$ALT/settings.json" ] && run mv "$ALT/settings.json" "$ALT/settings.json.bak"
+    run cp "$BASE/settings.json" "$ALT/settings.json"
   fi
 
-  # Share transcripts, prompt history and checkpoints with the base profile (sessions/ stays per profile).
-  # Merging moves files a live session is writing, so it waits until no session of this client runs.
+  # Share history with the base profile; merging moves live files, so wait until no session runs.
   running=""
   for S in "$BASE"/sessions/*.json "$ALT"/sessions/*.json; do
     [ -f "$S" ] && kill -0 "$(basename "$S" .json)" 2>/dev/null && running=1
   done
   if [ -n "$running" ]; then
-    set +x
-    echo "⚠️  a $(basename "$BASE") session is running, close it and re-run to share history with $(basename "$ALT")"
-    set -x
+    warn "a $(basename "$BASE") session is running, close it and re-run to share history with $(basename "$ALT")"
     continue
   fi
+  # The alternate's own copy stays as <name>.merged until you delete it by hand.
   for SHARED in projects file-history history.jsonl; do
     [ -L "$ALT/$SHARED" ] && continue
-    case "$SHARED" in *.jsonl) touch "$BASE/$SHARED" ;; *) mkdir -p "$BASE/$SHARED" ;; esac
+    case "$SHARED" in
+      *.jsonl) touch "$BASE/$SHARED" ;;
+      *) ensure_dir "$BASE/$SHARED" ;;
+    esac
     if [ -d "$ALT/$SHARED" ]; then
       # -r without -l skips symlinks, i.e. the memory links into the base profile
-      rsync -r --times --ignore-existing "$ALT/$SHARED/" "$BASE/$SHARED/"
-      rm -rf "${ALT:?}/$SHARED"
+      run rsync -r --times --ignore-existing "$ALT/$SHARED/" "$BASE/$SHARED/"
+      run mv "$ALT/$SHARED" "$ALT/$SHARED.merged"
     elif [ -f "$ALT/$SHARED" ]; then
-      cat "$ALT/$SHARED" >> "$BASE/$SHARED"
-      rm "$ALT/$SHARED"
+      if [ "$DRY_RUN" = 1 ]; then
+        log would "append $ALT/$SHARED to $BASE/$SHARED"
+      else
+        log run "append $ALT/$SHARED to $BASE/$SHARED"
+        cat "$ALT/$SHARED" >> "$BASE/$SHARED"
+      fi
+      run mv "$ALT/$SHARED" "$ALT/$SHARED.merged"
     fi
-    ln -sfn "$BASE/$SHARED" "$ALT/$SHARED"
+    link "$BASE/$SHARED" "$ALT/$SHARED"
   done
 done

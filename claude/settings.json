@@ -6,20 +6,7 @@
   "permissions": {
     "defaultMode": "auto"
   },
-  "model": "opus[1m]",
-  "hooks": {
-    "SessionStart": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "cur=\"$(readlink -f \"$HOME/.local/bin/claude\" 2>/dev/null)\"; case \"$cur\" in \"$HOME/.local/share/claude/versions/\"*) [ -f \"$cur\" ] && find \"$HOME/.local/share/claude/versions\" -maxdepth 1 -type f ! -name \"${cur##*/}\" -delete 2>/dev/null;; esac",
-            "async": true
-          }
-        ]
-      }
-    ]
-  },
+  "model": "opus",
   "statusLine": {
     "type": "command",
     "command": "~/.claude/statusline.sh",
@@ -63,7 +50,11 @@
       "Losing 0.3 g to retention"
     ]
   },
-  "effortLevel": "high",
+  "modelSettings": {
+    "claude-fable-5-1": {
+      "effortLevel": "medium"
+    }
+  },
   "tui": "fullscreen",
   "skipWorkflowUsageWarning": true,
   "theme": "auto",
