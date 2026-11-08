@@ -202,6 +202,16 @@ list it as waiting on anyone.
 Write only a subject line, in the format the log already uses. Add a body only
 to explain why, a constraint, or an option you rejected.
 
+## Code comments
+
+Write a comment for someone without the context, a person or an agent. Tell
+them what they must know to change the code consistently and without breaking
+something. Notation that is hard to read, such as a regex or a cron
+expression, deserves a short note on what it means. A sentence or two is
+usually enough. Write them as full sentences; only a short note at the end of
+a line may be a phrase. When code looks wrong but isn't, say why, so nobody
+fixes it. The story of how it got this way goes in the commit.
+
 ## Say it instead of announcing it
 
 Readers recognise text written from a template, and once they do, they skim
