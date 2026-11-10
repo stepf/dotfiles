@@ -27,8 +27,8 @@ link_styles "$CLAUDE_DIR"
 # change the personal file. No defaultMode and no model on purpose, so it prompts
 # in other people's code and never picks a model the account can't bill.
 write_client_settings() {
-  if [ "$DRY_RUN" = 1 ]; then log would "write $1"; return 0; fi
-  log run "write $1"
+  act write "$1"
+  if [ "$DRY_RUN" = 1 ]; then return 0; fi
   cat > "$1" <<'JSON'
 {
   "outputStyle": "Plain language",
@@ -103,10 +103,8 @@ for ALT in "$HOME"/.claude-profiles/*-[0-9]*/; do
       run rsync -r --times --ignore-existing "$ALT/$SHARED/" "$BASE/$SHARED/"
       run mv "$ALT/$SHARED" "$ALT/$SHARED.merged"
     elif [ -f "$ALT/$SHARED" ]; then
-      if [ "$DRY_RUN" = 1 ]; then
-        log would "append $ALT/$SHARED to $BASE/$SHARED"
-      else
-        log run "append $ALT/$SHARED to $BASE/$SHARED"
+      act write "$BASE/$SHARED (append $ALT/$SHARED)"
+      if [ "$DRY_RUN" != 1 ]; then
         cat "$ALT/$SHARED" >> "$BASE/$SHARED"
       fi
       run mv "$ALT/$SHARED" "$ALT/$SHARED.merged"

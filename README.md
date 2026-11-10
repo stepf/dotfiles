@@ -12,13 +12,7 @@ I work in several environments and on personal projects so my setup lets me use 
 ./home/setup.sh --dry-run # the same for a single step
 ```
 
-Each setup script should be idempotent and prints:
-
-- `ok`: nothing changed
-- `link`, `mkdir`, `run`, `unlink`: something did
-- `would`: what `--dry-run` would do
-- `skip`: an app is not installed yet
-- `warn`: a real file was in the way and was moved to `.bak`
+Each setup script is safe to run multiple times: it only changes what is out of sync.
 
 The global setup script runs these steps in this specific order:
 
