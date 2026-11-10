@@ -22,10 +22,8 @@ done
 # filter fails every commit; local.gitconfig holds identity and URL rewrites.
 touch "$HOME/.config/git/scrub.sed"
 if [[ ! -f "$HOME/.config/git/local.gitconfig" ]]; then
-  if [[ "$DRY_RUN" = 1 ]]; then
-    log would "write $HOME/.config/git/local.gitconfig"
-  else
-    log run "write $HOME/.config/git/local.gitconfig"
+  act write "$HOME/.config/git/local.gitconfig"
+  if [[ "$DRY_RUN" != 1 ]]; then
     printf '[user]\n  email = 4513275+stepf@users.noreply.github.com\n' \
       > "$HOME/.config/git/local.gitconfig"
   fi

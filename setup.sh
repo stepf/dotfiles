@@ -11,6 +11,6 @@ else
 fi
 
 for STEP in "${STEPS[@]}"; do
-  log step "$STEP/setup.sh"
+  header "$STEP"
   "${SCRIPT_DIR}/${STEP}/setup.sh" "$@"
 done

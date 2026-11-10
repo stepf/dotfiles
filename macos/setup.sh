@@ -52,7 +52,7 @@ ensure_dir ~/scratch
 
 ### Phase 2: system defaults (run bare, so --dry-run skips the whole phase)
 if [ "$DRY_RUN" = 1 ]; then
-  log would "apply macOS defaults, dock, keyboard, trackpad and display (phase 2)"
+  log "would run" "apply macOS defaults, dock, keyboard, trackpad and display (phase 2)"
   exit 0
 fi
 

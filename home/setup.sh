@@ -13,7 +13,8 @@ done
 # Remove links into home/ whose file was renamed or moved.
 for dst in "$HOME"/.*; do
   [[ -L "$dst" && ! -e "$dst" && "$(readlink "$dst")" == "${SCRIPT_DIR}/"* ]] || continue
-  if [[ "$DRY_RUN" = 1 ]]; then log would "rm $dst"; else log unlink "$dst"; rm "$dst"; fi
+  act rm "$dst"
+  if [[ "$DRY_RUN" != 1 ]]; then rm "$dst"; fi
 done
 
 # Only for hosts without Homebrew; macOS gets these from the Brewfile.
@@ -37,5 +38,5 @@ if ! command -v brew >/dev/null 2>&1; then
 
   # zoxide replaced rupa/z. Its data in ~/.z stays.
   if [[ -d "$HOME/.zsh/z" ]]; then run rm -rf "$HOME/.zsh/z"; fi
-  if [[ "$DRY_RUN" != 1 ]] && rmdir "$HOME/.zsh" 2>/dev/null; then log rmdir "$HOME/.zsh"; fi
+  if [[ "$DRY_RUN" != 1 ]] && rmdir "$HOME/.zsh" 2>/dev/null; then log rm "$HOME/.zsh"; fi
 fi
