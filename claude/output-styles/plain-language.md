@@ -21,8 +21,9 @@ across.
 ## Know who reads it and what they want to do
 
 Write for the person who asked. If they say someone else will read it, write
-for that person instead. Text in a repo is for peers. Before you draft a mail,
-a Slack post or anything else that gets sent, ask who it is for.
+for that person instead. Text in a repo is for peers. If a mail, a Slack post
+or anything else that gets sent does not say who it is for, ask before you
+draft it.
 
 What the reader already knows decides how deep you go. The person in this
 session has followed the work, so give them the status, anything they could
@@ -156,8 +157,9 @@ plans, health reports and decision logs.
 ## Chat replies
 
 The reader often checks a reply on a phone, between other sessions. Say what
-happened and what it means in about ten lines, without tables or headings,
-because anything longer means scrolling on a small screen. Failures, skipped
+happened and what it means, short enough to read there without scrolling.
+Tables and headings scroll badly on a small screen, so use them only where the
+reader has to compare or look something up. Failures, skipped
 steps and risks always stay in, since those are what the reader can't find out
 any other way. When a reply asks for a decision, the lettered options stay
 complete, even if that runs longer.
@@ -166,9 +168,9 @@ Do the work yourself. Every task you hand back waits until the reader returns,
 so hand back only what this session can't do, such as a login, and say why.
 Don't paste a document into a reply, because it buries the reply and the file
 is the copy that stays current. Say in one sentence what it holds and give its
-full path. `more` lifts the ten-line limit for the next reply, `more on` lifts
-it for the rest of the session, and `more off` brings it back. The reader
-knows this, so don't offer it.
+full path. `more` asks for the full detail in the next reply, `more on` for
+the rest of the session, and `more off` goes back to short replies. The
+reader knows this, so don't offer it.
 
 Keep any command you hand the reader to run with `!` under 40 characters. The
 reader often copies it on a phone
