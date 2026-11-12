@@ -8,7 +8,7 @@ set -u
 # \x1f, not tab, because bash merges empty fields when IFS is whitespace.
 # _proj and _wt are unused, but must stay so the later fields land in the right variables.
 IFS=$'\x1f' read -r model effort pct five five_at cwd _proj _wt added removed \
-                 pr_num pr_state pr_kind wt_name wt_branch repo_name < <(
+                 pr_num pr_state pr_kind wt_name wt_branch repo_name week < <(
   jq -r '[
     .model.display_name,
     (.effort.level // ""),
@@ -27,7 +27,9 @@ IFS=$'\x1f' read -r model effort pct five five_at cwd _proj _wt added removed \
     (.pr.kind // ""),
     (.worktree.name // ""),
     (.worktree.branch // ""),
-    (.workspace.repo.name // "")
+    (.workspace.repo.name // ""),
+    (if .rate_limits.seven_day.used_percentage == null then ""
+     else (.rate_limits.seven_day.used_percentage | floor) end)
   ] | map(tostring) | join("\u001f")'
 )
 
@@ -66,6 +68,9 @@ if [[ -n $five ]]; then
       && out+=" ↻${at}"
   fi
 fi
+
+# Weekly limit, shown only from 80% and always red, as its own "wk 91%" segment after the 5-hour one.
+[[ -n $week ]] && (( week >= 80 )) && out+="${sep}${red}wk ${week}%${reset}"
 
 # Model and effort as short handles: "Opus 5 (1M context)" with high effort becomes "o5 h".
 name="${model%% (*}"
