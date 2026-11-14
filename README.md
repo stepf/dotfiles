@@ -22,7 +22,7 @@ The global setup script runs these steps in this specific order:
 2. `home/setup.sh`: symlink dotfiles to `$HOME`, install zoxide and clone
    zsh-autosuggestions on machines without Homebrew.
 3. `config/setup.sh`: mirror `config/` into `~/.config` (git, starship,
-   ghostty). Create `~/.config/git/local.gitconfig` (your identity and URL
+   ghostty, rex). Create `~/.config/git/local.gitconfig` (your identity and URL
    rewrites) and `~/.config/git/scrub.sed` (sections to strip before commit).
    Enable this repo's pre-commit hook.
 4. `claude/setup.sh`: symlink Claude Code settings, statusline and output styles
