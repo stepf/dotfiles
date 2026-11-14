@@ -73,6 +73,14 @@ for ALT in "$HOME"/.claude-profiles/*-[0-9]*/; do
   ensure_dir "$ALT/output-styles"
   link_styles "$ALT"
 
+  # Personal skills live in the base profile; the alternate links each one, because skills/synced is per account.
+  for SK in "$BASE"/skills/*/; do
+    SK="${SK%/}"
+    [ "$(basename "$SK")" = synced ] && continue
+    ensure_dir "$ALT/skills"
+    link "$SK" "$ALT/skills/$(basename "$SK")"
+  done
+
   if [ -f "$BASE/CLAUDE.md" ] && { [ ! -e "$ALT/CLAUDE.md" ] || [ -L "$ALT/CLAUDE.md" ]; }; then
     link "$BASE/CLAUDE.md" "$ALT/CLAUDE.md"
   fi
