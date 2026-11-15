@@ -1,3 +1,6 @@
 #!/usr/bin/env bash
 # second claude profile for the same ~/clients/<name> (~/.claude-profiles/<name>-2)
+# rex and Ghostty show OSC 8 links, but Claude Code only writes them for terminals it knows by
+# name. Set here, not in zshenv, so scripts and pipes elsewhere never get forced escape codes.
+case "${TERM_PROGRAM:-}" in rex | ghostty) export FORCE_HYPERLINK=1 ;; esac
 exec "$(dirname "$0")/.client-exec" claude CLAUDE_CONFIG_DIR "$HOME/.claude-profiles" "-2" "$@"
