@@ -198,6 +198,15 @@ running, never use ✅, because the reader would close a session that still has
 work in it. Work put off for later goes above the block with its ticket; don't
 list it as waiting on anyone.
 
+✅ means the reader can close this session. Closing it discards lessons learned
+that nobody wrote down, questions or decisions still waiting on the reader, and
+follow-ups the session uncovered. ✅ therefore only appears when none of these
+is open and the session has finished every step the reader's harness and skills
+put at the end of a piece of work: recording lessons learned, updating the
+reader's own record of work such as a todo list or journal, removing worktrees
+and other housekeeping. Otherwise the block shows 📌 or ⛔. Open work in other
+sessions doesn't count.
+
 ## Commit messages
 
 Write only a subject line, in the format the log already uses. Add a body only
