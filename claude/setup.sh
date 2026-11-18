@@ -22,6 +22,16 @@ link_styles() {
 }
 link_styles "$CLAUDE_DIR"
 
+# One link per skill, so skills installed in the app stay local.
+link_skills() {
+  for SKILL in "${SCRIPT_DIR}"/skills/*/; do
+    SKILL="${SKILL%/}"
+    ensure_dir "$1/skills"
+    link "$SKILL" "$1/skills/$(basename "$SKILL")"
+  done
+}
+link_skills "$CLAUDE_DIR"
+
 ### Profiles for ~/clients/<name>, picked by the claude shim
 # settings.json is a copy written once, not a link: a link would let /model there
 # change the personal file. No defaultMode and no model on purpose, so it prompts
@@ -56,6 +66,7 @@ for CLIENT_DIR in "$HOME"/clients/*/; do
 
   ensure_dir "$PROFILE/output-styles"
   link_styles "$PROFILE"
+  link_skills "$PROFILE"
 
   # statusLine points at ~/.claude on purpose, so statusline.local.sh applies to every profile.
   [ -e "$PROFILE/settings.json" ] || write_client_settings "$PROFILE/settings.json"
