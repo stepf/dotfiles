@@ -57,7 +57,7 @@
   pb = !git push -u origin $(git rev-parse --abbrev-ref HEAD) # push and track the current branch
   recent = for-each-ref --count=10 --sort=-committerdate refs/heads/ --format="%(refname:short)"
   rbm = !git fetch origin && git rebase origin/HEAD
-  sith = !git commit --amend --no-edit && git push --force && cowsay -f vader 'The dark side'
+  sith = !git commit --amend --no-edit && git push --force
   st = !git status --short | sort
   title = !git rev-parse --abbrev-ref HEAD | sed -e 's/[-_]/ /g' | pbcopy
   unstage = reset HEAD --
