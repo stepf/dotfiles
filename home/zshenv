@@ -9,8 +9,7 @@ typeset -U PATH path
 export EDITOR='vim'
 export LESS=" -R "
 export LANG=en_US.UTF-8
-# ~/.shims must stay first, or gh and claude bypass the account switch.
-export PATH="$HOME/.shims:$HOME/.bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:$PATH"
+export PATH="$HOME/.bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:$PATH"
 
 # BREW (output of `brew shellenv`, hardcoded to save a process per shell)
 if _is_macos && [ -d /opt/homebrew/bin ]; then
@@ -67,3 +66,8 @@ fi
 # BUN (completion is sourced in .zshrc)
 export BUN_INSTALL="$HOME/.bun"
 [ -d "$BUN_INSTALL/bin" ] && export PATH="$BUN_INSTALL/bin:$PATH"
+
+# SHIMS: ~/.shims must come before the real gh and claude, or they bypass the account switch.
+# Keep this the last PATH line, because every line above prepends. Installers append their
+# own PATH lines below it; .zshrc warns when that puts a real binary in front of a shim.
+export PATH="$HOME/.shims:$PATH"

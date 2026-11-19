@@ -1,3 +1,4 @@
-# On macOS, path_helper in /etc/zprofile moves system dirs to the front. This puts ours back.
+# On macOS, path_helper in /etc/zprofile runs after .zshenv and moves system dirs to the
+# front. This puts ours back. Non-login shells never get here, so .zshenv orders PATH too.
 _is_macos && [ -d /opt/homebrew/bin ] && export PATH="/opt/homebrew/bin:/opt/homebrew/sbin:$PATH"
 export PATH="$HOME/.shims:$PATH"

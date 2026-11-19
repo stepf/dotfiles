@@ -42,6 +42,21 @@ zle -N down-line-or-beginning-search
 bindkey "^[[A" up-line-or-beginning-search # Up
 bindkey "^[[B" down-line-or-beginning-search # Down
 
+# Warn once per shell when a real binary sits in front of its shim in PATH, because gh and
+# claude then run with the personal account in ~/clients. It compares what each name
+# resolves to, not PATH position, so a Python venv in front of ~/.shims stays silent.
+function _warn-shims-bypassed {
+  local s
+  for s in "$HOME"/.shims/*(N:t); do
+    [[ $commands[$s] == "$HOME/.shims/$s" ]] && continue
+    print -u2 "zsh: $s runs ${commands[$s]:-nothing}, not ~/.shims/$s, so the account switch is off. Check the PATH lines at the end of ~/.zshenv."
+    add-zsh-hook -d precmd _warn-shims-bypassed
+    return
+  done
+}
+autoload -Uz add-zsh-hook
+add-zsh-hook precmd _warn-shims-bypassed
+
 # ----------------------------------------------------------------------------------------------------------------------
 # -- Plugins
 # ----------------------------------------------------------------------------------------------------------------------
