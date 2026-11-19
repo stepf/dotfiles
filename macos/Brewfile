@@ -2,6 +2,7 @@
 cask_args appdir: '~/Applications'
 
 # Homebrew 6+ loads third-party taps only when they are trusted.
+tap "fsouza/prettierd", trusted: true
 tap "mbode/tap", trusted: true
 tap "terraform-linters/tap", trusted: true
 brew "ansible"
@@ -16,6 +17,7 @@ brew "displayplacer"
 brew "duti"
 brew "figlet"
 brew "fzf"
+brew "gh"
 brew "git"
 brew "gitleaks"
 brew "glab"
@@ -49,6 +51,8 @@ brew "zoxide"
 brew "zsh"
 brew "zsh-autosuggestions"
 brew "zsh-patina"
+# Sublime Text formats on save with it (prettierd_path in sublimetext/Preferences.sublime-settings).
+brew "fsouza/prettierd/prettierd"
 brew "mbode/tap/terraform-state-mover"
 cask "1password"
 cask "1password-cli"
