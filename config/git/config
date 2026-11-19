@@ -33,7 +33,8 @@
   mnemonicPrefix = true
 [fetch]
   prune = true
-  pruneTags = true
+  # No pruneTags: it deletes every local tag that is not on the remote yet, and
+  # push.followTags never pushes a lightweight tag.
 [core]
   untrackedCache = true
 [alias]
