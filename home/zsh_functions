@@ -113,12 +113,20 @@ function unkontext {
 
 function assume {
   . assume "$@"
-  # auto-switch k8s context based on ~/.kube/profile-contexts mapping
-  if [ -f ~/.kube/profile-contexts ]; then
-    local ctx=""
-    ctx=$(grep -i "${AWS_PROFILE%%/*}" ~/.kube/profile-contexts 2>/dev/null | awk '{print $2}')
-    [ -n "$ctx" ] && kubectl config use-context "$ctx" 2>/dev/null
-  fi
+  # Switch the kube context to the one ~/.kube/profile-contexts maps to the AWS profile
+  # (lines of "<profile> <context>"). An exact match on the profile wins; otherwise any line
+  # that contains the name counts. More than one hit switches nothing and says so, because
+  # a silent miss leaves kubectl on the previous cluster.
+  local profile="${AWS_PROFILE%%/*}"
+  local -a ctx
+  [[ -n "$profile" && -f ~/.kube/profile-contexts ]] || return 0
+  ctx=(${(f)"$(awk -v p="${profile:l}" 'tolower($1) == p { print $2 }' ~/.kube/profile-contexts)"})
+  (( $#ctx )) || ctx=(${(f)"$(grep -iF -- "$profile" ~/.kube/profile-contexts | awk '{ print $2 }')"})
+  case $#ctx in
+    0) ;;
+    1) kubectl config use-context "$ctx[1]" ;;
+    *) print -u2 "assume: $profile matches $#ctx lines in ~/.kube/profile-contexts, kube context NOT switched: $(kubectl config current-context 2>/dev/null)" ;;
+  esac
 }
 
 function unassume {

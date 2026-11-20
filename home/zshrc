@@ -16,6 +16,7 @@ bindkey -e                                                        # enable emacs
 HISTFILE=$HOME/.zsh_history                                       # path to history file; needed for shared history
 HISTSIZE=50000                                                    # read up to $HISTSIZE lines
 SAVEHIST=50000                                                    # write up to $SAVEHIST lines
+setopt hist_ignore_space                                          # a leading space keeps a command out of history
 setopt hist_ignore_all_dups                                       # delete old entries if new entry is a duplicate
 setopt hist_verify                                                # don't execute immediately upon history expansion
 setopt inc_append_history                                         # write to history immediately, not on shell exit
@@ -28,6 +29,7 @@ if [[ -f ~/.zcompdump && -z "$(find ~/.zcompdump -mtime +0 2>/dev/null)" ]]; the
   compinit -C
 else
   compinit
+  touch ~/.zcompdump   # compinit leaves a valid dump alone, so its age would never reset
 fi
 setopt complete_in_word                                           # completion
 zstyle ':completion:*' matcher-list '' \
@@ -86,6 +88,19 @@ fi
 # -- Prompt and theme
 # ----------------------------------------------------------------------------------------------------------------------
 
+# Machine-local prompt config, such as AWS profile aliases, goes in ~/.config/starship.local.toml
+# and stays out of the public repo. Starship has no include, so both files are joined into
+# one cache file whenever either is newer. A table may appear in only one of the two files.
+if [[ -f ~/.config/starship.local.toml ]]; then
+  _starship_joined="${XDG_CACHE_HOME:-$HOME/.cache}/starship-joined.toml"
+  if [[ ! -f $_starship_joined || ~/.config/starship.toml -nt $_starship_joined \
+        || ~/.config/starship.local.toml -nt $_starship_joined ]]; then
+    mkdir -p "${_starship_joined:h}" \
+      && cat ~/.config/starship.toml ~/.config/starship.local.toml > "$_starship_joined"
+  fi
+  export STARSHIP_CONFIG="$_starship_joined"
+  unset _starship_joined
+fi
 _has starship && eval "$(starship init zsh)"
 
 tmux-sync-theme                                                   # no-op outside tmux
