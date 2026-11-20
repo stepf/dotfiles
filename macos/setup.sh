@@ -51,6 +51,12 @@ ensure_dir ~/scratch
 # The MD IO Trial font is a manual step: download it from https://mass-driver.com/trial-fonts into ~/Library/Fonts.
 
 ### Phase 2: system defaults (run bare, so --dry-run skips the whole phase)
+# Only with --defaults, because this phase is not incremental: every run empties the Dock
+# and fills it again, restarts Dock and Finder, and opens the Raycast import.
+if [ "$APPLY_DEFAULTS" != 1 ]; then
+  log skip "macOS defaults, dock, keyboard, trackpad, display and Raycast import (pass --defaults)"
+  exit 0
+fi
 if [ "$DRY_RUN" = 1 ]; then
   log "would run" "apply macOS defaults, dock, keyboard, trackpad and display (phase 2)"
   exit 0
@@ -73,7 +79,7 @@ defaults write com.apple.dock "wvous-br-corner" -int 0
 
 # Add apps to dock (searches both /Applications and ~/Applications)
 DOCK_APP_NAMES=(
-  "Arc"
+  "Dia"
   "Ghostty"
   "Slack"
   "Visual Studio Code"

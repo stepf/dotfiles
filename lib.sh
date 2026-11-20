@@ -6,10 +6,15 @@ set -o pipefail
 set -e
 
 DRY_RUN=0
+# Only macos/setup.sh reads this. Every script accepts the flag, because setup.sh passes
+# its arguments on to each step.
+APPLY_DEFAULTS=0
+# shellcheck disable=SC2034  # APPLY_DEFAULTS is read in macos/setup.sh
 for _arg in "$@"; do
   case "$_arg" in
     --dry-run|-n) DRY_RUN=1 ;;
-    -h|--help) echo "usage: $0 [--dry-run]"; exit 0 ;;
+    --defaults) APPLY_DEFAULTS=1 ;;
+    -h|--help) echo "usage: $0 [--dry-run] [--defaults]"; exit 0 ;;
     *) echo "$0: unknown argument: $_arg" >&2; exit 2 ;;
   esac
 done

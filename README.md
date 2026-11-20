@@ -8,17 +8,19 @@ I work in several environments and on personal projects so my setup lets me use 
 
 ```bash
 ./setup.sh                # run steps 1 to 6 below; on Linux only steps 2 to 4
+./setup.sh --defaults     # on a new Mac: also apply macOS defaults, dock and display
 ./setup.sh --dry-run      # show what would change, change nothing
 ./home/setup.sh --dry-run # the same for a single step
 ```
 
 Each setup script is safe to run multiple times: it only changes what is out of sync.
+The exception is `--defaults`, which resets the Dock and opens the Raycast import on each run.
 
 The global setup script runs these steps in this specific order:
 
-1. `macos/setup.sh`: Xcode command line tools, Homebrew, Brewfiles, login shell,
-   then macOS defaults, dock and display. It installs first, so a failed brew
-   run leaves the desktop untouched.
+1. `macos/setup.sh`: Xcode command line tools, Homebrew, Brewfiles, login shell.
+   With `--defaults` it then applies macOS defaults, dock and display. It installs
+   first, so a failed brew run leaves the desktop untouched.
 2. `home/setup.sh`: symlink dotfiles to `$HOME`, install zoxide and clone
    zsh-autosuggestions on machines without Homebrew.
 3. `config/setup.sh`: mirror `config/` into `~/.config` (git, starship,
