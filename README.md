@@ -23,7 +23,8 @@ The global setup script runs these steps in this specific order:
    zsh-autosuggestions on machines without Homebrew.
 3. `config/setup.sh`: mirror `config/` into `~/.config` (git, starship,
    ghostty, rex). Create `~/.config/git/local.gitconfig` (your identity and URL
-   rewrites) and `~/.config/git/scrub.sed` (sections to strip before commit).
+   rewrites), `~/.config/git/scrub.sed` (sections to strip before commit) and
+   `~/.gitconfig` (where `git config --global` then writes).
    Enable this repo's pre-commit hook.
 4. `claude/setup.sh`: symlink Claude Code settings, statusline and output styles
    to `~/.claude`. Build a profile in `~/.claude-profiles/<name>` for each

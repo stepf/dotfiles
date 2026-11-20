@@ -29,6 +29,13 @@ if [[ ! -f "$HOME/.config/git/local.gitconfig" ]]; then
   fi
 fi
 
+# `git config --global` writes to ~/.gitconfig when it exists, and to ~/.config/git/config
+# otherwise. That one is a link into this public repo, so give tools the other file.
+if [[ ! -e "$HOME/.gitconfig" ]]; then
+  act write "$HOME/.gitconfig"
+  if [[ "$DRY_RUN" != 1 ]]; then touch "$HOME/.gitconfig"; fi
+fi
+
 # This activates .githooks/pre-commit for this repo.
 REPO_DIR="$(cd "${SCRIPT_DIR}/.." && pwd)"
 if [[ "$(git -C "$REPO_DIR" config --get core.hooksPath)" != ".githooks" ]]; then

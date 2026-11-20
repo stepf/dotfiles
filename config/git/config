@@ -62,15 +62,19 @@
   title = !git rev-parse --abbrev-ref HEAD | sed -e 's/[-_]/ /g' | pbcopy
   unstage = reset HEAD --
 [filter "email"]
-  # Drops email lines and the sections listed in the machine-local scrub.sed,
-  # where tools write via `git config --global`. If the filter fails, so does the commit.
+  # A safety net: it drops email lines and the sections listed in the machine-local
+  # scrub.sed. Keep nothing private in this file anyway, because git rewrites it from the
+  # cleaned version on pull and the filtered lines are then gone. Tools that run
+  # `git config --global` write to ~/.gitconfig, which config/setup.sh creates for that.
+  # If the filter fails, so does the commit.
   clean = "sed -e '/^[[:space:]]*email = /d' -f ~/.config/git/scrub.sed"
   # With required set, checkout needs a smudge too, so it passes content through.
   smudge = cat
   required = true
 [filter "starship"]
-  # Removes the AWS profile, environment and account lines from profile_aliases.
-  clean = "sed '/profile_aliases/,/^\\[/{ /profile_aliases/d; /Environment/d; /Account/d; }'"
+  # A safety net: it removes the whole [aws.profile_aliases] section, up to the next
+  # section header. The aliases belong in ~/.config/starship.local.toml (see .zshrc).
+  clean = "sed '/^\\[aws\\.profile_aliases\\]/,/^\\[/{ /^\\[aws\\.profile_aliases\\]/d; /^\\[/!d; }'"
 [merge]
   ff = only
   conflictStyle = zdiff3
