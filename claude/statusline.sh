@@ -5,6 +5,12 @@
 # Segments are ordered by importance, since truncation eats the row from the right.
 set -u
 
+# This script needs bash 4.2 or newer. A Claude Code started from a GUI app has no Homebrew
+# in PATH and gets macOS's bash 3.2, so restart under Homebrew's bash when it is there.
+if (( BASH_VERSINFO[0] < 4 )) && [[ -x /opt/homebrew/bin/bash ]]; then
+  exec /opt/homebrew/bin/bash "$0" "$@"
+fi
+
 # \x1f, not tab, because bash merges empty fields when IFS is whitespace.
 # _proj and _wt are unused, but must stay so the later fields land in the right variables.
 IFS=$'\x1f' read -r model effort pct five five_at cwd _proj _wt added removed \
